@@ -1,0 +1,160 @@
+{
+  "version": 3,
+  "created_at": "2026-08-21T07:43:31.665Z",
+  "task_summary": "Literature review: downscaling AI ensemble forecasts for NW Russia",
+  "agents": [],
+  "phases": [
+    {
+      "name": "Parallel literature sweeps",
+      "delegations": [
+        {
+          "name": "AI models",
+          "steps": [
+            {
+              "title": "Survey AI weather model architectures",
+              "description": "Sweep OpenAlex and arXiv for the primary papers behind AIFS (ECMWF), GraphCast, Pangu-Weather, FourCastNet, GenCast and NeuralGCM. Capture what each is, its resolution, whether it is deterministic or ensemble, and its verified operational status. Prioritise the primary publication over reviews and news."
+            },
+            {
+              "title": "Characterise known error modes",
+              "description": "Find the evaluation literature on systematic defects of AI forecast models: spatial over-smoothing and blurring at longer leads, ensemble under-dispersion, effective-resolution limits, extreme-event and tail behaviour, and physical-consistency failures. These are the specific defects a downscaling layer would target."
+            },
+            {
+              "title": "Trace AIFS-specific evaluation",
+              "description": "Walk the citation graph forward and backward from the AIFS papers to find independent verification studies and any work already post-processing or downscaling AIFS output. Note explicitly whether AIFS-specific downscaling work exists yet."
+            },
+            {
+              "title": "Save verified notes and citation table — AI models",
+              "description": "Save a markdown notes file of synthesised findings (not a paper list) plus a CSV of verified citations with DOI, authors, year, venue, citation count and a one-line relevance note. Flag preprints as preprints."
+            }
+          ]
+        },
+        {
+          "name": "Post-processing",
+          "steps": [
+            {
+              "title": "Establish the classical MOS lineage",
+              "description": "Retrieve the foundational statistical post-processing literature: model output statistics, ensemble model output statistics / non-homogeneous Gaussian regression, Bayesian model averaging, and the standard reviews of the field. Identify which methods are the operational reference standards for 2 m temperature."
+            },
+            {
+              "title": "Survey machine-learning post-processing",
+              "description": "Cover the ML generation: quantile regression forests, gradient-boosted trees, and neural distributional regression including Rasp & Lerch 2018 and its successors. Establish reported skill gains over raw ensembles and over classical EMOS, and the conditions under which each wins."
+            },
+            {
+              "title": "Find station-embedding and pooled-station designs",
+              "description": "Focus on how these methods handle many stations at once — station embeddings, pooled training with terrain predictors, and transfer to stations unseen in training. This is the design question for a 144-station network."
+            },
+            {
+              "title": "Save verified notes and citation table — Post-processing",
+              "description": "Save synthesised markdown notes plus a CSV of verified citations with DOI, authors, year, venue, citation count and relevance note, including reported skill figures where papers state them."
+            }
+          ]
+        },
+        {
+          "name": "Deep downscaling",
+          "steps": [
+            {
+              "title": "Survey grid-to-grid super-resolution",
+              "description": "Retrieve the deep-learning downscaling literature: CNN and U-Net approaches, GAN-based methods, and diffusion or generative downscaling such as CorrDiff. Record the resolution jumps attempted, the truth data used, and reported skill."
+            },
+            {
+              "title": "Cover perfect-prognosis vs MOS framings",
+              "description": "Distinguish downscaling trained on reanalysis-to-observation pairs from downscaling applied to live forecasts, and find the literature on why skill measured in the former does not transfer to the latter. This is directly relevant to the ERA5 result already found in this project."
+            },
+            {
+              "title": "Find generative and stochastic approaches",
+              "description": "Survey methods that produce calibrated fine-scale variability rather than a smoothed conditional mean, and the arguments for why deterministic super-resolution under-represents small-scale variance."
+            },
+            {
+              "title": "Save verified notes and citation table — Deep downscaling",
+              "description": "Save synthesised markdown notes plus a CSV of verified citations with DOI, authors, year, venue, citation count and relevance note."
+            }
+          ]
+        },
+        {
+          "name": "Regional",
+          "steps": [
+            {
+              "title": "Search high-latitude and boreal downscaling",
+              "description": "Sweep for statistical downscaling and post-processing studies over high-latitude, boreal, Fennoscandian, Baltic and Russian domains. Record which methods were used, what verification data, and what skill was achieved."
+            },
+            {
+              "title": "Survey regional physical phenomena",
+              "description": "Find literature on the mesoscale phenomena that make this region distinctive: lake-effect snow and thermal influence of Ladoga and Onega, Gulf of Finland land-sea contrast, winter temperature inversions and cold pools, and urban heat island effects at St. Petersburg. These define what a downscaling model must capture."
+            },
+            {
+              "title": "Inventory regional observation and model resources",
+              "description": "Search for papers describing the data resources for this region: Roshydromet and RIHMI-WDC station archives, COSMO-Ru and other regional NWP systems, high-resolution reanalyses covering European Russia, and any gridded observational products. Note licensing or access constraints where papers state them."
+            },
+            {
+              "title": "Report coverage honestly and save notes",
+              "description": "Save synthesised markdown notes plus a verified citation CSV. Where the literature is genuinely thin for this specific region, state that as a finding with evidence of the searches performed rather than padding with loosely related work."
+            }
+          ]
+        },
+        {
+          "name": "Verification",
+          "steps": [
+            {
+              "title": "Establish proper scoring rule foundations",
+              "description": "Retrieve the primary literature on proper scoring rules, CRPS, the distinction between calibration and sharpness, and rank histograms and reliability diagrams. These are the metrics the whole project will be judged on."
+            },
+            {
+              "title": "Cover downscaling-specific verification traps",
+              "description": "Find the literature on pitfalls specific to evaluating high-resolution and downscaled forecasts: the double-penalty problem, fair versus unfair CRPS for finite ensembles, spatial verification methods, and why RMSE rewards smoothing."
+            },
+            {
+              "title": "Survey evaluation protocol and overfitting literature",
+              "description": "Retrieve work on train/validation/test protocol for forecast post-processing, cross-validation designs that respect temporal and spatial autocorrelation, and documented cases of over-optimistic skill from improper splits."
+            },
+            {
+              "title": "Save verified notes and citation table — Verification",
+              "description": "Save synthesised markdown notes plus a CSV of verified citations with DOI, authors, year, venue, citation count and relevance note."
+            }
+          ]
+        }
+      ],
+      "id": "phase-0"
+    },
+    {
+      "name": "Synthesis",
+      "delegations": [
+        {
+          "name": "Synthesis",
+          "steps": [
+            {
+              "title": "Consolidate and deduplicate citations",
+              "description": "Merge the five citation tables, deduplicate by DOI, resolve any conflicting metadata against OpenAlex, and check retraction flags. Produce one master citation table."
+            },
+            {
+              "title": "Write the synthesised review",
+              "description": "Write a themed review in connected prose with inline DOI citations, organised by question rather than by paper: what AI models get wrong, what post-processing can fix, what the regional problem demands, and how it must be verified. Each paragraph opens on a synthetic claim, not a citation."
+            },
+            {
+              "title": "Name the research gaps and position the project",
+              "description": "Identify specific, evidenced gaps that a NW-Russia AIFS downscaling project could occupy, and state which are genuinely open versus already addressed. Connect these to the ERA5 headroom result already established in this project."
+            },
+            {
+              "title": "Produce annotated reading order",
+              "description": "Give a staged reading path with a short note on why each paper earns its place, distinguishing foundational reading from directly actionable methods papers."
+            },
+            {
+              "title": "Run style pass and save artifacts",
+              "description": "Run the style lint once on the full draft, fix flagged issues in a single editing pass, then save the review markdown and the master citation CSV as artifacts."
+            }
+          ]
+        }
+      ],
+      "id": "phase-1"
+    }
+  ],
+  "desired_outputs": [
+    "Synthesised literature review as a markdown artifact, organised by theme with inline DOI citations",
+    "Verified citation table (CSV) with DOI, year, venue, citation count and relevance note",
+    "Annotated reading order for getting up to speed",
+    "Identified research gaps that a NW-Russia AIFS downscaling project could occupy"
+  ],
+  "feasibility": {
+    "confidence": "high",
+    "rationale": "The post-processing and AI-weather-model literature is large and well-indexed, so the core sweeps are reliable. The region-specific branch (NW Russia / Ladoga-Onega) is likely thin — if so, that thinness is itself a reportable gap rather than a failure."
+  }
+}

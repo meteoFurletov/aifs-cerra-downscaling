@@ -1,0 +1,15 @@
+[project]
+name = "aifs-cerra-downscaling"
+version = "0.1.0"
+description = "Downscaling AIFS ENS 2 m temperature to the CERRA 5.5 km grid over Leningrad Oblast, verified at SYNOP stations"
+requires-python = ">=3.11"
+dependencies = ["numpy", "pandas", "pyarrow", "scipy"]
+
+[project.optional-dependencies]
+# the data-building scripts in pipeline/
+grib = ["xarray", "cfgrib", "eccodes", "zarr", "pyproj", "scikit-learn", "cdsapi"]
+# model training
+train = ["torch"]
+
+[tool.uv]
+package = false

@@ -1,0 +1,725 @@
+{
+ "source": "Claude Science project 'Downscaling of NWP for northwest of Russia' (proj_3b0bb9a12fc6)",
+ "exported": "2026-09-24",
+ "files": [
+  {
+   "path": "data/DATA_MANIFEST.csv",
+   "bytes": 4774
+  },
+  {
+   "path": "data/aifs.npz",
+   "bytes": 209320295
+  },
+  {
+   "path": "data/cerra.npz",
+   "bytes": 82218749
+  },
+  {
+   "path": "data/domain_spec_leningrad.json",
+   "bytes": 71296
+  },
+  {
+   "path": "data/era5.npz",
+   "bytes": 228307444
+  },
+  {
+   "path": "data/era5_static.npz",
+   "bytes": 63028
+  },
+  {
+   "path": "data/esmf_coarsened.npz",
+   "bytes": 8298530
+  },
+  {
+   "path": "data/esmf_inputs.npz",
+   "bytes": 14915439
+  },
+  {
+   "path": "data/facts_nwr.json",
+   "bytes": 9059
+  },
+  {
+   "path": "data/fourway_stations.parquet",
+   "bytes": 372726
+  },
+  {
+   "path": "data/geo_nwr.json",
+   "bytes": 461663
+  },
+  {
+   "path": "data/isd-history.csv",
+   "bytes": 2914601
+  },
+  {
+   "path": "data/obs_2023_2024.parquet",
+   "bytes": 5682123
+  },
+  {
+   "path": "data/raw/_cerra_probe.grib",
+   "bytes": 2286577
+  },
+  {
+   "path": "data/raw/cerra_static.grib",
+   "bytes": 4573154
+  },
+  {
+   "path": "data/raw/cerra_upload_920e4e192d3178865471408019ca7418.grib",
+   "bytes": 2762185016
+  },
+  {
+   "path": "data/raw/cerra_upload_a6bb689a3edec604ab1c746bb13a6ceb.grib",
+   "bytes": 3365841344
+  },
+  {
+   "path": "data/raw/cerra_upload_f790cfd0ee97e14478f2688ba2179985.grib",
+   "bytes": 6695097456
+  },
+  {
+   "path": "data/raw/era5_2020.grib",
+   "bytes": 41085696
+  },
+  {
+   "path": "data/raw/era5_2025H2.grib",
+   "bytes": 19624704
+  },
+  {
+   "path": "data/raw/era5_2026H1.grib",
+   "bytes": 16105056
+  },
+  {
+   "path": "data/raw/era5_aux_2025H2.grib",
+   "bytes": 156838656
+  },
+  {
+   "path": "data/raw/era5_aux_2026H1.grib",
+   "bytes": 128709984
+  },
+  {
+   "path": "data/regrid_map.npz",
+   "bytes": 323551
+  },
+  {
+   "path": "data/scratch/0",
+   "bytes": 6412353
+  },
+  {
+   "path": "data/scratch/2025070200.npy",
+   "bytes": 476192
+  },
+  {
+   "path": "data/scratch/2025070212.npy",
+   "bytes": 476192
+  },
+  {
+   "path": "data/scratch/2025070300.npy",
+   "bytes": 476192
+  },
+  {
+   "path": "data/scratch/_base.npy",
+   "bytes": 202448288
+  },
+  {
+   "path": "data/scratch/_cnn_in.npz",
+   "bytes": 662413456
+  },
+  {
+   "path": "data/scratch/_pred_fold0.npy",
+   "bytes": 13496672
+  },
+  {
+   "path": "data/scratch/_pred_fold1.npy",
+   "bytes": 15746096
+  },
+  {
+   "path": "data/scratch/_pred_fold2.npy",
+   "bytes": 15746096
+  },
+  {
+   "path": "data/scratch/_resid.npy",
+   "bytes": 202448288
+  },
+  {
+   "path": "data/scratch/blk0011.npz",
+   "bytes": 7351350
+  },
+  {
+   "path": "data/scratch/blk0013.npz",
+   "bytes": 7351350
+  },
+  {
+   "path": "data/scratch/blk0015.npz",
+   "bytes": 7351350
+  },
+  {
+   "path": "data/scratch/blk0017.npz",
+   "bytes": 7351350
+  },
+  {
+   "path": "data/scratch/blk0019.npz",
+   "bytes": 7351350
+  },
+  {
+   "path": "data/scratch/blk0020.npz",
+   "bytes": 7351350
+  },
+  {
+   "path": "data/scratch/sweeps.json",
+   "bytes": 127121
+  },
+  {
+   "path": "data/scratch/zarr.json",
+   "bytes": 4605
+  },
+  {
+   "path": "data/spatial_error_maps.npz",
+   "bytes": 642997
+  },
+  {
+   "path": "data/stage2_pairs_2025H2.npz",
+   "bytes": 142414669
+  },
+  {
+   "path": "data/station_obs.parquet",
+   "bytes": 1595647
+  },
+  {
+   "path": "data/station_truth.parquet",
+   "bytes": 7476648
+  },
+  {
+   "path": "data/stations.parquet",
+   "bytes": 29902
+  },
+  {
+   "path": "data/stations_nwr.json",
+   "bytes": 7497
+  },
+  {
+   "path": "data/synop_fourway.parquet",
+   "bytes": 8784817
+  },
+  {
+   "path": "dataset.py",
+   "bytes": 9426
+  },
+  {
+   "path": "docs/COMPARISONS.md",
+   "bytes": 9876
+  },
+  {
+   "path": "docs/DATA.md",
+   "bytes": 22087
+  },
+  {
+   "path": "docs/GRIDS.md",
+   "bytes": 15600
+  },
+  {
+   "path": "docs/MODEL.md",
+   "bytes": 8496
+  },
+  {
+   "path": "docs/README.md",
+   "bytes": 11905
+  },
+  {
+   "path": "docs/downscaling_nw_russia_roadmap.md",
+   "bytes": 10204
+  },
+  {
+   "path": "figures/aifs_error_budget.png",
+   "bytes": 142998
+  },
+  {
+   "path": "figures/aifs_temporal_window.png",
+   "bytes": 123109
+  },
+  {
+   "path": "figures/cerra_feasibility.png",
+   "bytes": 171653
+  },
+  {
+   "path": "figures/cerra_nw_russia.html",
+   "bytes": 505337
+  },
+  {
+   "path": "figures/cerra_truth_quality.png",
+   "bytes": 201414
+  },
+  {
+   "path": "figures/comparison_structure.png",
+   "bytes": 198570
+  },
+  {
+   "path": "figures/diag_era5_headroom.png",
+   "bytes": 213341
+  },
+  {
+   "path": "figures/domain_leningrad.png",
+   "bytes": 416806
+  },
+  {
+   "path": "figures/domain_target_plus100.png",
+   "bytes": 358004
+  },
+  {
+   "path": "figures/era5_cerra_gap.png",
+   "bytes": 354014
+  },
+  {
+   "path": "figures/esmf_conservative.png",
+   "bytes": 343630
+  },
+  {
+   "path": "figures/fig_crps_finite_ensemble_bias.png",
+   "bytes": 194376
+  },
+  {
+   "path": "figures/fourway_overlap.png",
+   "bytes": 122021
+  },
+  {
+   "path": "figures/grid_alignment.png",
+   "bytes": 308995
+  },
+  {
+   "path": "figures/grid_spb_example.png",
+   "bytes": 350132
+  },
+  {
+   "path": "figures/lit_skill_accounting.png",
+   "bytes": 213065
+  },
+  {
+   "path": "figures/model_design_evidence.png",
+   "bytes": 192183
+  },
+  {
+   "path": "figures/model_ladder.png",
+   "bytes": 229305
+  },
+  {
+   "path": "figures/precedent_landscape.png",
+   "bytes": 120874
+  },
+  {
+   "path": "figures/scene_grids.svg",
+   "bytes": 379376
+  },
+  {
+   "path": "figures/scene_overview.svg",
+   "bytes": 235533
+  },
+  {
+   "path": "figures/scene_zoom.svg",
+   "bytes": 241231
+  },
+  {
+   "path": "figures/spatial_comparison.png",
+   "bytes": 373551
+  },
+  {
+   "path": "figures/stage2_baseline.png",
+   "bytes": 151340
+  },
+  {
+   "path": "figures/station_coverage.png",
+   "bytes": 149787
+  },
+  {
+   "path": "figures/stations_expanded.png",
+   "bytes": 326855
+  },
+  {
+   "path": "figures/synop_verification.png",
+   "bytes": 173827
+  },
+  {
+   "path": "literature/citations_master.csv",
+   "bytes": 106474
+  },
+  {
+   "path": "literature/cites_ai_models.csv",
+   "bytes": 22317
+  },
+  {
+   "path": "literature/cites_deep_downscaling.csv",
+   "bytes": 28903
+  },
+  {
+   "path": "literature/cites_verification.csv",
+   "bytes": 24269
+  },
+  {
+   "path": "literature/lit_review_aifs_downscaling_nw_russia.md",
+   "bytes": 37436
+  },
+  {
+   "path": "literature/notes_ai_models.md",
+   "bytes": 37630
+  },
+  {
+   "path": "literature/notes_deep_downscaling.md",
+   "bytes": 35832
+  },
+  {
+   "path": "literature/notes_verification.md",
+   "bytes": 46808
+  },
+  {
+   "path": "literature/nwrussia_downscaling_citations.csv",
+   "bytes": 28830
+  },
+  {
+   "path": "literature/nwrussia_downscaling_review.md",
+   "bytes": 34713
+  },
+  {
+   "path": "literature/pdf/10.1175_aies-d-25-0037.1.pdf",
+   "bytes": 1054967
+  },
+  {
+   "path": "literature/pdf/10.1175_mwr-d-18-0187.1.pdf",
+   "bytes": 1450579
+  },
+  {
+   "path": "literature/pdf/10.33265_polar.v41.8002.pdf",
+   "bytes": 5876897
+  },
+  {
+   "path": "literature/pdf/10.3402_tellusa.v67.25102.pdf",
+   "bytes": 6494306
+  },
+  {
+   "path": "literature/pdf/10.5194_acp-18-17573-2018.pdf",
+   "bytes": 9812085
+  },
+  {
+   "path": "literature/plan_literature-review-downscaling-ai-ensembl_94f9a825.json",
+   "bytes": 10628
+  },
+  {
+   "path": "literature/postprocessing_citations.csv",
+   "bytes": 20575
+  },
+  {
+   "path": "literature/postprocessing_literature_notes.md",
+   "bytes": 34961
+  },
+  {
+   "path": "literature/precedent_landscape.csv",
+   "bytes": 1554
+  },
+  {
+   "path": "literature/raw/DB.json",
+   "bytes": 1939666
+  },
+  {
+   "path": "literature/raw/arch_raw.json",
+   "bytes": 727314
+  },
+  {
+   "path": "literature/raw/arxiv.json",
+   "bytes": 241659
+  },
+  {
+   "path": "literature/raw/arxiv_full.json",
+   "bytes": 38603
+  },
+  {
+   "path": "literature/raw/arxiv_full_2.json",
+   "bytes": 12406
+  },
+  {
+   "path": "literature/raw/arxiv_key.json",
+   "bytes": 12279
+  },
+  {
+   "path": "literature/raw/cite_manifest.json",
+   "bytes": 16718
+  },
+  {
+   "path": "literature/raw/classical_raw.json",
+   "bytes": 293167
+  },
+  {
+   "path": "literature/raw/core_raw.json",
+   "bytes": 373085
+  },
+  {
+   "path": "literature/raw/details.json",
+   "bytes": 121571
+  },
+  {
+   "path": "literature/raw/details2.json",
+   "bytes": 45808
+  },
+  {
+   "path": "literature/raw/err_raw.json",
+   "bytes": 763349
+  },
+  {
+   "path": "literature/raw/final_abs.json",
+   "bytes": 57147
+  },
+  {
+   "path": "literature/raw/final_list.json",
+   "bytes": 11196
+  },
+  {
+   "path": "literature/raw/final_records.json",
+   "bytes": 195084
+  },
+  {
+   "path": "literature/raw/gap_raw.json",
+   "bytes": 357294
+  },
+  {
+   "path": "literature/raw/graph.json",
+   "bytes": 1352861
+  },
+  {
+   "path": "literature/raw/graph2.json",
+   "bytes": 302951
+  },
+  {
+   "path": "literature/raw/graph_raw.json",
+   "bytes": 810773
+  },
+  {
+   "path": "literature/raw/graph_raw_2.json",
+   "bytes": 538849
+  },
+  {
+   "path": "literature/raw/hl_search1.json",
+   "bytes": 1262628
+  },
+  {
+   "path": "literature/raw/hl_search2.json",
+   "bytes": 1732120
+  },
+  {
+   "path": "literature/raw/hl_search3.json",
+   "bytes": 1717453
+  },
+  {
+   "path": "literature/raw/hl_search4.json",
+   "bytes": 908592
+  },
+  {
+   "path": "literature/raw/hl_search5.json",
+   "bytes": 677702
+  },
+  {
+   "path": "literature/raw/lam.json",
+   "bytes": 9879
+  },
+  {
+   "path": "literature/raw/ml_raw.json",
+   "bytes": 912668
+  },
+  {
+   "path": "literature/raw/negatives.json",
+   "bytes": 7411
+  },
+  {
+   "path": "literature/raw/pool_all.json",
+   "bytes": 269219
+  },
+  {
+   "path": "literature/raw/record_index.json",
+   "bytes": 3851204
+  },
+  {
+   "path": "literature/raw/round3.json",
+   "bytes": 232975
+  },
+  {
+   "path": "literature/raw/shortlist.json",
+   "bytes": 60353
+  },
+  {
+   "path": "literature/raw/station_raw.json",
+   "bytes": 578516
+  },
+  {
+   "path": "literature/raw/verif_batch1.json",
+   "bytes": 255645
+  },
+  {
+   "path": "literature/raw/verif_batch2.json",
+   "bytes": 719197
+  },
+  {
+   "path": "literature/raw/verif_batch3.json",
+   "bytes": 646128
+  },
+  {
+   "path": "literature/raw/verif_batch4.json",
+   "bytes": 665825
+  },
+  {
+   "path": "literature/raw/verif_batch5.json",
+   "bytes": 557568
+  },
+  {
+   "path": "literature/raw/verif_batch6.json",
+   "bytes": 304359
+  },
+  {
+   "path": "literature/raw/verif_batch7.json",
+   "bytes": 464931
+  },
+  {
+   "path": "literature/raw/verif_batch8.json",
+   "bytes": 147165
+  },
+  {
+   "path": "literature/reading_order.md",
+   "bytes": 12627
+  },
+  {
+   "path": "pipeline/_emit_svg.js",
+   "bytes": 490810
+  },
+  {
+   "path": "pipeline/build_page.py",
+   "bytes": 27480
+  },
+  {
+   "path": "pipeline/build_station_truth.py",
+   "bytes": 4782
+  },
+  {
+   "path": "pipeline/build_station_truth_iem.py",
+   "bytes": 6332
+  },
+  {
+   "path": "pipeline/build_station_truth_synop.py",
+   "bytes": 9369
+  },
+  {
+   "path": "pipeline/compare_era5_cerra.py",
+   "bytes": 6693
+  },
+  {
+   "path": "pipeline/crop_cerra_grib.py",
+   "bytes": 4109
+  },
+  {
+   "path": "pipeline/crop_cerra_multimsg.py",
+   "bytes": 4069
+  },
+  {
+   "path": "pipeline/esmf_roundtrip.py",
+   "bytes": 11304
+  },
+  {
+   "path": "pipeline/fetch_aifs_overlap.py",
+   "bytes": 4389
+  },
+  {
+   "path": "pipeline/fetch_cerra_target.py",
+   "bytes": 1936
+  },
+  {
+   "path": "pipeline/pair_aifs_cerra.py",
+   "bytes": 6793
+  },
+  {
+   "path": "pipeline/pair_era5_cerra.py",
+   "bytes": 7675
+  },
+  {
+   "path": "pipeline/pair_stations_cerra.py",
+   "bytes": 4870
+  },
+  {
+   "path": "pipeline/train_downscale.py",
+   "bytes": 8183
+  },
+  {
+   "path": "pipeline/verify_on_synop.py",
+   "bytes": 8979
+  },
+  {
+   "path": "results/aifs_station_baseline.csv",
+   "bytes": 924
+  },
+  {
+   "path": "results/bench_result.json",
+   "bytes": 3504
+  },
+  {
+   "path": "results/cnn_results.json",
+   "bytes": 665
+  },
+  {
+   "path": "results/crps_bias.json",
+   "bytes": 2175
+  },
+  {
+   "path": "results/esmf_results.json",
+   "bytes": 1959
+  },
+  {
+   "path": "results/fourway_summary.csv",
+   "bytes": 984
+  },
+  {
+   "path": "results/ladder.json",
+   "bytes": 252
+  },
+  {
+   "path": "results/stage2_baseline_interp.csv",
+   "bytes": 190
+  },
+  {
+   "path": "results/stage2_baseline_seasonal.csv",
+   "bytes": 189
+  },
+  {
+   "path": "results/station_index.csv",
+   "bytes": 9824
+  },
+  {
+   "path": "results/station_residuals.csv",
+   "bytes": 13339
+  },
+  {
+   "path": "results/stations_expanded.csv",
+   "bytes": 30722
+  },
+  {
+   "path": "results/stations_leningrad.csv",
+   "bytes": 5368
+  },
+  {
+   "path": "results/stations_meta.csv",
+   "bytes": 5940
+  },
+  {
+   "path": "results/stations_spatial.csv",
+   "bytes": 10613
+  },
+  {
+   "path": "results/synop_folds.csv",
+   "bytes": 5053
+  },
+  {
+   "path": "results/synop_station_scores.csv",
+   "bytes": 6308
+  },
+  {
+   "path": "results/synop_summary.csv",
+   "bytes": 547
+  },
+  {
+   "path": "results/three_way_stations.csv",
+   "bytes": 11522
+  }
+ ],
+ "excluded": [
+  ".cdsapirc"
+ ]
+}

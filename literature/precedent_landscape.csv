@@ -1,0 +1,7 @@
+short,doi,year,cited,input,target,method,var,region,train_span,forecast_input,station_verif,relation
+Asperti et al. 2024,10.1007/s00521-024-10139-9,2024,25.0,ERA5,CERRA 5.5 km,conditional diffusion,wind speed,Italy,10 yr (2010-19),no — reanalysis only,yes (in-situ),closest method precedent
+Perez et al. 2024,10.48550/arxiv.2410.12728,2024,2.0,ERA5,CERRA 5.5 km,Swin transformer vs U-Net/DeepESD/bicubic,2m temperature,CERRA full domain + tiling,not stated here,no — reanalysis only,not primary,closest predictand+target precedent
+Nipen et al. 2024,10.48550/arxiv.2409.02891,2024,5.0,"AIFS extended, global stretched grid",MEPS analyses 2.5 km,"GNN stretched-grid, pretrain+refine","2m T, precip, wind",Nordics,43 yr ERA5 + 3.3 yr MEPS,yes — it IS the forecast model,yes (Norway stations),strongest competing architecture; validates 2-stage
+Larsson et al. 2025,10.48550/arxiv.2502.07532,2025,2.0,boundary data from surrounding region,MEPS 2.5 km,conditional diffusion LAM,multiple,Nordics (MEPS dataset),not stated here,yes — forecast model,not primary,"probabilistic LAM, no downscaling framing"
+AI-based LAM 2025,10.1038/s43247-025-02347-5,2025,12.0,global AI model,surface met variables,AI limited-area model,surface,not NW Russia,n/a,yes,unknown,"LAM-AI, different framing"
+THIS PROJECT,—,2026,,AIFS ENS (stage 2) / ERA5 (stage 1),CERRA 5.5 km,"pretrain ERA5->CERRA, fine-tune AIFS->CERRA",2m temperature (chosen),"NW Russia 55-70.5N, 26-46E","121,984 + 3,688 analyses",yes — stage 2 is the point,"yes, 144 stations, spatial holdout",—

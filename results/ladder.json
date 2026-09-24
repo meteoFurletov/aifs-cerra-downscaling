@@ -1,0 +1,1 @@
+{"0. interpolation (zero residual)": 2.064504861831665, "1. per-lead constant": 2.061499834060669, "2. per-cell x lead climatology": 2.05757474899292, "3. per-cell linear (10 feats)": 2.030938148498535, "4. ridge on 40 residual PCs": 2.197358631069344}

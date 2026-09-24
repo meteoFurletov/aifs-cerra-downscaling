@@ -1,0 +1,1465 @@
+{
+  "cerra_grid": {
+    "nx": 1069,
+    "ny": 1069,
+    "dx_m": 5500.0,
+    "proj4": "+proj=lcc +lat_0=50 +lon_0=8 +lat_1=50 +lat_2=50 +x_0=0 +y_0=0 +R=6371229 +units=m +no_defs",
+    "origin_LL_latlon": [
+      20.2923,
+      -17.4859
+    ],
+    "verified": "corner-derived span 5874 km == (1069-1)*5.5 km"
+  },
+  "target": {
+    "name": "Leningrad Oblast + 100 km, extended for whole lakes",
+    "i_range": [
+      707,
+      833
+    ],
+    "j_range": [
+      720,
+      842
+    ],
+    "shape_xy": [
+      127,
+      123
+    ],
+    "n_cells": 15621,
+    "corners_latlon": {
+      "SW": [
+        58.2393,
+        24.2037
+      ],
+      "SE": [
+        56.4676,
+        35.1875
+      ],
+      "NE": [
+        61.9634,
+        39.6452
+      ],
+      "NW": [
+        63.9838,
+        27.0629
+      ]
+    },
+    "bbox_latlon": [
+      24.2037,
+      56.4676,
+      39.6452,
+      63.9838
+    ],
+    "n_stations": 41,
+    "holdout_20pct": 8,
+    "lake_coverage": {
+      "Lake Ladoga": 1.0,
+      "Lake Onega": 1.0,
+      "Lake Saimaa": 1.0
+    }
+  },
+  "input_crop": {
+    "rationale": "target + 300 km = 6 h advection at ~14 m/s",
+    "i_range": [
+      652,
+      888
+    ],
+    "j_range": [
+      665,
+      897
+    ],
+    "shape_xy": [
+      237,
+      233
+    ],
+    "corners_latlon": {
+      "SW": [
+        56.0602,
+        18.4261
+      ],
+      "SE": [
+        52.9433,
+        37.7988
+      ],
+      "NE": [
+        63.1096,
+        47.3815
+      ],
+      "NW": [
+        67.1032,
+        22.3145
+      ]
+    },
+    "bbox_latlon": [
+      18.4261,
+      52.9433,
+      47.3815,
+      67.1032
+    ],
+    "n_stations_total": 100,
+    "n_stations_ring_only": 59
+  },
+  "volumes_GB_float32_2m_temperature": {
+    "stage1_pretrain_target": 7.62,
+    "stage2_finetune_target": 0.23
+  },
+  "stations": {
+    "source": "NOAA ISD isd-history.csv (fetched this session)",
+    "filter": "reports into 2024+ AND record begins <= 2010-01-01",
+    "country_assignment": "Natural Earth 50m admin_0 polygon; offshore sites by nearest country <=1 deg",
+    "target_box": {
+      "total": 86,
+      "by_country": {
+        "Estonia": 12,
+        "Finland": 33,
+        "Russia": 41
+      },
+      "holdout_20pct": 17,
+      "previously_russia_only": 41
+    },
+    "input_crop": {
+      "total": 312,
+      "by_country": {
+        "Belarus": 6,
+        "Estonia": 22,
+        "Finland": 121,
+        "Latvia": 27,
+        "Lithuania": 7,
+        "Russia": 109,
+        "Sweden": 15,
+        "\u00c5land": 5
+      }
+    },
+    "nn_spacing_km_p50": {
+      "russia_only": 56.6,
+      "all_countries": 43.5
+    },
+    "assimilation_caveat": "CERRA assimilates ~2100 SYNOP stations domain-wide (~128 km mean spacing). Our crop network is ~73 km spacing, so it is denser than the assimilated set, but the user guide does not publish the station list -- we cannot identify which individual stations are independent of CERRA. Spatial holdout remains mandatory."
+  },
+  "retrieval": {
+    "cds_dataset": "reanalysis-cerra-single-levels",
+    "request_fields": [
+      "variable",
+      "level_type",
+      "soil_layer",
+      "data_type",
+      "product_type",
+      "year",
+      "month",
+      "day",
+      "time",
+      "leadtime_hour",
+      "data_format"
+    ],
+    "area_subsetting_available": false,
+    "consequence": "Each request returns the full 1069x1069 field (~2.3 MB GRIB16). Target is 1.4% of that. Must crop-and-discard per month; peak disk ~0.6 GB.",
+    "download_vs_kept_GB": {
+      "per_year": {
+        "download": 6.7,
+        "kept_float32": 0.18
+      },
+      "10_year_pretrain": {
+        "download": 66.8,
+        "kept_float32": 1.83
+      },
+      "full_era_1984_2026": {
+        "download": 280.5,
+        "kept_float32": 7.67
+      }
+    },
+    "recommended_pretrain_span": "2015-2024 (10 yr, 29,220 samples, 66.8 GB transferred, 1.8 GB kept)",
+    "blocker": "CDS personal access token not configured in this session",
+    "station_data": {
+      "source": "NOAA ISD global-hourly",
+      "verified_reachable": true,
+      "note": "Russian stations report 3-hourly (~2785 rows/yr); Finnish/Estonian hourly (~8400 rows/yr)"
+    },
+    "measured_2026_08_25": {
+      "variable_tested": "2m_temperature, product_type=analysis, data_format=grib",
+      "cases": {
+        "1day_8f": {
+          "fields": 8,
+          "MB": 18.3,
+          "MB_per_field": 2.287,
+          "queue_to_ready_s": 0.4
+        },
+        "1month_232f": {
+          "fields": 232,
+          "MB": 530.5,
+          "MB_per_field": 2.287,
+          "queue_to_ready_s": 21.7
+        },
+        "1year_2928f": {
+          "fields": 2928,
+          "MB": 6695.1,
+          "MB_per_field": 2.287,
+          "queue_to_ready_s": 21.4
+        }
+      },
+      "finding": "Queue is NOT the bottleneck for CERRA t2m analysis fields: a full year (2928 fields, 6.7 GB) became ready in ~21 s. Request size barely affects queue time. Byte transfer is the slow part, and from this sandbox it was unreliable (repeated IncompleteRead). Server supports byte-range resume (Accept-Ranges: bytes, HTTP 206).",
+      "size_estimate_validation": {
+        "my_estimate_MB_per_field": 2.3,
+        "measured_MB_per_field": 2.287,
+        "1yr_est_GB": 6.7,
+        "1yr_measured_GB": 6.7,
+        "10yr_projected_GB": 66.8,
+        "full_era_projected_GB": 280.7
+      },
+      "caveat": "Speed is variable- and product-dependent. ECMWF forum reports a reanalysis-cerra-single-levels total_precipitation FORECAST-leadtime request pending ~6.5 h (May 2026). Analysis fields on CDS disk are fast; do not assume the same for precipitation or forecast leadtimes.",
+      "bulk_download_route": "User will fetch bulk files via the CDS web interface, not this sandbox."
+    },
+    "CORRECTION_queue_time": {
+      "what_I_claimed": "Earlier today I benchmarked CERRA queue time as ~21 s even for a full year and advised 'request one job per year, queue time is flat across request sizes'.",
+      "why_it_was_wrong": "That benchmark used 2020 data. It does NOT generalise to the 2025-2026 overlap period. Submitting 2025-07..2025-12 and 2026-01..2026-05 took >25 min to reach 'running' for the first job, with the second still queued.",
+      "actual_mechanism": "CDS queue status reported by the user while these jobs were pending:\n  ECMWF-MARS archive     : max per-user concurrent requests = 1  (Running 0, Queued 2)\n  ECMWF-MARS-C3S archive : max 65 concurrent (Running 65, Queued 928)\nOur two jobs are the 'Queued: 2' in the per-user-limit-1 MARS queue, so they execute STRICTLY ONE AT A TIME, and the shared archive is saturated.",
+      "strategy_implication": "The 2-job split remains the right choice, but for a different reason than I gave. It is not that queue time is flat \u2014 it is that the per-user concurrency limit is 1, so requests serialise regardless. Two large jobs serialise 2 deep; eleven monthly jobs would serialise 11 deep behind a saturated shared queue. Maximise work per request.",
+      "operational_rule": "NEVER submit exploratory/probe requests while a real CERRA job is pending. Under a per-user limit of 1, every probe takes the single slot and delays the actual work. I violated this by launching 3 single-field timing probes after submitting the real jobs; they were cancelled.",
+      "revised_expectation": "For recent-year CERRA, plan in hours, not seconds. The 21 s figure is valid only for older years served off a less contended path."
+    }
+  },
+  "assumptions": {
+    "station_truth_unified": {
+      "decision": "Treat the multi-country station network (Russia 41, Finland 33, Estonia 12 in the target box) as a single unified source of truth.",
+      "implies": "No per-country bias correction, no country covariate, and no per-country stratification of verification scores; all 86 target-box stations are pooled into one metric.",
+      "set_by": "user instruction, this session",
+      "not_done_as_a_result": "The per-country bias check against CERRA that was offered (instrumentation, siting, coastal-island exposure differences across the three national networks) was declined.",
+      "revisit_if": "Verification residuals show a country-shaped spatial pattern, or holdout skill differs markedly between the Russian and Nordic/Baltic subsets."
+    }
+  },
+  "cerra_truth_check": {
+    "status": "COMPLETE \u2014 this was the outstanding prerequisite before committing compute",
+    "data": "CERRA 2m_temperature analysis, 2020 (2928 fields, user-supplied GRIB), vs NOAA ISD",
+    "n_pairs": 212268,
+    "n_stations": 84,
+    "stations_without_2020_data": [
+      "LAHTI LAUNE (Finland)",
+      "STRUGI KRASNYE (Russia)"
+    ],
+    "overall": {
+      "bias_C": -0.057,
+      "MAE_C": 0.584,
+      "RMSE_C": 0.875
+    },
+    "per_station_RMSE_C": {
+      "median": 0.806,
+      "p90": 1.084,
+      "max": 1.905,
+      "worst": "VOLOSOVO 1.91 (only 4 pairs), TILRIKOJA 1.79, VALAAM 1.49, PULKOVO 1.44"
+    },
+    "by_country_RMSE_C": {
+      "Russia": 0.841,
+      "Finland": 0.881,
+      "Estonia": 0.945
+    },
+    "seasonal_RMSE_C": {
+      "winter_NDJF": 0.572,
+      "shoulder": 0.803,
+      "summer_MJJA": 1.16,
+      "note": "peak 1.327 in June; summer error is ~2x winter"
+    },
+    "structure": {
+      "corr_distance_to_water_vs_RMSE": -0.357,
+      "corr_elevation_vs_RMSE": -0.359,
+      "corr_cell_offset_vs_RMSE": 0.068,
+      "waterside_median_RMSE": 0.838,
+      "inland_median_RMSE": 0.78,
+      "interpretation": "Error concentrates near water and at low elevation, and in summer. Both are the lake/coast signal the project targets, so the error floor is largest exactly where the science is. Cell-offset is NOT a driver (all offsets <3.7 km), so this is physics, not pairing geometry."
+    },
+    "implication": "CERRA is usable as truth: sub-1C RMSE with negligible bias. But 0.88 C is the FLOOR on measurable downscaling skill against these stations, and ~1.16 C in summer. A model claiming summer improvement smaller than that is inside the truth uncertainty.",
+    "nearest_cell_offset_km": {
+      "median": 2.11,
+      "max": 3.67
+    },
+    "spatial_folds": {
+      "n_folds": 5,
+      "method": "KMeans on projected coords (contiguous blocks)",
+      "sizes": {
+        "0": 10,
+        "1": 17,
+        "2": 18,
+        "3": 20,
+        "4": 21
+      }
+    }
+  },
+  "era5_vs_cerra_vs_stations": {
+    "status": "COMPLETE, 2020, identical 212,268-pair sample (0 dropped)",
+    "why_it_matters": "AIFS is trained on ERA5, so ERA5's station error bounds what an AIFS forecast can know about this region before downscaling. CERRA is the downscaling target.",
+    "era5_retrieval": {
+      "area_subsetting": true,
+      "note": "Unlike CERRA, reanalysis-era5-single-levels accepts an 'area' field. One year over the input crop was 41 MB and 142 s queue, vs 6.7 GB for the same year of CERRA.",
+      "area_NWSE": [
+        67.25,
+        18.25,
+        52.75,
+        47.5
+      ],
+      "grid": "118 x 59 = 6,962 cells at 0.25 deg"
+    },
+    "rmse_C": {
+      "era5": 1.164,
+      "cerra": 0.875,
+      "headroom": 0.288
+    },
+    "bias_C": {
+      "era5": -0.068,
+      "cerra": -0.057
+    },
+    "decomposition": {
+      "finding": "Both are near-unbiased; the whole difference is in spread. Removing a per-station constant bias barely helps (ERA5 1.164 -> 1.122, CERRA 0.875 -> 0.844), so headroom is 0.277 C even after debiasing. This is NOT a bias-correction problem -- simple MOS will not capture it."
+    },
+    "seasonal_headroom_C": {
+      "winter_NDJF": 0.281,
+      "shoulder": 0.293,
+      "summer_MJJA": 0.31,
+      "note": "remarkably flat; ERA5 and CERRA degrade together in summer"
+    },
+    "shared_error": {
+      "corr_era5_cerra_residual": 0.612,
+      "regression": "CERRA_resid = 0.460 * ERA5_resid - 0.026",
+      "variance_of_cerra_error_explained_by_era5_error": 0.374,
+      "cerra_independent_error_sd_C": 0.691,
+      "implication": "37% of CERRA's error is inherited from the same large-scale state ERA5 gets wrong. Downscaling cannot fix that component: if the driving analysis has the wrong airmass, finer resolution places the wrong airmass more precisely. This is the quantitative case for the two-stage design -- stage 2 must see real forecast error."
+    },
+    "tail_behaviour": {
+      "pairwise_cerra_closer_pct": 62.6,
+      "worst_5pct_era5": {
+        "era5_rmse": 3.621,
+        "cerra_rmse": 2.265,
+        "cerra_closer_pct": 91
+      },
+      "worst_1pct_era5": {
+        "era5_rmse": 5.29,
+        "cerra_rmse": 3.227,
+        "cerra_closer_pct": 94
+      },
+      "implication": "The mean headroom of 0.29 C understates the case. In the worst 1% of ERA5 errors CERRA cuts RMSE from 5.29 to 3.23 C and is closer 94% of the time. Report tail/threshold metrics, not just RMSE, or the value of the work is invisible."
+    },
+    "per_station": {
+      "cerra_beats_era5": "77 of 83 (n>500)",
+      "median_headroom_C": 0.271,
+      "range_C": [
+        -0.432,
+        1.056
+      ],
+      "biggest_gains": "JUUKA NIEMELA +1.06, GDOV +0.88, NARVA-JOESUU +0.80, OLONEC +0.67",
+      "cerra_worse_at": "TILRIKOJA -0.43 (Lake Peipus), SAVONLINNA PUNKAHARJU -0.22, LOVIISA ORRENGRUND -0.08, PORVOO KALLBADAGRUND -0.08, KOUVOLA ANJALA -0.00; 5 of the 6 are within 10 km of water",
+      "caveat": "corr(distance to water, headroom) = -0.14 only, and waterside median headroom (+0.35) EXCEEDS inland (+0.24). So CERRA is not systematically worse near water -- it is more variable there, winning big at most sites and losing at a few island/lake stations. Do not over-read the 6 losing sites."
+    },
+    "era5_cell_geometry": {
+      "nearest_cell_offset_km_median": 7.7,
+      "max": 14.9,
+      "cell_size_at_60N": "28 km NS x 14 km EW = 385 km2",
+      "note": "vs CERRA median offset 2.1 km; ERA5 cannot resolve Ladoga's shoreline at all"
+    }
+  },
+  "aifs_temporal_window": {
+    "archive": "dynamical.org ECMWF AIFS ENS (Zarr), 51 members, 0.25 deg",
+    "init_time": {
+      "first": "2025-07-02T00:00",
+      "last_seen": "2026-08-25T06:00",
+      "n_inits": 1678,
+      "cycles_per_day": [
+        0,
+        6,
+        12,
+        18
+      ],
+      "spacing": "6 h, exactly uniform",
+      "missing_inits": 0,
+      "span_days": 419,
+      "span_years": 1.15
+    },
+    "lead_time": {
+      "n": 61,
+      "range_h": [
+        0,
+        360
+      ],
+      "step_h": 6,
+      "max_days": 15
+    },
+    "cerra_end": {
+      "value": "2026-05-31",
+      "verified": "Probed CDS directly: 2025-07, 2025-10, 2026-01, 2026-05 and 2026-05-31 all return successful 2.3 MB assets; 2026-06 and 2026-07 are rejected 400 'invalid combination'. Matches the catalogue temporal interval, confirmed by data rather than metadata."
+    },
+    "OVERLAP": {
+      "start": "2025-07-02",
+      "end": "2026-05-31",
+      "days": 334,
+      "years": 0.91,
+      "aifs_inits_in_overlap": 1336,
+      "pct_of_archive": 80,
+      "cerra_analyses_in_overlap": 2671,
+      "init_lead_pairs_leads_24_48_72_120_168": 6608,
+      "alignment": "AIFS inits at 00/06/12/18 UTC; CERRA analyses 3-hourly at 00,03,...21. Every 6-hourly-multiple lead lands exactly on a CERRA analysis time - 100% of lead+24h valid times align. No temporal interpolation needed."
+    },
+    "stage2_data_volume": {
+      "cerra_target_full_overlap": {
+        "transferred_GB": 6.1,
+        "kept_GB": 0.167,
+        "note": "no area subsetting; 11 monthly or 2 yearly jobs at ~21 s queue each"
+      },
+      "aifs_input": {
+        "ens_mean_1_lead_GB": 0.04,
+        "ens_mean_5_leads_GB": 0.19,
+        "all_51_members_1_lead_GB": 1.9,
+        "all_51_members_5_leads_GB": 9.49
+      }
+    },
+    "resolution_step": {
+      "input_cells": 6962,
+      "target_cells": 15621,
+      "cell_ratio": 2.2,
+      "linear_ratio": 5.0,
+      "note": "0.25 deg (~28x14 km at 60N) -> 5.5 km is a 5x linear downscale"
+    },
+    "constraint": "The 2020 CERRA year already downloaded does NOT overlap the AIFS archive and cannot be used for stage-2. It remains valid for stage-1 pretraining (ERA5->CERRA pairs, which need no forecast). Stage-2 requires CERRA for 2025-07..2026-05.",
+    "prior_finding_carried_over": "A separate AIFS ENS study over NW Russia (2 m temperature, 48-180 inits) found raw AIFS near-calibrated here, spread/RMSE 0.93-1.13, with only a small lead-growing cold bias (-0.06 C at +24 h to -0.45 C at +336 h). Relevant because it means AIFS's t2m error is mostly NOT a calibration defect - it is resolution and large-scale placement, which is what downscaling addresses."
+  },
+  "aifs_initial_state": {
+    "question": "Does the AIFS ENS archive contain an initial state (lead_time = 0)?",
+    "answer": "YES \u2014 lead_time=0 is present and carries real data for all 51 members.",
+    "verified_on": "4 inits spanning Aug 2025 - Apr 2026, temperature_2m over the input crop",
+    "units_gotcha": "The dynamical.org AIFS ENS store serves temperature_2m in degree_Celsius, NOT Kelvin (attrs units='degree_Celsius'). ERA5 from ARCO IS in Kelvin. Do not apply a -273.15 to AIFS.",
+    "not_a_single_analysis": {
+      "ensemble_spread_at_t0_C": {
+        "mean": 0.596,
+        "max": 2.939,
+        "per_init_mean": [
+          0.46,
+          0.46,
+          0.854,
+          0.608
+        ]
+      },
+      "spread_growth": {
+        "t+0": 0.596,
+        "+6h": 0.797,
+        "+24h": 0.963
+      },
+      "interpretation": "t+0 is 51 PERTURBED analyses, not one deterministic state. Spread is already 0.60 C at lead 0 and grows only to 0.96 C by +24 h, so a large fraction of short-range ensemble spread is initial-condition uncertainty, not model error growth."
+    },
+    "control_member": {
+      "finding": "ensemble_member index 0 behaves as the unperturbed CONTROL: its RMSE vs ERA5 equals the ensemble-mean RMSE to 3 decimals (1.338 vs 1.337) while perturbed members 1-50 average 1.6-1.7. It also sits closest to the ensemble mean. Use member 0 when a single best-estimate analysis is wanted.",
+      "verification": {
+        "method": "Distance to ensemble centroid per init, 16 inits spanning 2025-07..2026-05, all 4 cycles, t+0, over the input crop. Uses ensemble geometry only - no ERA5, so it is independent of the analysis-difference confound.",
+        "result": "member 0 ranked closest to centroid in 16 of 16 inits",
+        "magnitude": "m00 mean distance 0.047 C vs 0.580 C for members 1-50 (12.5x closer)",
+        "conclusion": "CONFIRMED: ensemble_member=0 is the unperturbed control."
+      }
+    },
+    "vs_era5_analysis": {
+      "pooled_bias_C": 0.055,
+      "pooled_rmse_C": 1.07,
+      "per_init_rmse_C": [
+        1.029,
+        0.926,
+        1.337,
+        0.937
+      ],
+      "error_structure": {
+        "shared_across_members_sd_C": 1.336,
+        "member_specific_sd_C": 0.956,
+        "pct_variance_common": 66,
+        "mean_pairwise_member_corr": 0.954
+      },
+      "why_not_zero": "AIFS ENS is initialised from ECMWF's OPERATIONAL IFS analysis, whereas AIFS was TRAINED on ERA5 reanalysis. The two analyses differ (different observation cutoff, model cycle, and no reanalysis hindsight), so t+0 vs ERA5 is ~1.07 C RMSE - this is an analysis-vs-reanalysis difference, not AIFS forecast error."
+    },
+    "consequence_for_design": "t+0 is NOT a zero-error input. Its 1.07 C RMSE against ERA5 is comparable to ERA5's own 1.164 C error against our stations, so t+0 cannot serve as a clean stage-1 substitute for ERA5. Stage-1 must stay on ERA5->CERRA pairs. But t+0 IS valuable as the lead-0 anchor of a stage-2 lead-time sweep: it isolates the analysis-difference component of error from genuine forecast-error growth."
+  },
+  "four_way_overlap": {
+    "problem": "Station observations are the binding constraint, not CERRA. NOAA ISD yearly files lag: the 2025 file ends 2025-08-24 and no 2026 file exists (HTTP 404). The isd-history inventory itself reports max END = 2025-08-28, and the raw pub/data/noaa/2025/ files stop at the same date.",
+    "windows": {
+      "four_way_all_sources": {
+        "start": "2025-07-02",
+        "end": "2025-08-24",
+        "days": 53,
+        "aifs_inits": 213,
+        "cerra_analyses": 424,
+        "station_obs": 33104,
+        "stations": 86,
+        "note": "summer only - no seasonal coverage, useless for training, usable as a smoke test"
+      },
+      "three_way_no_stations": {
+        "start": "2025-07-02",
+        "end": "2026-05-31",
+        "days": 333,
+        "aifs_inits": 1333,
+        "cerra_analyses": 2664,
+        "note": "AIFS + CERRA + ERA5. This is the real stage-2 training window."
+      }
+    },
+    "consequence": "Stage-2 trains on AIFS->CERRA pairs over the full 333 days (CERRA is the target, so stations are not needed for the loss). Independent STATION verification of a stage-2 model is limited to the 53-day summer window until ISD catches up, OR must use a different observation source. This does not block training - it constrains the verification claim, and it means the headline stage-2 result should be reported against CERRA with station verification on the 2020 stage-1 model where 212k pairs exist.",
+    "alternatives_probed": {
+      "GHCNh_2026": "HTTP 404",
+      "isd_csv_2026": "HTTP 404",
+      "isd_raw_2026": "HTTP 404",
+      "not_yet_tried": "Roshydromet / FMI / Estonian open data portals may publish more currently"
+    },
+    "alternative_source_IEM": {
+      "source": "Iowa State IEM ASOS/METAR archive (mesonet.agron.iastate.edu), networks RU__ASOS / FI__ASOS / EE__ASOS",
+      "currency": "VERIFIED current to 2026-08-23 \u2014 12 months past ISD's 2025-08-24 cutoff",
+      "coverage": {
+        "iem_stations_in_3_networks": 140,
+        "our_target_stations_matched_within_3km": 10,
+        "by_country": {
+          "Finland": "5 of 33",
+          "Estonia": "3 of 12",
+          "Russia": "2 of 41"
+        },
+        "why_thin": "ASOS networks are airport-only; most of our 86 are non-airport synoptic sites"
+      },
+      "timestamp_difference": "IEM serves METAR reports at :20 and :50 past the hour, NEVER on the hour. ISD served SYNOP (FM-12) exactly on the hour. So IEM requires nearest-report matching (25 min tolerance), not an exact-time join.",
+      "cross_validation_vs_ISD": {
+        "method": "JJA 2020, same 10 stations, nearest IEM report within 25 min of each CERRA analysis time",
+        "pooled_bias_C": 0.063,
+        "median_rmse_C": 0.568,
+        "per_station_rmse_C": {
+          "JOENSUU": 0.475,
+          "UTTI": 0.473,
+          "LAPPEENRANTA": 0.455,
+          "KUOPIO": 0.504,
+          "SAVONLINNA": 0.568,
+          "TARTU": 0.893,
+          "PSKOV": 0.957,
+          "LENNART MERI TALLINN": 1.211,
+          "PETROZAVODSK": 1.348
+        },
+        "CRITICAL_FINDING": "IEM-vs-ISD disagreement (median 0.568 C, up to 1.35 C) is COMPARABLE TO OR LARGER THAN the CERRA-vs-station error we are trying to measure (0.875 C) and MUCH larger than the ERA5-CERRA headroom (0.288 C). The 5 Finnish stations agree well (0.45-0.57 C, bias ~0.00) but Tallinn, Petrozavodsk and Tartu disagree at 0.9-1.35 C with biases up to +0.33 C. Root cause is METAR-vs-SYNOP: different instrument, reporting practice, and a time offset of up to 25 min. These are NOT interchangeable truth sources.",
+        "verdict": "USABLE for stage-2 station verification, but ONLY as a self-consistent series -- never mixed with ISD in one metric, and never compared against an ISD-derived baseline number. Any stage-2 station claim must recompute its own IEM-based CERRA baseline over the same stations and period."
+      },
+      "statistical_power": {
+        "per_station_headroom_sd_C": 0.211,
+        "detectable_95pct": {
+          "n=10": 0.131,
+          "n=41": 0.064,
+          "n=86": 0.045
+        },
+        "note": "With 10 stations the 95% detectable effect is 0.131 C, against a true ERA5-CERRA headroom of 0.288 C \u2014 so the resolution signal IS detectable at n=10. The subset is also representative: median CERRA RMSE 0.768 vs 0.800 for all 86, median headroom +0.248 vs +0.271, and comparable spatial spread."
+      },
+      "recommendation": "Adopt IEM for stage-2 verification on the 10 matched stations, computing its own CERRA and AIFS baselines from IEM data alone. Keep the 86-station ISD set for stage-1 (2015-2024), where it is the better and denser source. Report the two separately. Optionally probe FMI / Roshydromet / Estonian portals to widen the current-era set \u2014 FMI in particular would add the 28 unmatched Finnish stations, and Finnish IEM-ISD agreement is already the best of the three countries."
+    },
+    "alternative_source_SYNOP_ogimet": {
+      "status": "ADOPTED \u2014 this supersedes IEM as the primary 2025-26 station truth",
+      "source": "OGIMET getsynop endpoint, raw WMO FM-12 SYNOP bulletins from the GTS",
+      "why_it_beats_IEM": {
+        "coverage": "IEM ASOS is airport-only: 10 of 86 target-box stations, and only 2 of the 41 RUSSIAN stations that constitute the target region. SYNOP covers the full synoptic network - all 41 Russian sites are addressable by WMO block id.",
+        "comparability": "DECISIVE. OGIMET serves the same SYNOP reports ISD archived. Validated on July 2020 against station_truth.parquet: Babaevo (27008) bias +0.001 C RMSE 0.009 C over 124 pairs; Belogorka (26069) bias 0.000 RMSE 0.000 over 247 pairs. That is identical decoding, not a correlated proxy. By contrast IEM-vs-ISD disagreement was 0.57-1.35 C, larger than the effects being measured. SYNOP truth for 2025-26 is therefore directly comparable to the 2015-2024 ISD truth, removing the cross-source incomparability that had limited stage-2 verification to a separate track."
+      },
+      "DECODER_TRAP": {
+        "what_went_wrong": "First decoder used regex `1\\d{4}` to find the 1sTTT temperature group. This also matches the iihVV group (token 3), e.g. '11460' = visibility/cloud, yielding -46.0 C between readings of +2 C. Two of nine values in the first test were absurd.",
+        "correct_rule": "FM-12 layout is AAXX YYGGi_w IIiii iihVV Nddff [00fff] 1sTTT 2sTTT. Scan tokens from index 5 onward, take the first 5-char token starting '1' whose second char is 0 or 1 (the sign), and break at any '2'-group (dewpoint) meaning no temperature was reported. Discard section 3 (after ' 333') first - it repeats groups with different meanings.",
+        "detection": "Physical implausibility: a >5 C jump between consecutive 3-hourly readings."
+      },
+      "rate_limits": {
+        "observed": "HTTP 501 'quota limit for slow queries' when requesting too fast",
+        "working_pattern": "one station-month per request, ~20 s delay, 5 s response",
+        "scale": "41 stations x 11 months = 451 requests, ~2.5 h, resumable via synop_spool/"
+      },
+      "consequence_for_verification": "Stage-2 station verification is no longer limited to 10 airport sites on an incomparable measurement scale. With SYNOP the target box should recover most of its 41 Russian stations plus whatever Finnish/Estonian sites report SYNOP to the GTS, all on the same scale as the 2015-2024 ISD baseline. The spatial holdout arithmetic improves from 2 of 10 to something usable.",
+      "reporting_cadence": {
+        "finding": "Russian SYNOP stations report at the MAIN synoptic hours (00/06/12/18) near-completely (~270-335 reports each over 11 months) but at the INTERMEDIATE hours (03/09/15/21) only about a third as often (~105 each). So median coverage is ~124 of the 248 possible 3-hourly slots per station-month - this is the reporting practice, not a data defect or a fetch failure.",
+        "why_it_costs_nothing": "All AIFS valid times in our extraction fall on hours 00 and 12 - both main synoptic hours. Inits were extracted at 00/12 and every lead used (0, 24, 48, 72, 120, 168) is a multiple of 24 h, so valid times are always 00 or 12. Every forecast-target pair we need lands on an hour these stations report reliably. Verified directly against the AIFS cube.",
+        "implication_if_scope_widens": "If 06/18 inits are added later, valid times stay on main hours and coverage is unaffected. Only non-multiple-of-6 leads would land on intermediate hours and lose ~2/3 of Russian observations."
+      },
+      "quality_control": {
+        "large_jumps_investigated": "An apparent 17.5 C jump in the partial data looked like a decode error. It is not: every one of the six largest jumps spans a 6-hour reporting gap, not a 3-hourly step. Restricted to true consecutive 3-hourly steps (n=1,690), the maximum jump is 10.1 C and the 99.9th percentile 8.9 C - physically plausible for continental Russia under clear-sky nocturnal cooling or daytime heating.",
+        "checks_passed": {
+          "duplicate_sid_time": 0,
+          "hours_present": [
+            0,
+            3,
+            6,
+            9,
+            12,
+            15,
+            18,
+            21
+          ],
+          "degC_range_partial": [
+            -27.6,
+            30.0
+          ]
+        },
+        "lesson": "When flagging implausible jumps in irregular time series, always condition on the actual time gap. An unconditioned diff conflates a reporting gap with a physical rate."
+      },
+      "retrieval_strategy": {
+        "FETCH_BY_BLOCK_not_station": "The block= parameter accepts a 2-DIGIT WMO block and returns every station in it (measured: block 26 -> 139 stations, block 02 -> 356 stations in one request). Our 86 target stations span only 4 blocks (02 Finland, 22/26/27 Russia, 26 also Estonia). Per-station fetching was 86 x 11 = 946 requests (~7 h at the rate limit); per-block is 4 blocks x 33 windows = 132 requests (~55 min). Also strictly better data: 224 of the 226 input-crop stations live in these same blocks and arrive at no extra cost.",
+        "RESPONSE_LINE_CAP": {
+          "value": 200000,
+          "what_happens": "OGIMET truncates the response at exactly 200,000 lines. The response is sorted STATION-major, so truncation silently drops the HIGH-NUMBERED STATIONS ENTIRELY rather than shortening the time period - a full block-month for block 02 cut off mid-station at 02978 while still reporting all 31 days present. Nothing in the reply signals this.",
+          "detection": "Only caught by noticing the line count was exactly 200,000. A day-coverage check passed (31 of 31 days) and would NOT have caught it.",
+          "fix": "10-day windows (3 per month): block 02 gives ~27,880 rows per window, far under the cap. build_station_truth_synop.py RAISES on len(lines) >= 200000 so truncation can never pass unnoticed."
+        },
+        "rate_limit_exact": "The 501 message states the rule: 'a query per remote IP every 20 seconds'. It is per-IP, so ANY concurrent request competes - a diagnostic probe issued while the fetcher ran caused the fetcher's next request to fail. Use DELAY_S = 25 and issue no other requests to this host while a fetch runs.",
+        "process_lifetime_note": "A first block-based launch died before writing any spool file. The recurring lesson in this project: run long fetches inside a cell whose lifetime covers the work, and confirm liveness by watching the SPOOL GROW, not by checking for a process (pgrep self-matches, and does not see across cell namespaces)."
+      }
+    }
+  },
+  "aifs_store_chunking": {
+    "chunks": [
+      1,
+      61,
+      51,
+      32,
+      32
+    ],
+    "dims": "(init_time, lead_time, ensemble_member, lat, lon)",
+    "measured_read_times": {
+      "1 init 1 lead 51 members": "24.4 s",
+      "1 init 1 lead 1 member": "37.4 s",
+      "1 init 5 leads 1 member": "39.8 s",
+      "8 inits 1 lead 1 member": "62.3 s"
+    },
+    "implication": "One chunk holds ALL leads and ALL members for a 32x32 tile, so subsetting members or leads saves NOTHING - selecting 1 member costs the same as 51. Cost scales with number of INITS only. Therefore: read each init once, keep all wanted leads, and reduce the member axis immediately. Storing the raw cube for the overlap would be ~1.1 TB; the (control, mean, sd) reduction is ~0.35 MB per init."
+  },
+  "aifs_extraction": {
+    "file": "aifs_overlap.npz",
+    "cube_shape": [
+      667,
+      6,
+      3,
+      57,
+      116
+    ],
+    "dims": "(init, lead, field, lat, lon)",
+    "fields": [
+      "control",
+      "ens_mean",
+      "ens_sd"
+    ],
+    "inits": {
+      "n": 667,
+      "cycles": [
+        0,
+        12
+      ],
+      "range": "2025-07-02 .. 2026-05-31",
+      "completeness": "667 of 667 expected, 0 NaNs"
+    },
+    "leads_h": [
+      0,
+      24,
+      48,
+      72,
+      120,
+      168
+    ],
+    "size": {
+      "on_disk_MB": 209,
+      "raw_MB": 318,
+      "note": "raw 51-member cube for the same selection would be ~1.1 TB"
+    },
+    "runtime": "667 inits at 7.8 s/init = 87 min",
+    "ensemble_spread_by_lead_C": {
+      "0": 0.532,
+      "24": 0.896,
+      "48": 1.098,
+      "72": 1.362,
+      "120": 2.052,
+      "168": 2.75
+    }
+  },
+  "aifs_station_baseline": {
+    "status": "COMPLETE \u2014 this was the last unknown in the stage-2 design",
+    "truth": "IEM stations (10 sites), 2025-07..2026-05, ~6,600 paired samples per lead",
+    "caveat": "IEM-derived. NOT comparable to the ISD-derived CERRA/ERA5 numbers elsewhere in this spec (IEM-vs-ISD disagreement is 0.57-1.35 C). The CERRA reference quoted below is ISD 2020 on the same 10 stations and is indicative only.",
+    "rmse_C": {
+      "control": {
+        "0": 1.241,
+        "24": 1.726,
+        "48": 1.95,
+        "72": 2.188,
+        "120": 3.053,
+        "168": 4.114
+      },
+      "ens_mean": {
+        "0": 1.24,
+        "24": 1.492,
+        "48": 1.651,
+        "72": 1.849,
+        "120": 2.443,
+        "168": 3.109
+      }
+    },
+    "bias_C": {
+      "ens_mean": {
+        "0": -0.113,
+        "24": -0.205,
+        "48": -0.225,
+        "72": -0.246,
+        "120": -0.329,
+        "168": -0.417
+      },
+      "note": "Persistent COLD bias growing with lead, -0.11 to -0.42 C. Matches the lead-growing cold bias found in the prior AIFS NW-Russia study, independently reproduced here against stations rather than ERA5."
+    },
+    "ens_mean_beats_control_by_C": {
+      "0": 0.001,
+      "24": 0.234,
+      "48": 0.3,
+      "72": 0.339,
+      "120": 0.61,
+      "168": 1.005
+    },
+    "error_budget": {
+      "t0_anchor_C": 1.24,
+      "forecast_growth_in_quadrature_C": {
+        "24": 0.829,
+        "48": 1.089,
+        "72": 1.372,
+        "120": 2.105,
+        "168": 2.851
+      },
+      "interpretation": "A FIXED 1.24 C floor sits under every lead \u2014 the analysis/representativeness offset measured at t+0, which does not grow. At +24 h it is still the LARGER of the two terms (1.24 vs 0.83). This is the component downscaling addresses: it is resolution and representativeness, not forecast-error growth. At +120 h and beyond, growth dominates and downscaling can help proportionally less."
+    },
+    "stage2_target": "At +24 h the AIFS ensemble mean carries 1.49 C RMSE at stations, against CERRA's ~0.77-0.88 C. The gap is large and mostly sits in the non-growing t+0 term, so a downscaling model has real headroom \u2014 far more than the 0.29 C ERA5->CERRA reanalysis headroom suggested. Use ens_mean, not control, as the model input: it is better at every lead beyond 0, by 0.23 C at +24 h rising to 1.01 C at +168 h."
+  },
+  "stage2_dataset_design": {
+    "script": "pair_aifs_cerra.py",
+    "status": "written and validated against a synthetic CERRA store; awaiting the real GRIBs",
+    "expected_output": {
+      "paired_samples_before_gaps": 3971,
+      "per_lead": {
+        "0": 667,
+        "24": 666,
+        "48": 664,
+        "72": 662,
+        "120": 658,
+        "168": 654
+      },
+      "after_fold_gaps": 3240,
+      "folds": 13,
+      "fold_size": "252 for folds 1-12; fold 0 has 216 (partial first block)",
+      "X_shape": [
+        3240,
+        3,
+        57,
+        116
+      ],
+      "Y_shape": [
+        3240,
+        123,
+        127
+      ],
+      "size_MB": 356
+    },
+    "design_decisions": {
+      "lead_time_is_a_feature": "Measured AIFS error grows 1.24 -> 3.11 C from +0 to +168 h and decomposes into a non-growing 1.24 C offset plus growth in quadrature. A model given lead_h learns a lead-dependent correction; pooling leads averages over regimes differing 2.5x in error magnitude.",
+      "spread_as_input_channel": "ens_sd grows 0.53 -> 2.75 C with lead and varies spatially. It is the forecast's own uncertainty estimate and tells the model when to trust ens_mean.",
+      "temporal_blocks_not_random": "Inits are 12 h apart and forecasts from adjacent inits overlap heavily in valid time; random splits put near-duplicates in train and test."
+    },
+    "autocorrelation_measurement": {
+      "why_it_needed_care": "The raw +24 h domain-mean series shows r = 0.82 at 21 days, which would imply an unusable 3-week gap. That is the SEASONAL CYCLE, not predictability: seasonal sd 9.27 C vs weather-anomaly sd 3.60 C. A first deseasonalised estimate also gave a spurious r = -0.149 at half-day lag, because 00Z/12Z init alternation aliases the diurnal cycle - fixed by working within a single init cycle.",
+      "per_cycle_weather_anomaly_r": {
+        "00Z": {
+          "1d": 0.87,
+          "2d": 0.65,
+          "3d": 0.48,
+          "5d": 0.32,
+          "7d": 0.22,
+          "10d": 0.12,
+          "14d": -0.09
+        },
+        "12Z": {
+          "1d": 0.9,
+          "2d": 0.71,
+          "3d": 0.55,
+          "5d": 0.34,
+          "7d": 0.18,
+          "10d": 0.06,
+          "14d": -0.09
+        }
+      },
+      "gap_chosen": "5 days (block 21 d), giving r ~ 0.33 between adjacent folds at 18.4% sample cost",
+      "rejected": "7-day gap: costs 25% of samples to move r from 0.33 to 0.20, not worth it at n~3,000"
+    },
+    "split_type_caveat": "This is a TEMPORAL split, correct for stage-2 because the loss is against CERRA (gridded). It does NOT replace the SPATIAL station holdout: both ERA5 and CERRA assimilate the station network, so any station-verified claim still needs the spatial folds from pair_stations_cerra.py."
+  },
+  "stage2_dataset_actual": {
+    "status": "COMPLETE \u2014 both CERRA halves received, cropped, merged and paired",
+    "cerra_target": {
+      "store": "cerra_t2m_full.zarr",
+      "size_MB": 87,
+      "times": 2680,
+      "span": "2025-07-01 00:00 .. 2026-05-31 21:00",
+      "duplicates": 0,
+      "missing_3h_slots": 0,
+      "NaNs": 0,
+      "degC_range": [
+        -37.0,
+        37.6
+      ],
+      "months_present": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "grib_messages": {
+        "2025H2": 1472,
+        "2026H1": 1208,
+        "total": 2680
+      },
+      "note": "June absent by construction \u2014 CERRA ends 2026-05-31, AIFS starts 2025-07-02"
+    },
+    "pairs": {
+      "file": "stage2_pairs.npz",
+      "paired_before_gaps": 3971,
+      "after_gaps": 3240,
+      "discarded_pct": 18.4,
+      "X_shape": [
+        3240,
+        3,
+        57,
+        116
+      ],
+      "Y_shape": [
+        3240,
+        123,
+        127
+      ],
+      "size_MB": 269,
+      "folds": 13,
+      "fold_size": "252 for folds 1-12; fold 0 has 216 (partial first block)",
+      "NaNs": 0,
+      "per_lead": {
+        "0": 667,
+        "24": 666,
+        "48": 664,
+        "72": 662,
+        "120": 658,
+        "168": 654
+      },
+      "Y_spatial_sd_C": 2.595,
+      "prediction_check": "synthetic dry run predicted 3,971 -> 3,240 in 13 folds; actual matched exactly"
+    }
+  },
+  "stage2_baseline_to_beat": {
+    "definition": "AIFS ensemble mean bilinearly interpolated from 0.25 deg to the 127x123 CERRA grid, scored against CERRA over the full 2025-07..2026-05 period. Any model that does not beat this per lead has added nothing over interpolation.",
+    "rmse_C": {
+      "0": 1.318,
+      "24": 1.416,
+      "48": 1.55,
+      "72": 1.759,
+      "120": 2.411,
+      "168": 3.267
+    },
+    "bias_C": {
+      "0": 0.254,
+      "24": 0.225,
+      "48": 0.198,
+      "72": 0.198,
+      "120": 0.137,
+      "168": -0.047
+    },
+    "seasonal_rmse_C": {
+      "winter": {
+        "0": 1.231,
+        "24": 1.674,
+        "48": 1.827,
+        "72": 2.122,
+        "120": 3.143,
+        "168": 4.508
+      },
+      "spring": {
+        "0": 1.297,
+        "24": 1.341,
+        "48": 1.48,
+        "72": 1.677,
+        "120": 2.262,
+        "168": 2.886
+      },
+      "summer": {
+        "0": 1.67,
+        "24": 1.543,
+        "48": 1.683,
+        "72": 1.85,
+        "120": 2.2,
+        "168": 2.77
+      },
+      "autumn": {
+        "0": 1.135,
+        "24": 1.1,
+        "48": 1.207,
+        "72": 1.355,
+        "120": 1.81,
+        "168": 2.385
+      }
+    },
+    "seasonal_finding": "Winter is the hardest regime and degrades fastest: 1.231 C at t+0 rising to 4.508 C at +168 h, a 3.7x growth versus 1.7x for summer and 2.1x for autumn. Autumn is easiest at every lead. This inverts the CERRA-vs-station pattern found earlier (where summer error was double winter) because that measured representativeness against point stations, whereas this measures AIFS forecast error against a gridded analysis \u2014 different quantities with different seasonality.",
+    "t0_anomaly_RESOLVED": {
+      "earlier_claim": "On the 2025H2 half alone I reported t+0 RMSE (1.312) as WORSE than +24 h (1.250) and attributed it to ensemble degeneracy at lead 0.",
+      "correction": "With spring included the pooled ordering reverts to monotonic growth (1.318 -> 1.416). Paired per season on identical valid times: t+0 is BETTER than +24 h in winter (1.231 vs 1.674) and spring (1.297 vs 1.341), and WORSE only in summer (1.674 vs 1.543) and marginally in autumn (1.135 vs 1.100). The effect is season-specific, not a general property. Summer has the strongest diurnal signal and the weakest t+0 ensemble spread (0.52 C), so ensemble averaging buys least exactly where sub-grid diurnal structure costs most.",
+      "lesson": "Half a seasonal cycle was not enough to characterise a lead-dependent effect."
+    },
+    "reporting_rule": "Report skill per lead AND per season against this interpolation baseline. Pooled metrics hide a 4x spread across seasons at long lead and would have hidden the t+0 effect entirely."
+  },
+  "data_completeness_audit": {
+    "date": "2026-08-25",
+    "STAGE_2_ready": {
+      "input  aifs_overlap.npz": "209 MB, 667 inits x 6 leads x (control, mean, sd)",
+      "target cerra_t2m_full.zarr": "87 MB, 2680 analyses, 0 gaps, 0 NaNs",
+      "pairs  stage2_pairs.npz": "269 MB, 3240 samples, 13 folds of 252",
+      "truth  station_truth_iem.parquet": "26,678 obs, 10 stations, 99.8% coverage",
+      "baseline": "per-lead and per-season interpolation RMSE recorded"
+    },
+    "STAGE_1_ingredients_present_but_unpaired": {
+      "input  era5_2020.grib": "41 MB, 2928 fields over the input crop",
+      "target cerra_t2m_leningrad.zarr": "111 MB, 2928 analyses, 2020 complete leap year",
+      "truth  station_truth.parquet": "2.19M obs, 86 stations, 2015-2024",
+      "MISSING": "stage1_pairs.npz \u2014 no script yet writes ERA5->CERRA pairs in the stage-2 format",
+      "assessment": "NOT a data gap. All three ingredients exist and are validated. What is missing is a pairing step: pair_aifs_cerra.py consumes the AIFS npz cube, and ERA5 arrives as GRIB, so it needs an analogous script (or a small adapter that writes ERA5 into the same (n, C, 57, 116) layout). One year gives ~2,928 samples; more years are cheap because ERA5 accepts area subsetting (41 MB/yr, ~142 s)."
+    },
+    "GENUINELY_MISSING_static_fields": {
+      "what": "CERRA orography and land_sea_mask on the 127x123 target grid",
+      "availability": "CONFIRMED available: both 'orography' and 'land_sea_mask' are in the reanalysis-cerra-single-levels variable enum (39 variables total). One field each, ~2.3 MB, no time dimension needed.",
+      "why_it_matters": {
+        "variance_decomposition_of_the_target": {
+          "domain_mean_variance_C2": 109.474,
+          "time_invariant_spatial_pattern_C2": 1.039,
+          "time_varying_spatial_pattern_C2": 6.801,
+          "reading": "Of the spatial pattern the model must generate (the domain mean is already right in the input), 13% is a FIXED map and 87% is genuinely time-varying. The fixed 13% is exactly what orography and a land-sea mask encode, and without them the model must infer it from 3,240 samples instead of being told it."
+        },
+        "IMPORTANT_seasonal_caveat": {
+          "seasonal_mean_pattern_correlations": {
+            "winter_autumn": 0.906,
+            "summer_autumn": 0.454,
+            "spring_summer": 0.469,
+            "winter_summer": 0.432,
+            "winter_spring": 0.343,
+            "spring_autumn": 0.061
+          },
+          "seasonal_pattern_sd_C": {
+            "winter": 1.718,
+            "spring": 1.219,
+            "summer": 0.9,
+            "autumn": 1.252
+          },
+          "variance_explained": {
+            "one_static_map_R2": 0.132,
+            "four_seasonal_maps_R2": 0.226
+          },
+          "conclusion": "The fine structure is NOT a single stable map. Spring and autumn patterns are essentially uncorrelated (r = 0.06) and winter amplitude is nearly double summer's (1.72 vs 0.90 C). Four seasonal maps explain 22.6% of the pattern against 13.2% for one map. So static fields alone are insufficient: the model also needs day-of-year (or seasonal) conditioning to modulate how it uses them. This is physically expected - lake and coastal contrasts reverse sign between the frozen and stratified seasons - and it means orography/land-sea mask should enter as conditioning inputs the network can modulate, not as an additive correction."
+        }
+      },
+      "recommendation": "Fetch both static fields (one tiny CDS request, ~4.6 MB total) and add day-of-year as a scalar input alongside lead_h. Neither blocks training; both are cheap and the measurement says they address 13% of the recoverable signal."
+    },
+    "verdict": "Stage 2 is fully ready to train. Stage 1 needs a pairing script, not new data. Two small static fields are worth fetching before the first serious run."
+  },
+  "static_fields": {
+    "status": "FETCHED and validated",
+    "file": "cerra_static_target.npz",
+    "vars": [
+      "orog",
+      "lsm"
+    ],
+    "shape": [
+      123,
+      127
+    ],
+    "matches_target_grid": true,
+    "retrieval": {
+      "request": "orography + land_sea_mask, single timestep",
+      "size_MB": 4.57,
+      "queue_s": 30,
+      "note": "Queue was 30 s \u2014 the multi-month jobs had cleared the per-user slot. Static fields carry no real time dimension; any single timestep returns the same map."
+    },
+    "orography_m": {
+      "min": -2.89,
+      "max": 301.36,
+      "note": "low relief, as expected \u2014 the domain's signal is water and land cover, not terrain"
+    },
+    "land_sea_mask": {
+      "water_fraction_of_target_box": 0.163
+    },
+    "validation_against_measured_pattern": {
+      "method": "Least squares of the seasonal-mean CERRA spatial pattern (domain mean removed) on (orography, land-sea mask).",
+      "R2_by_season": {
+        "winter": 0.399,
+        "spring": 0.375,
+        "summer": 0.158,
+        "autumn": 0.646
+      },
+      "R2_all_season_map": 0.345,
+      "coefficients_all_season": {
+        "orography_C_per_100m": -1.006,
+        "lsm_C_land_minus_water": 0.373
+      },
+      "KEY_FINDING": "The land-sea coefficient REVERSES SIGN seasonally. Correlation of the seasonal pattern with the land-sea mask is +0.557 in spring but -0.621 in autumn and -0.341 in winter. Physically: in spring the water is still cold and land warms first, so land is warmer; by autumn the water has stored heat and land cools first, so water is warmer. A single static correction CANNOT represent this \u2014 it would average two opposite regimes to near zero. The static fields must enter as CONDITIONING inputs the network modulates by day-of-year, not as an additive offset.",
+      "lapse_rate_sanity": "-1.006 C per 100 m is close to the dry adiabatic 0.98 C/100 m, which is a reasonable value for a domain-mean-removed pattern and indicates the fit is capturing real physics rather than noise."
+    },
+    "design_consequence": "Feed orog and lsm as additional input channels (broadcast to the target grid, or to the input grid and upsampled), AND add day-of-year as a scalar conditioning input alongside lead_h. The seasonal sign reversal is the specific reason day-of-year is not optional."
+  },
+  "four_way_overlap_2025_2026": {
+    "status": "COMPLETE \u2014 all four sources now exist over 2025-07-01 .. 2026-05-31",
+    "gap_found_and_closed": "The user asked whether all four sources overlap in 2025-2026. AUDIT FOUND A GAP: only era5_2020.grib existed - ERA5 had never been fetched for the overlap period. Corrected by pulling era5_2025H2.grib (20.7 MB) and era5_2026H1.grib (17.0 MB), using the IDENTICAL area box as the 2020 pull so the two eras stay comparable.",
+    "sources": {
+      "AIFS ENS": {
+        "n": 667,
+        "unit": "inits",
+        "span": "2025-07-02 .. 2026-05-31"
+      },
+      "CERRA": {
+        "n": 2680,
+        "unit": "3-h analyses",
+        "span": "2025-07-01 .. 2026-05-31 21:00"
+      },
+      "ERA5": {
+        "n": 2680,
+        "unit": "3-h analyses",
+        "span": "2025-07-01 .. 2026-05-31 21:00",
+        "duplicates": 0,
+        "missing_slots": 0,
+        "MB": 37.7,
+        "queue_s": [
+          82,
+          83
+        ]
+      },
+      "Stations": {
+        "n": 26678,
+        "unit": "obs",
+        "sites": 10,
+        "coverage": "99.8%"
+      }
+    },
+    "intersection": {
+      "valid_times_all_four": 2673,
+      "aifs_init_lead_pairs_on_all_four": 3966,
+      "per_lead": {
+        "0": 667,
+        "24": 665,
+        "48": 663,
+        "72": 661,
+        "120": 657,
+        "168": 653
+      },
+      "note": "2673 of 2680 - the 7 missing are station gaps, 0.3%"
+    },
+    "definitive_station_scores": {
+      "method": "All four scored against the SAME IEM station truth on IDENTICAL samples (6,505-6,644 pairs per lead). Nearest-cell extraction on each source's own grid.",
+      "rmse_C": {
+        "CERRA_5.5km": 1.056,
+        "ERA5_0.25deg": 1.28,
+        "AIFS_ens_mean": {
+          "0": 1.24,
+          "24": 1.492,
+          "48": 1.651,
+          "72": 1.849,
+          "120": 2.443,
+          "168": 3.109
+        }
+      },
+      "bias_C": {
+        "CERRA": -0.189,
+        "ERA5": -0.024,
+        "AIFS": {
+          "0": -0.113,
+          "24": -0.205,
+          "48": -0.225,
+          "72": -0.246,
+          "120": -0.329,
+          "168": -0.417
+        }
+      },
+      "findings": {
+        "resolution_gain_confirmed_on_current_data": "CERRA 1.056 vs ERA5 1.280 C = 0.224 C headroom, measured on 2025-26 IEM data. This independently reproduces the 0.288 C headroom found on 2020 ISD data with a DIFFERENT truth source and a DIFFERENT year. The resolution benefit is real and reproducible, not an artifact of either dataset.",
+        "aifs_t0_sits_between": "AIFS t+0 (1.240) is BETTER than the ERA5 analysis (1.280) and worse than CERRA (1.056). AIFS is initialised from the IFS operational analysis, which is more current than ERA5 - so at lead 0 the forecast system already beats its own training reanalysis at stations.",
+        "the_target": "At +24 h AIFS is 1.492 C against CERRA's 1.056 C. Closing that 0.436 C is the stage-2 objective. At +72 h the gap is 0.793 C; at +168 h it is 2.053 C - but by then most of the error is forecast-error growth, which downscaling cannot fix.",
+        "cerra_bias": "CERRA carries a -0.19 C cold bias against stations while ERA5 is nearly unbiased (-0.02). A model trained to reproduce CERRA will inherit that cold bias. Worth removing at verification time, or the model will look colder than it is."
+      }
+    },
+    "files": {
+      "era5_2025H2.grib": 20.7,
+      "era5_2026H1.grib": 17.0,
+      "fourway_stations.parquet": "26,678 rows, stations+ERA5+CERRA paired",
+      "fourway_summary.csv": "per-lead per-source bias and RMSE"
+    }
+  },
+  "model_design": {
+    "problem_form": {
+      "geometry_CORRECTION": "Earlier in this session I recorded the resolution step as '5.0x linear' from 0.25 deg / 5.5 km. That is wrong at 60 N: the 0.25 deg grid is ANISOTROPIC there - 27.8 km N-S but only 13.9 km E-W. Measured properly: ~1,227 input cells cover the target box against 15,621 target cells = 12.7x in cells, 3.6x linear. Also the factor is non-integer AND the CRS differs (lat/lon vs Lambert), so PixelShuffle-style integer upsampling does not apply.",
+      "input_crop_vs_target": "Input crop is 57x116 at 0.25 deg ~ 1582 x 1610 km; target is 123x127 at 5.5 km = 676 x 698 km. The target is 19% of the input AREA - this is crop-and-upscale, not whole-field super-resolution. The surplus input is the 300 km advection margin.",
+      "RESIDUAL_FORMULATION": {
+        "decision": "Predict R = Y - bilinear(X_ens_mean), not Y directly.",
+        "evidence": {
+          "sd_of_Y_C": 10.831,
+          "sd_of_R_C": 2.058,
+          "variance_ratio": 28
+        },
+        "why": "Predicting Y means spending capacity reproducing the seasonal cycle and the domain mean, which the input already carries. The residual target has 28x smaller variance. Critically, a zero-output residual model IS the interpolation baseline exactly (RMSE 2.065 C on this sample), so the model starts at parity and can only improve - it cannot be worse than interpolation by accident."
+      }
+    },
+    "receptive_field": {
+      "residual_spatial_autocorrelation": {
+        "5.5km": 0.96,
+        "22km": 0.81,
+        "44km": 0.69,
+        "88km": 0.52,
+        "132km": 0.37,
+        "176km": 0.26,
+        "220km": 0.18
+      },
+      "one_over_e_decorrelation": {
+        "y_km": 116,
+        "x_km": 138
+      },
+      "implication": "The residual decorrelates over ~120-140 km, so a receptive field of ~275 km spans the structure to be predicted. The existing 300 km input margin already exceeds this. Practically: 4 downsampling levels at 5.5 km reach ~350 km - sufficient. Deeper costs parameters for no reachable signal."
+    },
+    "what_the_residual_is_NOT": {
+      "variance_of_residual_explained_by": {
+        "linear_in_static_orog_lsm": 0.0006,
+        "plus_seasonal_harmonics": 0.0029,
+        "plus_static_x_seasonal": 0.0062,
+        "fixed_spatial_map": 0.0207,
+        "four_seasonal_maps": 0.056,
+        "season_x_lead_lookup": 0.0641
+      },
+      "IMPORTANT_REFRAMING": "An earlier analysis decomposed the TARGET's spatial pattern and found 13% time-invariant, which suggested static fields carry substantial signal. Testing against the RESIDUAL changes the reading: the best static/conditional lookup explains only 6.4% of what the model must actually predict. The bilinear baseline already captures most of the climatological structure. So orography and land-sea mask are worth including as conditioning (they are nearly free), but they are NOT the main signal - 93.6% of the residual is day-to-day flow-dependent and requires the AIFS field itself, spatially. This argues for a convolutional encoder over any lookup/regression approach."
+    },
+    "capacity": {
+      "samples": {
+        "total": 3240,
+        "train_per_fold": 2988,
+        "effective_independent_inits": 540,
+        "pixel_samples_M": 50.6,
+        "note": "6 leads share an init, so sample count overstates independence"
+      },
+      "recommendation": "Target 0.2-1.0 M parameters (50-250 pixel-samples per parameter). 20 M params gives 2.5 pixel-samples/param and will memorise 540 independent weather situations. Start small: a 4-level U-Net at base width 32 is ~0.5 M params.",
+      "vram": "Not a constraint. Batch 64 needs ~150 MB with activations and gradients against 4 GB available. The binding constraint is SAMPLE COUNT, not memory - which inverts the assumption made earlier in the project."
+    },
+    "conditioning_inputs": {
+      "spatial_channels": [
+        "aifs_control",
+        "aifs_ens_mean",
+        "aifs_ens_sd",
+        "orog",
+        "lsm"
+      ],
+      "scalars": [
+        "lead_h",
+        "sin(doy)",
+        "cos(doy)"
+      ],
+      "why_ens_sd": "Spread grows 0.53 -> 2.75 C with lead and varies spatially; it is the forecast's own uncertainty estimate, telling the model when to trust ens_mean.",
+      "why_lead": "Error decomposes into a non-growing ~1.24 C offset plus growth in quadrature; at +24 h the non-growing term is still larger. Pooling leads averages regimes differing 2.5x in magnitude.",
+      "why_doy": "The land-sea coefficient REVERSES SIGN between spring (+0.557) and autumn (-0.621). A season-blind model averages two opposite regimes to near zero."
+    },
+    "loss_and_evaluation": {
+      "loss": "L1 or Huber on the residual, not MSE. MSE on a field target drives blur - the conditional-mean solution - which defeats the purpose of downscaling. Huber with a small delta keeps gradients well behaved given the residual's -23.9 .. +16.1 C range.",
+      "must_beat": "per-lead and per-season interpolation baseline in stage2_baseline_to_beat",
+      "report": "Per lead AND per season, never pooled - seasonal spread reaches 4x at long lead. Also report tail metrics: on the 2020 three-way the mean headroom was 0.288 C but CERRA was closer to truth 94% of the time in the worst 1% of ERA5 errors. Pooled RMSE makes a genuinely useful model look negligible.",
+      "sharpness_check": "Compare the predicted field's spatial power spectrum to CERRA's. A model can improve RMSE while being smoother than truth; that is not downscaling."
+    },
+    "sequence": [
+      "1. Fit the residual-form baseline: zero-output = interpolation, confirms plumbing",
+      "2. Linear/1x1-conv on all channels: bounds what pointwise correction achieves",
+      "3. 4-level U-Net ~0.5 M params, Huber loss, 13-fold CV",
+      "4. Only then consider capacity increases, ensemble-member inputs, or diffusion"
+    ]
+  },
+  "synop_verification": {
+    "status": "COMPLETE \u2014 this is now the PRIMARY station verification for 2025-26",
+    "data": {
+      "file": "station_truth_synop.parquet",
+      "total_obs": 717034,
+      "total_stations": 299,
+      "target_box_obs": 202089,
+      "target_box_stations": 85,
+      "by_country": {
+        "Russia": 41,
+        "Finland": 32,
+        "Estonia": 12
+      },
+      "missing_from_86": "LAHTI LAUNE (Finland) \u2014 no SYNOP reports in these blocks",
+      "input_crop_stations_free": 214,
+      "main_hour_coverage": "91.1% of 00/06/12/18 slots"
+    },
+    "quality_control": {
+      "gross_limit": "dropped 1 obs outside -55..+40 C (BUJ, +52.0 C, input-crop only)",
+      "isolated_spikes": "dropped 37 obs differing >15 C from BOTH 3-h neighbours",
+      "kept": "717,034 of 717,071 = 99.995%",
+      "target_box_range_C": [
+        -34.4,
+        34.8
+      ],
+      "min_sample_filter": "Excluded 2 stations (VOLOSOVO n=2, STRUGI KRASNYE n=1) from per-station scores. Their apparent ERA5 RMSE of 0.129 C looked like assimilation contamination; it was simply n=2. Requiring n>=100 paired obs leaves 83 stations. LESSON: check sample count before interpreting an implausibly good score."
+    },
+    "spatial_folds": {
+      "method": "k-means on CERRA-projected coordinates, 5 folds",
+      "sizes": [
+        21,
+        16,
+        14,
+        18,
+        16
+      ],
+      "note": "contiguous by construction; ERA5 and CERRA both assimilate these stations so a temporal split would be circular"
+    },
+    "rmse_C": {
+      "cerra": 1.075,
+      "era5": 1.476,
+      "aifs_by_lead": {
+        "0": 1.506,
+        "24": 1.664,
+        "48": 1.806,
+        "72": 2.014,
+        "120": 2.607,
+        "168": 3.347
+      }
+    },
+    "headroom": {
+      "mean_C": 0.398,
+      "sd_C": 0.301,
+      "positive_at_pct": 93,
+      "by_country": {
+        "Russia": 0.514,
+        "Finland": 0.364,
+        "Estonia": 0.111
+      },
+      "by_fold": {
+        "0": 0.482,
+        "1": 0.196,
+        "2": 0.561,
+        "3": 0.444,
+        "4": 0.3
+      },
+      "KEY": "0.398 C is LARGER than both earlier estimates (0.288 C on 2020 ISD, 0.224 C on 2025-26 IEM) and positive in EVERY spatial fold and at 93% of stations. The IEM estimate was low because its 10 airport stations were mostly Finnish/Estonian, where the gain is smallest; the Russian stations that dominate the target region show 0.514 C. This is a third independent confirmation on a third truth source."
+    },
+    "cerra_cold_bias_C": {
+      "Russia": -0.338,
+      "Finland": -0.229,
+      "Estonia": -0.234,
+      "note": "a model trained to reproduce CERRA inherits this; remove at verification time"
+    },
+    "stage2_target": {
+      "aifs_plus24_gap_to_cerra_C": 0.589,
+      "note": "larger than the 0.436 C measured on IEM, because SYNOP includes the Russian stations where both the AIFS error and the CERRA advantage are bigger"
+    },
+    "supersedes": "IEM-based verification (10 stations, 2 Russian). IEM remains valid as an independent cross-check but SYNOP is the primary source: same report type as the 2015-2024 ISD baseline, so the two eras are directly comparable."
+  },
+  "spatial_comparison": {
+    "status": "COMPLETE",
+    "what": "Per-cell error of the interpolation baseline (bilinear AIFS ens-mean -> CERRA grid) over 3,240 pairs, plus independent per-station confirmation.",
+    "per_cell_rmse_C": {
+      "min": 1.44,
+      "mean": 2.05,
+      "max": 3.44,
+      "spread": "2.4x"
+    },
+    "CORRECTION_water_land": {
+      "first_wrong_answer": "A binary lsm<0.5 split gave water/land RMSE 2.015/2.062 = 0.98x, i.e. 'no difference'. That was WRONG: 28.6% of target cells have fractional lsm (they are coast/shore cells), and lumping them with open water washed the signal out.",
+      "correct_split": {
+        "open_water_lsm_lt_0.05": {
+          "cells": 1720,
+          "pct": 11.0
+        },
+        "mixed_shore": {
+          "cells": 3135,
+          "pct": 20.1
+        },
+        "solid_land_lsm_gt_0.95": {
+          "cells": 10766,
+          "pct": 68.9
+        }
+      },
+      "rmse_by_class_C": {
+        "open_water": {
+          "t0": 1.435,
+          "24h": 1.732,
+          "168h": 2.741
+        },
+        "mixed_shore": {
+          "t0": 1.211,
+          "24h": 1.417,
+          "168h": 3.278
+        },
+        "solid_land": {
+          "t0": 1.297,
+          "24h": 1.323,
+          "168h": 3.324
+        }
+      },
+      "lesson": "Never threshold a fractional land-sea mask at 0.5 for a physical comparison. The intermediate values are a distinct surface class, not noise."
+    },
+    "per_water_body_rmse_24h_C": {
+      "Ladoga": 1.935,
+      "Onega": 2.177,
+      "Gulf_of_Finland": 1.383,
+      "solid_land": 1.323,
+      "note": "Onega is the worst at 1.64x land; Gulf of Finland is nearly land-like at 1.05x"
+    },
+    "LEAD_DEPENDENT_INVERSION": {
+      "lakes_over_land_ratio_by_lead": {
+        "0": 1.22,
+        "24": 1.52,
+        "48": 1.39,
+        "72": 1.24,
+        "120": 1.0,
+        "168": 0.87
+      },
+      "reading": "The lake penalty PEAKS at +24 h (1.52x) and INVERTS by +168 h (0.87x). Physically coherent: at short lead the error is representation - the coarse input cannot resolve a lake-land thermal contrast that exists in reality. At long lead the error is synoptic placement, and a large thermally-inert water body is a MORE predictable surface than heterogeneous land. The crossover is at +120 h.",
+      "seasonal_at_24h": {
+        "winter": 1.63,
+        "spring": 1.3,
+        "summer": 1.81,
+        "autumn": 0.92
+      },
+      "seasonal_at_168h": {
+        "winter": 0.9,
+        "spring": 0.79,
+        "summer": 1.04,
+        "autumn": 0.69
+      },
+      "autumn_anomaly": "Autumn is the ONE season where lakes are easier than land even at +24 h (0.92x). That is the season the lakes are warmest relative to air and most horizontally uniform - consistent with the land-sea sign reversal already recorded in static_fields."
+    },
+    "large_scale_gradient": {
+      "correlations_of_per_cell_rmse": {
+        "latitude": 0.476,
+        "longitude": 0.412,
+        "orography": 0.009,
+        "land_sea_mask": 0.064,
+        "distance_from_water_km": -0.127
+      },
+      "reading": "A clear NE-ward increase, essentially UNCORRELATED with orography or the land-sea mask. Present already at t+0 (NE/SW = 1.29), so it is representation error, not forecast-error growth. Likely continentality plus decreasing station density constraining the driving analysis toward the NE."
+    },
+    "station_confirmation": {
+      "headroom_by_distance_to_Ladoga_Onega_C": {
+        "0-15km": {
+          "n": 5,
+          "headroom": 0.718
+        },
+        "15-40km": {
+          "n": 6,
+          "headroom": 0.682
+        },
+        "40-80km": {
+          "n": 7,
+          "headroom": 0.329
+        },
+        "gt_80km": {
+          "n": 65,
+          "headroom": 0.355
+        }
+      },
+      "correlation": {
+        "headroom_vs_lake_distance_r": -0.431,
+        "headroom_vs_any_water_r": -0.055
+      },
+      "reading": "INDEPENDENT confirmation from SYNOP stations: headroom is 0.70 C within 40 km of the big lakes against 0.35 C beyond - it DOUBLES. Note it correlates with distance to LADOGA/ONEGA (r=-0.43) but not to water in general (r=-0.06), so the effect is the big lakes specifically, not coastlines. This is measured on stations, entirely separately from the gridded maps, and agrees with them."
+    },
+    "design_consequences": [
+      "Weight the loss, or at least report separately, over open water - it is 11% of cells but carries the largest recoverable error.",
+      "The lake signal is a SHORT-LEAD phenomenon. Target <= +72 h for the lake-effect claim; beyond +120 h the lakes are the easy part.",
+      "Per-cell RMSE varies 2.4x across the domain, so a domain-mean score hides where the model works. Report maps, not just scalars.",
+      "The NE gradient is present at t+0 and unexplained by static fields - a spatial-coordinate or latitude channel may help the model absorb it."
+    ]
+  },
+  "stage1_dataset": {
+    "status": "BUILT 2026-09-01",
+    "files": [
+      "stage1_pairs.npz",
+      "stage1_pairs_3ch.npz"
+    ],
+    "script": "pair_era5_cerra.py",
+    "n_samples": 2184,
+    "n_folds": 13,
+    "fold_size": 168,
+    "X_shape_1ch": [
+      2184,
+      1,
+      57,
+      116
+    ],
+    "X_shape_3ch": [
+      2184,
+      3,
+      57,
+      116
+    ],
+    "Y_shape": [
+      2184,
+      123,
+      127
+    ],
+    "era5_request": {
+      "area_NWSE": [
+        67.0,
+        18.5,
+        53.0,
+        47.25
+      ],
+      "times": "00,03,..,21 UTC",
+      "span": "2025-07-01 .. 2026-05-31",
+      "bytes": 35729760,
+      "wall_clock": "63 s + 106 s queue, 0 reconnects",
+      "grid_identity": "reproduces stage-2 src_lat/src_lon exactly (57x116), asserted"
+    },
+    "matched_valid_times": 2680,
+    "kept_after_fold_gaps": 2184,
+    "baseline_rmse_C": 1.2355,
+    "FOLD_EPOCH": "2025-07-02",
+    "why_epoch_pinned": "Stage 2 anchors folds on its first AIFS init (2025-07-02); stage 1's natural anchor is its first CERRA analysis (2025-07-01). The 1-day offset leaked zero samples ONLY because GAP_DAYS=5 > 1 -- a silent dependency. Pinning makes fold k the same date range in both stages by construction.",
+    "bug_found": "assign_folds used .astype(int), which truncates toward zero, so a timestamp 21 h BEFORE the epoch gave -0.875 -> 0 and landed in fold 0. Put 7 pre-epoch analyses in fold 0 (175 instead of 168). Fixed with np.floor.",
+    "stage1_is_easier_caveat": "ERA5->CERRA 1.2355 C vs AIFS t+0->CERRA 1.3182 C; on the same 546 valid times 1.245 vs 1.318. CERRA is downscaled FROM ERA5 (lateral boundary conditions), so they share large-scale state by construction while AIFS is an independent forecast. Stage-1 pretraining sees a slightly optimistic operator.",
+    "how_to_enlarge": "More CERRA years (1984-2026), not more ERA5. CERRA has no area subsetting, so each added year is a full-field browser download."
+  },
+  "readiness_audit_2026_09_01": {
+    "verdict": "Stage 1 and stage 2 are trainable today; restore() passes 18 checks. Two findings change how results must be read, and one new dataset was added.",
+    "FINDING_1_seasonal_fold_blocking": {
+      "fact": "The 13 temporal folds are near-pure seasons by construction: folds 0-1 summer, 2 autumn/summer, 3-5 autumn, 6-8 winter, 9 spring/winter, 10-12 spring.",
+      "consequence": "The CNN result reported earlier (+0.090 C mean, +0.773 C over Ladoga) was tested on folds 0,1,2 = 576 summer + 144 autumn samples and ZERO winter samples. It is a WARM-SEASON number and must be labelled as such until the full 13-fold run is done.",
+      "also": "Leave-one-fold-out means holding out a season. That is a harder and more honest test than random splitting, but it must be reported per fold, never pooled."
+    },
+    "FINDING_2_single_winter": {
+      "fact": "The 334-day span contains exactly one winter (Dec 2025, Jan-Feb 2026).",
+      "consequence": "Lake ice state and day-of-year are confounded: the model can memorise this winter's ice trajectory as a function of calendar day. Inter-annual ice variability is untestable with one realisation.",
+      "fix": "More CERRA years. Each is a full-field browser download (no area subsetting)."
+    },
+    "NEW_era5_aux": {
+      "file": "era5_aux.npz",
+      "size_MB": 187,
+      "fields": [
+        "lake_ice_depth",
+        "lake_mix_layer_temp_C",
+        "lake_cover",
+        "snow_depth",
+        "skin_temp_C",
+        "u10",
+        "v10"
+      ],
+      "shape": [
+        2680,
+        57,
+        116
+      ],
+      "grid": "identical to stage-2 input; time axis identical to cerra_target",
+      "retrieval": "285 MB GRIB, 586 s + 543 s queue, 0 reconnects",
+      "physical_validation": "Ladoga lake ice: 0.000 m Jul-Oct, 0.010 Dec, 0.187 Jan, peak 0.566 m Feb, 0.087 Apr, 0.000 May. Mixed-layer T 19.0 C Aug to 0.0 C Feb. Correct.",
+      "measured_value": {
+        "test": "Linear R2 on the Ladoga-minus-land residual contrast (window-mean scalars, so a LOWER BOUND on what a CNN sees).",
+        "calendar_3_harmonics": 0.331,
+        "plus_ice_and_mixed_layer_T": 0.367,
+        "plus_skin_contrast_and_snow": 0.461,
+        "plus_wind": 0.47,
+        "lake_state_without_calendar": 0.259,
+        "SURPRISE": "lake_ice_depth ALONE adds essentially nothing (0.331 -> 0.332). The gain comes from the skin-temperature contrast and snow depth. My hypothesis that ice depth would be the key variable was WRONG in this linear form.",
+        "honest_size": "Unexplained variance falls from 67% to 53%. Real but moderate - not the transformation the 67% figure alone might suggest."
+      },
+      "wind_caveat": "u10/v10 were included on PHYSICAL grounds (advection direction decides which shore receives lake-modified air), not measured ones. They add 0.009 R2 in this linear test. Treat as unproven."
+    },
+    "still_open": [
+      "13-fold CNN run (3 done, all warm-season)",
+      "station verification with the SPATIAL holdout (never run on model output)",
+      "conservation check on model output (esmf_roundtrip.py, script ready)",
+      "spectral loss term - prediction carries 0.088 of truth's high-wavenumber power"
+    ]
+  }
+}

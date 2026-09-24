@@ -1,0 +1,10 @@
+# 15 GB of source data stays local; see EXPORT_MANIFEST.json for the full list
+/data/**
+!/data/domain_spec_leningrad.json
+!/data/DATA_MANIFEST.csv
+# copyrighted papers and raw literature-search dumps
+/literature/pdf/
+/literature/raw/
+.venv/
+__pycache__/
+*.pyc

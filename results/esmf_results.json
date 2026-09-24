@@ -1,0 +1,42 @@
+{
+  "coverage": {
+    "era5_cells_total": 6612,
+    "fully_covered": 1104,
+    "pct": 16.7
+  },
+  "conservation": {
+    "note": "Source and destination area-means differ because the covered ERA5 region is not exactly the CERRA footprint. The diagnostic that matters is per-cell agreement below, not this global mean.",
+    "src_area_mean_C": 8.534,
+    "dst_area_mean_C": 8.5689,
+    "mean_difference_C": 0.0349
+  },
+  "cerra_coarsened_vs_era5": {
+    "n_samples": 300,
+    "bias_C": -0.1963,
+    "rmse_C": 1.1675,
+    "sd_C": 1.1508,
+    "interpretation": "CERRA coarsened to ERA5 resolution vs ERA5 itself. This is NOT expected to be zero - they are different analyses with different models and assimilation. It bounds how much of the ERA5-CERRA difference is resolution rather than physics."
+  },
+  "bilinear_same_direction": {
+    "bias_C": -0.1899,
+    "rmse_C": 1.2441,
+    "note": "Bilinear fine->coarse SAMPLES rather than averages, so it discards sub-grid information the conservative method retains. Any difference from the conservative result is the cost of sampling instead of averaging."
+  },
+  "variance_lost_to_coarsening": {
+    "region": "covered footprint only: lat 56.75-63.75, lon 24.50-39.25; 15554 CERRA cells, 1104 ERA5 cells",
+    "cerra_spatial_sd_C": 2.385,
+    "coarsened_spatial_sd_C": 2.2962,
+    "fraction_of_sd_retained": 0.9628,
+    "pct_variance_lost": 7.31,
+    "sd_of_lost_structure_C": 0.6448,
+    "interpretation": "Spatial standard deviation surviving the coarsening. The part that does NOT survive is structure only a 5.5 km grid can represent - the quantity downscaling recovers."
+  },
+  "weights": {
+    "nnz": 28360,
+    "dst_cells_with_weight": 1287,
+    "row_sum_min": 1.8e-05,
+    "row_sum_max": 1.0,
+    "row_sum_mean": 0.926036,
+    "note": "For a conservative map, a FULLY covered destination cell has row sum 1. Sums below 1 are partially-covered edge cells - exactly the ones the coverage mask removes."
+  }
+}
