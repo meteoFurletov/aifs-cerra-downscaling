@@ -2,13 +2,15 @@
 # Cloud environment SETUP SCRIPT: paste this file's body into the environment's
 # "Setup script" field at claude.ai/code. It is kept here only as the record.
 #
-# AICODE-NOTE: cloud sessions ignore enabledPlugins/extraKnownMarketplaces from
-# .claude/settings.json and never see ~/.claude on Nikita's machine
+# AICODE-NOTE: cloud sessions don't install plugins from enabledPlugins/extraKnownMarketplaces
+# in .claude/settings.json and never see ~/.claude on Nikita's machine
 # (docs: cloud-environments#what-carries-over-from-your-setup). So user-level setup is
 # recreated here, before Claude Code launches: the balka plugin, and a cloud copy of the
 # attribution rule from Nikita's local ~/.claude/hooks/git-commit-style.py (the tkb-only
 # rules there do not apply in the cloud). The environment cache keeps all of it
 # (~7 days, or until this script or the network list changes).
+# Once installed here, `claude plugin list` also shows balka at project scope from the
+# repo's enabledPlugins: same install, listed twice, harmless.
 # Never fails: a failed setup script blocks the session; check with `claude plugin list`.
 export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1
 command -v jq >/dev/null || apt-get install -y -qq jq || echo "setup: jq install failed"
