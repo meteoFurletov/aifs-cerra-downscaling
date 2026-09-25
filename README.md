@@ -26,6 +26,9 @@ st, obs = load_stations()    # 299 stations, 717,034 observations
 ```
 
 `dataset.py` reads from `./data` by default. Set `DOWNSCALING_DATA` to point elsewhere.
+On a fresh clone, `./scripts/fetch_data.sh` pulls the five sources (~520 MB) from the
+private HF dataset `meteof/aifs-cerra-downscaling-data`; Claude Code cloud sessions do
+this automatically through the SessionStart hook in `.claude/settings.json`.
 
 ## Layout
 
@@ -34,6 +37,7 @@ st, obs = load_stations()    # 299 stations, 717,034 observations
 | `dataset.py` | The loader: builds every training set from the five source files | yes |
 | `docs/` | `README.md` (project state), `DATA.md`, `COMPARISONS.md`, `GRIDS.md`, `MODEL.md`, roadmap. **Read `COMPARISONS.md` before quoting any RMSE** | yes |
 | `pipeline/` | The scripts that built the data and trained the CNN | yes |
+| `scripts/` | `fetch_data.sh` / `publish_data.sh` (HF dataset sync), cloud-session hook | yes |
 | `results/` | Result tables (CSV, JSON) | yes |
 | `figures/` | Every figure, plus the interactive CERRA page | yes |
 | `literature/` | Literature review, notes and citation tables. `pdf/` and `raw/` stay local | partly |
