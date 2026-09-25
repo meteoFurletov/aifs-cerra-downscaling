@@ -18,11 +18,12 @@ claude plugin marketplace add meteoFurletov/skills \
   && claude plugin install balka@meteof-skills \
   || echo "setup: balka install failed"
 
-# --- no Claude attribution in commits or PR bodies ---
+# --- no Claude attribution in commits, PR titles or PR bodies ---
 mkdir -p "$HOME/.claude/hooks"
 cat > "$HOME/.claude/hooks/no-attribution.py" <<'HOOK'
 #!/usr/bin/env python3
-"""PreToolUse/Bash: block Claude attribution in `git commit` and `gh pr create/edit`."""
+"""PreToolUse: block Claude attribution in `git commit`, `gh pr create/edit`, and the
+GitHub tools' PR title/body (mcp__github__create_pull_request / update_pull_request)."""
 import json, re, sys
 
 PATTERNS = [
@@ -32,19 +33,25 @@ PATTERNS = [
 ]
 
 try:
-    command = (json.load(sys.stdin).get("tool_input") or {}).get("command") or ""
-    if re.search(r"\bgit\b(?:\s+\S+)*?\s+commit\b|\bgh\s+pr\s+(?:create|edit)\b", command):
-        for pattern, label in PATTERNS:
-            if re.search(pattern, command, re.I):
-                json.dump({"hookSpecificOutput": {
-                    "hookEventName": "PreToolUse",
-                    "permissionDecision": "deny",
-                    "permissionDecisionReason":
-                        f"Blocked: the command contains `{label}`.\n\n"
-                        "Claude attribution is not used in any of Nikita's repos, in "
-                        "commit messages or PR bodies. Remove that line and re-run; the "
-                        "rest of the message can stay as it is."}}, sys.stdout)
-                break
+    payload = json.load(sys.stdin)
+    tool_input = payload.get("tool_input") or {}
+    if payload.get("tool_name", "").startswith("mcp__github__"):
+        text = "\n".join(str(tool_input.get(k) or "") for k in ("title", "body"))
+    else:
+        text = tool_input.get("command") or ""
+        if not re.search(r"\bgit\b(?:\s+\S+)*?\s+commit\b|\bgh\s+pr\s+(?:create|edit)\b", text):
+            text = ""
+    for pattern, label in PATTERNS:
+        if re.search(pattern, text, re.I):
+            json.dump({"hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                "permissionDecision": "deny",
+                "permissionDecisionReason":
+                    f"Blocked: the text contains `{label}`.\n\n"
+                    "Claude attribution is not used in any of Nikita's repos, in "
+                    "commit messages or PR titles and bodies. Remove that line and "
+                    "re-run; the rest can stay as it is."}}, sys.stdout)
+            break
 except Exception:
     pass  # a broken guard must never block real work
 HOOK
@@ -56,10 +63,14 @@ try:
 except (OSError, ValueError):
     settings = {}
 command = 'python3 "$HOME/.claude/hooks/no-attribution.py"'
-entries = settings.setdefault("hooks", {}).setdefault("PreToolUse", [])
-if not any(h.get("command") == command for e in entries for h in e.get("hooks", [])):
-    entries.append({"matcher": "Bash",
-                    "hooks": [{"type": "command", "command": command, "timeout": 10}]})
+matcher = "Bash|mcp__github__create_pull_request|mcp__github__update_pull_request"
+hooks = settings.setdefault("hooks", {})
+# replace, not skip: an entry from an older version of this script has a narrower matcher
+entries = [e for e in hooks.get("PreToolUse", [])
+           if not any(h.get("command") == command for h in e.get("hooks", []))]
+entries.append({"matcher": matcher,
+                "hooks": [{"type": "command", "command": command, "timeout": 10}]})
+hooks["PreToolUse"] = entries
 json.dump(settings, open(path, "w"), indent=2)
 MERGE
 exit 0
