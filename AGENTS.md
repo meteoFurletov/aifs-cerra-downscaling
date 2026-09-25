@@ -19,7 +19,7 @@ and landing steps. **Read estate.md before drafting anything.**
 ## Balka
 
 This repo runs the six-stage loop from the `balka` plugin. Artefacts are
-plain markdown in git, one directory per change under `docs/balka/`, each on
+plain markdown in git, one directory per change under `balka/`, each on
 its own branch with one main agent.
 
 | Stage | Command | Writes |
@@ -40,7 +40,7 @@ recreate, rename or copy a file to get past a balka hook or rule. If balka
 blocks work that is right, stop and tell the owner: that is a bug in balka.
 
 A correction that
-repeats goes to `docs/balka/PROPOSALS.md`, and `/balka:reflect` turns
+repeats goes to `balka/PROPOSALS.md`, and `/balka:reflect` turns
 that inbox into the next version of the loop.
 
 Link upstream, never restate it. Write what is essential and stop. Size comes

@@ -56,7 +56,7 @@ drafting. A correction that lands in chat twice lands here once.
 
 - One repo, one branch per change, a pull request to `main`; Nikita merges.
 - Balka intents are research changes only. Setup, tooling and cleanup go on their own
-  branch and pull request, outside `docs/balka/`; `plan-sync` allows that, because no
+  branch and pull request, outside `balka/`; `plan-sync` allows that, because no
   plan on such a branch is `accepted`.
 - A change that rebuilds a canonical source runs `check()` to 15/15 first, then
   `scripts/publish_data.sh` after the merge. The HF dataset's commit history is the

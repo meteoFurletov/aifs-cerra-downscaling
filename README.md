@@ -37,7 +37,7 @@ this automatically through the SessionStart hook in `.claude/settings.json`.
 | `dataset.py` | The loader: builds every training set from the five source files | yes |
 | `docs/` | `README.md` (project state), `DATA.md`, `COMPARISONS.md`, `GRIDS.md`, `MODEL.md`, roadmap. **Read `COMPARISONS.md` before quoting any RMSE** | yes |
 | `pipeline/` | The scripts that built the data and trained the CNN | yes |
-| `docs/estate.md`, `docs/balka/` | Balka's facts document and change artefacts (see `AGENTS.md`) | yes |
+| `balka/`, `docs/estate.md` | Balka's change artefacts and facts document (see `AGENTS.md`) | yes |
 | `features/` | Gherkin scenarios, the contract for each change | yes |
 | `scripts/` | `fetch_data.sh` / `publish_data.sh` (HF dataset sync), cloud-session hook | yes |
 | `results/` | Result tables (CSV, JSON) | yes |
