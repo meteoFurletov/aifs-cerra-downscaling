@@ -17,7 +17,7 @@ Route: open | plugin | project | dropped.
 Evidence: `docs/DATA.md` §4 lists eleven traps, each hit once in-session. `pipeline/`
 fixes them inline (`RT_PRIORITY`, `zfill`, `drop_vars("valid_time")`) or guards one at
 runtime (`LINE_CAP`), but the repo has no tests. `check()` in `dataset.py` checks stored
-data, not the code, so a refactor such as change 001 can undo a fix silently. Balka's
+data, not the code, so a refactor of `pipeline/` can undo a fix silently. Balka's
 `commands/test.md` keeps the verifier read-only and the stage file-free, so a trap it
 spots becomes a finding that can recur. An independent re-implementation of the
 headline numbers was weighed and rejected as too costly and prone to diverge. The owner:
