@@ -46,7 +46,9 @@ drafting. A correction that lands in chat twice lands here once.
   docs still carry leftovers from it (`host` arguments, `{{artifact:...}}` links).
 - Cloud sessions have no GPU. Their SessionStart hook runs `uv sync` and fetches the
   sources. Balka reaches them through the environment's setup script
-  (`scripts/cloud_env_setup.sh`), because cloud sessions ignore `enabledPlugins`.
+  (`scripts/cloud_env_setup.sh`), because cloud sessions don't install plugins from
+  `enabledPlugins`. Once it is installed, `claude plugin list` shows balka twice (user
+  and project scope): the same install, harmless.
 - Deadline: the public write-up (downscaled forecast against raw AIFS ENS, per lead,
   at stations held out by location) is due 31 October 2026.
 
