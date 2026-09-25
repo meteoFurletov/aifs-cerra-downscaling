@@ -38,7 +38,9 @@ stations held out by location. Public write-up due 31 October 2026.
 
 - **Cloud sessions (Claude Code on the web):** loader, verification, analysis,
   small CPU models, docs, figures. The SessionStart hook runs `uv sync` and fetches
-  data when `CLAUDE_CODE_REMOTE=true`. No GPU.
+  data when `CLAUDE_CODE_REMOTE=true`. No GPU. Plugins (balka) come from the
+  environment's setup script, recorded in `scripts/cloud_env_setup.sh`: cloud sessions
+  ignore `enabledPlugins` in `.claude/settings.json`.
 - **Local only:** Copernicus downloads (`~/.cdsapirc`), anything reading `data/raw/`.
 - **GPU training** needs a GPU host; not set up yet.
 

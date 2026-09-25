@@ -1,4 +1,7 @@
 {
+  "enabledPlugins": {
+    "balka@meteof-skills": true
+  },
   "hooks": {
     "SessionStart": [
       {
