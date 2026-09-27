@@ -33,6 +33,9 @@ drafting. A correction that lands in chat twice lands here once.
   2025-07-02, shared by both stages. Station spatial folds are `stations.fold`.
 - **Stores**: code at GitHub `meteoFurletov/aifs-cerra-downscaling` (public); the five
   canonical sources at HF dataset `meteof/aifs-cerra-downscaling-data` (private).
+- **WN3 access**: service account `wn3-reader@claude-cloud-meteof-weather.iam.gserviceaccount.com`
+  in Google Cloud project `claude-cloud-meteof-weather`, which pays the Requester Pays reads.
+  Cloud sessions get it through the variables `WN3_GCP_KEY_JSON` and `WN3_BILLING_PROJECT`.
 - **Sibling**: `../improver-nw-russia`, the PhD post-processing core (IMPROVER over
   GEFS + AIFS). Separate repo; nothing here imports it.
 
