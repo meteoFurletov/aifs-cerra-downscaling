@@ -12,7 +12,8 @@ drafting. A correction that lands in chat twice lands here once.
   initialised hourly; 2 m temperature on a 0.05° grid, calibrated to stations. A model
   compared alongside AIFS ENS, not an input. Data sits in GCS as Zarr, behind the
   WeatherNext data request form; the 2024–25 archive is still being backfilled.
-  Historical data is CC BY 4.0; live 2026 runs fall under experimental terms of use.
+  Data for any time 1 h or more in the past is CC BY 4.0 (credit Google DeepMind); newer
+  data falls under the GDM Real-Time Experimental Data Terms of Use.
 - **CERRA**: Copernicus regional reanalysis, 5.5 km Lambert grid, the target. It is
   the *truth* in comparison A and a *scored product* in comparison B.
 - **ERA5**: global reanalysis, 0.25°. It is an analysis with no lead time: the stage-1
