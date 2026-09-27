@@ -1,6 +1,6 @@
 # Intent: WN3 2 m temperature ensembles over the domain
 
-Author: Nikita Furletov. Owner: Nikita Furletov. Status: draft. Date: 2026-09-27.
+Author: Nikita Furletov. Owner: Nikita Furletov. Status: accepted. Date: 2026-09-27.
 
 ## Problem
 
