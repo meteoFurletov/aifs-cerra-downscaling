@@ -1,6 +1,7 @@
 # Intent: a station head for 2 m temperature and dew point, after WN3
 
-Author: Nikita Furletov. Owner: Nikita Furletov. Status: draft. Date: 2026-09-30.
+Author: Nikita Furletov. Owner: Nikita Furletov. Status: parked. Date: 2026-09-30.
+Parked 2026-09-30: moved to its own repo, GitHub `meteoFurletov/aifs-point-head` (change `001-point-head`), as a head on frozen AIFS ENS.
 
 ## Problem
 
