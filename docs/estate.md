@@ -14,6 +14,8 @@ drafting. A correction that lands in chat twice lands here once.
   WeatherNext data request form; the 2024–25 archive is still being backfilled.
   Data for any time 1 h or more in the past is CC BY 4.0 (credit Google DeepMind); newer
   data falls under the GDM Real-Time Experimental Data Terms of Use.
+- **Station head**: a network fitted to SYNOP observations that predicts at any point from
+  forecast fields and local geography, after WN3's method (Rasp et al. 2026, arXiv 2609.03582).
 - **CERRA**: Copernicus regional reanalysis, 5.5 km Lambert grid, the target. It is
   the *truth* in comparison A and a *scored product* in comparison B.
 - **ERA5**: global reanalysis, 0.25°. It is an analysis with no lead time: the stage-1

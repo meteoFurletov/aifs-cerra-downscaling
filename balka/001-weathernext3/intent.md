@@ -18,11 +18,13 @@ know what WN3 is able to do here, its station calibration included.
 
 ## Children
 
+Only 002 was created; the rest take a number when this resumes.
+
 1. `002-wn3-data` — WN3 2 m temperature, all members, over the domain for a period chosen from the data's size and archive coverage.
-2. `003-aifs-members` — AIFS ENS held as 51 members for the same dates, so both models can be scored as ensembles.
-3. `004-wn3-stations` — WN3 and raw AIFS ENS scored at the SYNOP stations, per lead and season.
-4. `005-wn3-cerra` — WN3 and AIFS ENS scored against CERRA on the target window, per lead and season.
-5. `006-wn3-vs-downscaled` — WN3 against the downscaled AIFS ENS forecast at the stations; waits for a downscaled forecast.
+2. `aifs-members` — AIFS ENS held as 51 members for the same dates, so both models can be scored as ensembles.
+3. `wn3-stations` — WN3 and raw AIFS ENS scored at the SYNOP stations, per lead and season.
+4. `wn3-cerra` — WN3 and AIFS ENS scored against CERRA on the target window, per lead and season.
+5. `wn3-vs-downscaled` — WN3 against the downscaled AIFS ENS forecast at the stations; waits for a downscaled forecast.
 
 ## Out of scope
 
