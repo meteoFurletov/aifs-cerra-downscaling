@@ -1,6 +1,7 @@
 # Intent: WN3 2 m temperature ensembles over the domain
 
-Author: Nikita Furletov. Owner: Nikita Furletov. Status: accepted. Date: 2026-09-27.
+Author: Nikita Furletov. Owner: Nikita Furletov. Status: parked. Date: 2026-09-27.
+Parked 2026-09-30: no access to WeatherNext data yet (request filed 2026-09-27, not granted).
 
 ## Problem
 
