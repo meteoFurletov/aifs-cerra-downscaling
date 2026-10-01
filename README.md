@@ -12,6 +12,7 @@ left behind is the saved Copernicus API key.
 
 ```bash
 uv sync
+./scripts/fetch_data.sh    # the five data sources, ~520 MB; needs access, see below
 uv run python -c "from dataset import check; print(check())"
 ```
 
@@ -26,9 +27,18 @@ st, obs = load_stations()    # 299 stations, 717,034 observations
 ```
 
 `dataset.py` reads from `./data` by default. Set `DOWNSCALING_DATA` to point elsewhere.
-On a fresh clone, `./scripts/fetch_data.sh` pulls the five sources (~520 MB) from the
-private HF dataset `meteof/aifs-cerra-downscaling-data`; Claude Code cloud sessions do
-this automatically through the SessionStart hook in `.claude/settings.json`.
+`fetch_data.sh` pulls from the HF dataset `meteof/aifs-cerra-downscaling-data`, which is
+private, so it works only for the owner; Claude Code cloud sessions run it through the
+SessionStart hook in `.claude/settings.json`.
+
+**Without access**, rebuild the sources from their providers (see
+[Data and credits](#data-and-credits)): CERRA and ERA5 from the Copernicus Climate Data
+Store with your own key in `~/.cdsapirc`, AIFS ENS from dynamical.org, SYNOP from OGIMET.
+The `pipeline/` scripts hold the retrieval, decoding and cropping steps, and
+`docs/DATA.md` §2 says what each source costs: CERRA cannot be cut to a region, so a year
+is 6.7 GB downloaded for 0.17 GB kept. Two gaps remain: `fetch_aifs_overlap.py` opens the
+store through a Claude Science helper that is not in this repo, and no committed script
+packs the outputs into the five files.
 
 ## Layout
 
@@ -38,12 +48,12 @@ this automatically through the SessionStart hook in `.claude/settings.json`.
 | `docs/` | `README.md` (project state), `DATA.md`, `COMPARISONS.md`, `GRIDS.md`, `MODEL.md`, roadmap. **Read `COMPARISONS.md` before quoting any RMSE** | yes |
 | `pipeline/` | The scripts that built the data and trained the CNN | yes |
 | `balka/`, `docs/estate.md` | Balka's change artefacts and facts document (see `AGENTS.md`) | yes |
-| `features/` | Gherkin scenarios, the contract for each change | yes |
+| `features/` | Gherkin scenarios, the contract for each change. Created by the first balka spec | not yet |
 | `scripts/` | `fetch_data.sh` / `publish_data.sh` (HF dataset sync), cloud-session hook | yes |
 | `results/` | Result tables (CSV, JSON) | yes |
 | `figures/` | Every figure, plus the interactive CERRA page | yes |
 | `literature/` | Literature review, notes and citation tables. `pdf/` and `raw/` stay local | partly |
-| `data/` | The five canonical sources (`cerra.npz`, `era5.npz`, `aifs.npz`, `stations.parquet`, `station_obs.parquet`), derived files, `raw/` GRIB downloads, `scratch/` intermediates | no, 15 GB |
+| `data/` | The five canonical sources (`cerra.npz`, `era5.npz`, `aifs.npz`, `stations.parquet`, `station_obs.parquet`), derived files, `raw/` GRIB downloads, `scratch/` intermediates | only `domain_spec_leningrad.json` and `DATA_MANIFEST.csv`; the rest is 15 GB |
 
 `EXPORT_MANIFEST.json` lists every exported file with its size.
 
@@ -74,6 +84,5 @@ public write-up by 31 October 2026.
 - The scripts in `pipeline/` were written for Claude Science's flat working folder.
   They read and write files in the current directory, so run them from the folder
   that holds their inputs, usually `data/` or `data/scratch/`.
-- Fetching new data from Copernicus needs your own `~/.cdsapirc`.
 - `data/raw/cerra_upload_*.grib` are the original CERRA downloads, 12.8 GB. CERRA
   cannot be cut to a region before download, so keep them.

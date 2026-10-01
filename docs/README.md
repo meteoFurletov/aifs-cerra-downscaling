@@ -217,13 +217,13 @@ land** — it found the sub-grid lake signal without being told where to look. A
 Open caveat: the prediction is far smoother than the truth. The model improves accuracy,
 not realism. See `MODEL.md` §"honest caveat".
 
-## 8. Environments
+## 8. Environment
 
-| Env | Contains |
-|---|---|
-| `downscale` | the working environment — xarray, cfgrib, eccodes, pyproj, cartopy, zarr |
-| `downscale-esmf` | + `xesmf` / `esmpy`. Needs `ESMFMKFILE`; `esmf_roundtrip.py` sets it itself |
-| `downscale-torch` | + `torch` (CUDA available on the local 1650 Ti) |
+`uv sync` installs what `dataset.py` needs. `pyproject.toml` adds two extras: `grib` for
+the data-building scripts in `pipeline/`, `train` for torch
+(`uv sync --extra grib --extra train`). Kept separate deliberately: torch is heavy and
+not needed for data work.
 
-Kept separate deliberately: ESMF and torch are both heavy and neither is needed for data
-work.
+> Note: the work itself ran in local conda environments (`downscale`, `downscale-esmf`,
+> `downscale-torch`). `esmf_roundtrip.py` still needs `xesmf` / `esmpy`, which no extra
+> provides; it sets `ESMFMKFILE` itself.
