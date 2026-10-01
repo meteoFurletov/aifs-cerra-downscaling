@@ -164,9 +164,9 @@ Folds 0–1 are pure summer, 2 autumn/summer, 3–5 autumn, **6–8 winter**, 9 
 10–12 spring. Leave-one-fold-out therefore holds out a *season* — a harder and more honest
 test than random splitting, but it means results must be reported per fold, never pooled.
 
-**This changes how the reported model result must be read.** The +0.090 °C mean gain and
-the +0.773 °C Ladoga gain were tested on folds 0, 1, 2 — 576 summer and 144 autumn samples,
-**zero winter samples**. They are warm-season numbers. Winter is where the lake-land
+**This changes how the reported model result must be read.** The comparison-A gains,
++0.085 °C mean and +0.773 °C over Ladoga, were tested on folds 0, 1, 2 — 576 summer and
+144 autumn samples, **zero winter samples**. They are warm-season numbers. Winter is where the lake-land
 contrast is largest (sd 1.702 °C) and least calendar-predictable, so it is the most likely
 place for the estimate to move.
 
@@ -197,17 +197,19 @@ CERRA years, at one full-field browser download each.
 
 ## 7. What the data says about the model
 
-Fitted and cross-validated, gains against the interpolation baseline:
+Fitted and cross-validated, comparison-A gains (CERRA as truth) against the interpolation
+baseline:
 
 | Model | Gain |
 |---|---|
 | per-cell linear, 10 local features | +0.034 °C |
 | global ridge on 40 residual PCs | **−0.133 °C** (overfits: 6.6k predictors, 3k samples) |
-| conv net, 39k params | **+0.090 °C** |
+| conv net, 39k params | **+0.085 °C** (last epoch, warm-season folds 0–2) |
 
 Those two failures pin the architecture from both sides: it needs a spatial receptive field
 *and* shared weights. The conv net gains **+0.773 °C over Ladoga against +0.045 over
-land** — it found the sub-grid lake signal without being told where to look.
+land** — it found the sub-grid lake signal without being told where to look. At stations
+(comparison B, provisional) it does not yet beat bilinear; see `MODEL.md`.
 
 Open caveat: high-wavenumber power in the prediction is 0.088 of the truth's. The model
 improves accuracy, not realism. See `MODEL.md` §"honest caveat".

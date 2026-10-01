@@ -51,10 +51,14 @@ this automatically through the SessionStart hook in `.claude/settings.json`.
 
 - **Data phase complete.** All inputs, the target and the station truth are built and
   validated. See `docs/README.md`.
-- **Deterministic baseline fitted.** A 39k-parameter CNN gains +0.09 °C over bilinear
-  interpolation on held-out warm-season folds, almost all of it over Ladoga
-  (+0.77 °C there, +0.05 °C over land). It is far too smooth: the next rung is a
-  generative model. See `docs/MODEL.md`.
+- **Deterministic baseline fitted.** In comparison A (gridded, CERRA as truth; see
+  `docs/COMPARISONS.md`) a 39k-parameter CNN gains +0.085 °C over bilinear
+  interpolation at its last epoch on held-out warm-season folds 0–2, almost all of it
+  over Ladoga (+0.77 °C there, +0.05 °C over land). The +0.09 °C quoted earlier was the
+  best epoch picked on the test fold itself. At stations (comparison B, provisional:
+  nearest cell, the same folds, not held out by location) it does not yet beat bilinear
+  at five of six leads; the held-out comparison is the next step. It is far too smooth:
+  the next rung is a generative model. See `docs/MODEL.md`.
 - **Related work.** Jua, "Universal Diffusion-Based Probabilistic Downscaling"
   (arXiv 2602.11893): the same ERA5 → CERRA setup at European scale, with a diffusion
   model applied zero-shot to AIFS and other forecasts.

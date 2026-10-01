@@ -62,8 +62,9 @@ report.
 
 ![Five models fitted; where the gain is, and where it is not]({{artifact:art_f12aa967-db99-4e5f-a2ed-c8684b863e07}})
 
-Every rung below was **fitted and cross-validated**, not reasoned about. Gains are against
-the interpolation baseline on the residual target.
+Every rung below was **fitted and cross-validated**, not reasoned about. Gains are
+comparison A (gridded, CERRA as truth): RMSE against the interpolation baseline on the
+residual target.
 
 | Rung | Model | Gain (°C) |
 |---|---|---|
@@ -72,7 +73,11 @@ the interpolation baseline on the residual target.
 | 2 | per-cell × lead climatology | +0.007 |
 | 3 | per-cell linear, 10 local features | +0.034 |
 | 4 | global ridge on 40 residual PCs | **−0.133** |
-| 5 | **conv net, 39k params** | **+0.090** |
+| 5 | **conv net, 39k params** | **+0.085** |
+
+Rung 5 is the last epoch, averaged over warm-season folds 0–2 (+0.117, +0.093, +0.045).
+`train_downscale.py` reports the best of its test-fold checkpoints instead (+0.090, in
+`results/cnn_results.json`), which picks the epoch on the data it scores.
 
 Rung 4 is the informative failure: 6,614 predictors against ~3,000 samples overfits so
 badly it is *worse than doing nothing*. Rung 3 is the other bound — local features, however
@@ -115,6 +120,8 @@ output  (1, 123, 127)  residual, added to bilinear(input)
 
 ### Where the gain actually is
 
+Both breakdowns below are comparison A on warm-season folds 0–2.
+
 **By surface** — this is the result that matters:
 
 | | Interpolation | Conv net | Gain |
@@ -132,6 +139,11 @@ look. That is the strongest available evidence the architecture matches the phys
 earlier finding that short leads are representation-dominated and long leads are
 forecast-error-dominated. **Report per lead; a pooled number describes no real forecast.**
 
+**At stations, not yet.** A first, provisional pass in comparison B (83 stations, nearest
+cell, the same folds, not held out by location) finds the conv net worse than bilinear at
+every lead but +168 h. The comparison at stations held out by location is in progress
+(`README.md`, "Next step").
+
 ### The honest caveat
 
 High-wavenumber power in the prediction is **0.088 of the truth's** — the model is far
@@ -146,7 +158,7 @@ only be attempted now that a deterministic baseline exists to beat.
 
 ### What to do next, in order
 
-1. **Extend to all 13 folds** — 3 were run; the fold-to-fold spread (+0.045 to +0.133 °C)
+1. **Extend to all 13 folds** — 3 were run; the fold-to-fold spread (+0.045 to +0.117 °C)
    is wide enough that 3 is not a stable estimate.
 2. **Score against stations**, with the *spatial* holdout, via `verify_on_synop.py`. The
    gridded gain is necessary but not sufficient.
