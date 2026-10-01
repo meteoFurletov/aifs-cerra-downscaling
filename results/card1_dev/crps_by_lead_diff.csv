@@ -1,0 +1,73 @@
+lead,a,b,metric,estimate,lo,hi,n,days,folds,fold_share
+0,bilinear dressed,AIFS ENS,me,0.007834,-0.019852,0.037474,7341,56,3,0.424107
+0,bilinear dressed,AIFS ENS,rmse,-0.036109,-0.067577,-0.004977,7341,56,3,0.272277
+0,bilinear dressed,AIFS ENS,crps,-0.022383,-0.045035,0.000269,7341,56,3,0.466539
+24,bilinear dressed,AIFS ENS,me,0.002353,-0.026509,0.033479,7341,56,3,0.377480
+24,bilinear dressed,AIFS ENS,rmse,-0.046496,-0.080716,-0.012276,7341,56,3,0.430838
+24,bilinear dressed,AIFS ENS,crps,-0.031487,-0.057396,-0.005579,7341,56,3,0.435586
+48,bilinear dressed,AIFS ENS,me,0.000646,-0.027281,0.030188,7341,56,3,0.483127
+48,bilinear dressed,AIFS ENS,rmse,-0.042258,-0.072945,-0.011571,7341,56,3,0.304738
+48,bilinear dressed,AIFS ENS,crps,-0.030272,-0.053887,-0.006658,7341,56,3,0.382494
+72,bilinear dressed,AIFS ENS,me,-0.000537,-0.028792,0.027718,7341,56,3,0.575902
+72,bilinear dressed,AIFS ENS,rmse,-0.036275,-0.064654,-0.007723,7341,56,3,0.288750
+72,bilinear dressed,AIFS ENS,crps,-0.026850,-0.047437,-0.006263,7341,56,3,0.291905
+120,bilinear dressed,AIFS ENS,me,-0.000420,-0.028866,0.028027,7341,56,3,0.652635
+120,bilinear dressed,AIFS ENS,rmse,-0.022280,-0.046675,0.002115,7341,56,3,0.137269
+120,bilinear dressed,AIFS ENS,crps,-0.015743,-0.031835,0.000133,7341,56,3,0.258380
+168,bilinear dressed,AIFS ENS,me,0.002205,-0.023658,0.028657,7341,56,3,0.599285
+168,bilinear dressed,AIFS ENS,rmse,-0.012282,-0.028755,0.006264,7341,56,3,0.000000
+168,bilinear dressed,AIFS ENS,crps,-0.008291,-0.019279,0.003277,7341,56,3,0.000000
+0,surface (40 km ring) dressed,AIFS ENS,me,-0.110478,-0.160314,-0.060642,7341,56,3,0.329136
+0,surface (40 km ring) dressed,AIFS ENS,rmse,-0.121288,-0.166037,-0.074503,7341,56,3,0.000000
+0,surface (40 km ring) dressed,AIFS ENS,crps,-0.072735,-0.107506,-0.040270,7341,56,3,0.000000
+24,surface (40 km ring) dressed,AIFS ENS,me,-0.093748,-0.144114,-0.043319,7341,56,3,0.374030
+24,surface (40 km ring) dressed,AIFS ENS,rmse,-0.069006,-0.117668,-0.020345,7341,56,3,0.288046
+24,surface (40 km ring) dressed,AIFS ENS,crps,-0.043478,-0.075131,-0.011824,7341,56,3,0.195169
+48,surface (40 km ring) dressed,AIFS ENS,me,-0.058542,-0.113782,-0.005644,7341,56,3,0.480612
+48,surface (40 km ring) dressed,AIFS ENS,rmse,-0.066774,-0.113043,-0.020506,7341,56,3,0.282304
+48,surface (40 km ring) dressed,AIFS ENS,crps,-0.044921,-0.074994,-0.014847,7341,56,3,0.159066
+72,surface (40 km ring) dressed,AIFS ENS,me,-0.049270,-0.106745,0.008205,7341,56,3,0.673509
+72,surface (40 km ring) dressed,AIFS ENS,rmse,-0.064704,-0.108896,-0.021785,7341,56,3,0.128909
+72,surface (40 km ring) dressed,AIFS ENS,crps,-0.045045,-0.075270,-0.016796,7341,56,3,0.047235
+120,surface (40 km ring) dressed,AIFS ENS,me,0.005892,-0.048469,0.060253,7341,56,3,0.646639
+120,surface (40 km ring) dressed,AIFS ENS,rmse,-0.047558,-0.080915,-0.015076,7341,56,3,0.000000
+120,surface (40 km ring) dressed,AIFS ENS,crps,-0.032329,-0.053282,-0.013074,7341,56,3,0.000000
+168,surface (40 km ring) dressed,AIFS ENS,me,0.155989,0.089697,0.222280,7341,56,3,0.756294
+168,surface (40 km ring) dressed,AIFS ENS,rmse,-0.048068,-0.091637,-0.001689,7341,56,3,0.000000
+168,surface (40 km ring) dressed,AIFS ENS,crps,-0.032850,-0.061377,-0.005224,7341,56,3,0.000000
+0,CNN v0 dressed,AIFS ENS,me,0.048219,-0.152044,0.248482,7341,56,3,0.758663
+0,CNN v0 dressed,AIFS ENS,rmse,-0.016221,-0.118398,0.085957,7341,56,3,0.728287
+0,CNN v0 dressed,AIFS ENS,crps,-0.016382,-0.099549,0.066784,7341,56,3,0.728362
+24,CNN v0 dressed,AIFS ENS,me,0.007775,-0.192952,0.208502,7341,56,3,0.736547
+24,CNN v0 dressed,AIFS ENS,rmse,0.027732,-0.056740,0.112204,7341,56,3,0.459754
+24,CNN v0 dressed,AIFS ENS,crps,0.018764,-0.021815,0.059343,7341,56,3,0.500708
+48,CNN v0 dressed,AIFS ENS,me,0.012922,-0.207399,0.233243,7341,56,3,0.716518
+48,CNN v0 dressed,AIFS ENS,rmse,0.030377,-0.045712,0.106465,7341,56,3,0.374248
+48,CNN v0 dressed,AIFS ENS,crps,0.018553,-0.014803,0.053487,7341,56,3,0.180927
+72,CNN v0 dressed,AIFS ENS,me,0.017421,-0.230967,0.265808,7341,56,3,0.728878
+72,CNN v0 dressed,AIFS ENS,rmse,0.021315,-0.044172,0.087635,7341,56,3,0.124908
+72,CNN v0 dressed,AIFS ENS,crps,0.010359,-0.019074,0.043479,7341,56,3,0.000000
+120,CNN v0 dressed,AIFS ENS,me,0.033448,-0.295638,0.362535,7341,56,3,0.716296
+120,CNN v0 dressed,AIFS ENS,rmse,0.001168,-0.076763,0.079098,7341,56,3,0.229194
+120,CNN v0 dressed,AIFS ENS,crps,-0.003763,-0.036523,0.031577,7341,56,3,0.000000
+168,CNN v0 dressed,AIFS ENS,me,0.083524,-0.302851,0.469898,7341,56,3,0.731436
+168,CNN v0 dressed,AIFS ENS,rmse,-0.023846,-0.149468,0.101775,7341,56,3,0.517333
+168,CNN v0 dressed,AIFS ENS,crps,-0.024198,-0.097634,0.049237,7341,56,3,0.462906
+0,lookup own cell (not held out) dressed,AIFS ENS,me,-0.200259,-0.266969,-0.133550,7341,56,3,0.555501
+0,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.134446,-0.196140,-0.072478,7341,56,3,0.000000
+0,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.067854,-0.109271,-0.027435,7341,56,3,0.000000
+24,lookup own cell (not held out) dressed,AIFS ENS,me,-0.180474,-0.244224,-0.116724,7341,56,3,0.610167
+24,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.119034,-0.184387,-0.054346,7341,56,3,0.000000
+24,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.069294,-0.114500,-0.026555,7341,56,3,0.000000
+48,lookup own cell (not held out) dressed,AIFS ENS,me,-0.147270,-0.211072,-0.083468,7341,56,3,0.623608
+48,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.118735,-0.180274,-0.059896,7341,56,3,0.000000
+48,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.073853,-0.116657,-0.034571,7341,56,3,0.000000
+72,lookup own cell (not held out) dressed,AIFS ENS,me,-0.140240,-0.211911,-0.068570,7341,56,3,0.704038
+72,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.112237,-0.175666,-0.055371,7341,56,3,0.000000
+72,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.072537,-0.116572,-0.034442,7341,56,3,0.000000
+120,lookup own cell (not held out) dressed,AIFS ENS,me,-0.080000,-0.145861,-0.014140,7341,56,3,0.664610
+120,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.078754,-0.127642,-0.033866,7341,56,3,0.000000
+120,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.050298,-0.080342,-0.023080,7341,56,3,0.000000
+168,lookup own cell (not held out) dressed,AIFS ENS,me,0.070324,-0.012736,0.153384,7341,56,3,0.743827
+168,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.062412,-0.108885,-0.019485,7341,56,3,0.000000
+168,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.042543,-0.074143,-0.015593,7341,56,3,0.000000

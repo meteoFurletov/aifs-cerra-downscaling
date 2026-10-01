@@ -1,0 +1,127 @@
+lead,a,b,metric,estimate,lo,hi,n,days,folds,fold_share
+0,surface (40 km ring) dressed,AIFS ENS,me,-0.113134,-0.162320,-0.063138,8501,63,3,0.545978
+0,surface (40 km ring) dressed,AIFS ENS,rmse,-0.116690,-0.159961,-0.075325,8501,63,3,0.000000
+0,surface (40 km ring) dressed,AIFS ENS,crps,-0.067676,-0.104418,-0.030934,8501,63,3,0.339926
+0,CNN v0 dressed,AIFS ENS,me,0.024595,-0.204423,0.253613,8501,63,3,0.797376
+0,CNN v0 dressed,AIFS ENS,rmse,-0.011024,-0.114771,0.092722,8501,63,3,0.782947
+0,CNN v0 dressed,AIFS ENS,crps,-0.007907,-0.105767,0.089953,8501,63,3,0.804665
+0,lookup own cell (not held out) dressed,AIFS ENS,me,-0.203370,-0.269278,-0.135221,8501,63,3,0.695429
+0,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.129310,-0.187618,-0.072497,8501,63,3,0.000000
+0,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.063037,-0.105938,-0.020137,8501,63,3,0.296687
+0,bilinear dressed,AIFS ENS,me,0.007633,-0.018425,0.033722,8501,63,3,0.403584
+0,bilinear dressed,AIFS ENS,rmse,-0.036150,-0.066868,-0.006034,8501,63,3,0.200539
+0,bilinear dressed,AIFS ENS,crps,-0.022477,-0.044073,-0.000882,8501,63,3,0.371111
+0,surface (40 km ring) dressed,bilinear dressed,me,-0.120767,-0.160996,-0.080539,8501,63,3,0.606730
+0,surface (40 km ring) dressed,bilinear dressed,rmse,-0.080540,-0.124758,-0.039550,8501,63,3,0.000000
+0,surface (40 km ring) dressed,bilinear dressed,crps,-0.045199,-0.077726,-0.014228,8501,63,3,0.186388
+0,CNN v0 dressed,bilinear dressed,me,0.016962,-0.199934,0.233858,8501,63,3,0.785422
+0,CNN v0 dressed,bilinear dressed,rmse,0.025125,-0.083624,0.133875,8501,63,3,0.786657
+0,CNN v0 dressed,bilinear dressed,crps,0.014570,-0.075807,0.104948,8501,63,3,0.813347
+0,lookup own cell (not held out) dressed,bilinear dressed,me,-0.211002,-0.267045,-0.153118,8501,63,3,0.758946
+0,lookup own cell (not held out) dressed,bilinear dressed,rmse,-0.093161,-0.150554,-0.041189,8501,63,3,0.000000
+0,lookup own cell (not held out) dressed,bilinear dressed,crps,-0.040560,-0.078079,-0.004613,8501,63,3,0.170005
+24,surface (40 km ring) dressed,AIFS ENS,me,-0.092356,-0.142036,-0.044143,8336,62,3,0.288667
+24,surface (40 km ring) dressed,AIFS ENS,rmse,-0.068834,-0.114031,-0.023638,8336,62,3,0.208720
+24,surface (40 km ring) dressed,AIFS ENS,crps,-0.042520,-0.072734,-0.012646,8336,62,3,0.141255
+24,CNN v0 dressed,AIFS ENS,me,-0.006193,-0.220137,0.207751,8336,62,3,0.784473
+24,CNN v0 dressed,AIFS ENS,rmse,0.023102,-0.048076,0.094280,8336,62,3,0.242572
+24,CNN v0 dressed,AIFS ENS,crps,0.018750,-0.017849,0.055349,8336,62,3,0.492781
+24,lookup own cell (not held out) dressed,AIFS ENS,me,-0.178910,-0.240965,-0.116855,8336,62,3,0.566571
+24,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.116655,-0.179887,-0.055113,8336,62,3,0.000000
+24,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.066951,-0.111128,-0.027144,8336,62,3,0.000000
+24,bilinear dressed,AIFS ENS,me,0.002338,-0.024605,0.030229,8336,62,3,0.381484
+24,bilinear dressed,AIFS ENS,rmse,-0.045279,-0.077887,-0.012670,8336,62,3,0.424830
+24,bilinear dressed,AIFS ENS,crps,-0.030012,-0.055085,-0.004940,8336,62,3,0.489627
+24,surface (40 km ring) dressed,bilinear dressed,me,-0.094695,-0.139549,-0.049841,8336,62,3,0.751910
+24,surface (40 km ring) dressed,bilinear dressed,rmse,-0.023556,-0.064315,0.015183,8336,62,3,0.000000
+24,surface (40 km ring) dressed,bilinear dressed,crps,-0.012508,-0.036892,0.010191,8336,62,3,0.000000
+24,CNN v0 dressed,bilinear dressed,me,-0.008531,-0.207499,0.190436,8336,62,3,0.767618
+24,CNN v0 dressed,bilinear dressed,rmse,0.068380,0.006254,0.146834,8336,62,3,0.000000
+24,CNN v0 dressed,bilinear dressed,crps,0.048762,0.015610,0.083878,8336,62,3,0.016880
+24,lookup own cell (not held out) dressed,bilinear dressed,me,-0.181248,-0.239220,-0.123277,8336,62,3,0.702501
+24,lookup own cell (not held out) dressed,bilinear dressed,rmse,-0.071377,-0.128962,-0.022040,8336,62,3,0.000000
+24,lookup own cell (not held out) dressed,bilinear dressed,crps,-0.036939,-0.072601,-0.006922,8336,62,3,0.000000
+48,surface (40 km ring) dressed,AIFS ENS,me,-0.056899,-0.109220,-0.006291,8170,61,3,0.420188
+48,surface (40 km ring) dressed,AIFS ENS,rmse,-0.065810,-0.109866,-0.021754,8170,61,3,0.272433
+48,surface (40 km ring) dressed,AIFS ENS,crps,-0.042986,-0.072503,-0.013565,8170,61,3,0.260982
+48,CNN v0 dressed,AIFS ENS,me,-0.000871,-0.240528,0.238786,8170,61,3,0.785298
+48,CNN v0 dressed,AIFS ENS,rmse,0.028474,-0.040719,0.097668,8170,61,3,0.270099
+48,CNN v0 dressed,AIFS ENS,crps,0.020545,-0.012890,0.053980,8170,61,3,0.348904
+48,lookup own cell (not held out) dressed,AIFS ENS,me,-0.145563,-0.208187,-0.082938,8170,61,3,0.601903
+48,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.116440,-0.175937,-0.056005,8170,61,3,0.000000
+48,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.070983,-0.111690,-0.032042,8170,61,3,0.000000
+48,bilinear dressed,AIFS ENS,me,0.001251,-0.024577,0.027947,8170,61,3,0.328720
+48,bilinear dressed,AIFS ENS,rmse,-0.041286,-0.070412,-0.012160,8170,61,3,0.352288
+48,bilinear dressed,AIFS ENS,crps,-0.029059,-0.051860,-0.006258,8170,61,3,0.475420
+48,surface (40 km ring) dressed,bilinear dressed,me,-0.058150,-0.105929,-0.010371,8170,61,3,0.741845
+48,surface (40 km ring) dressed,bilinear dressed,rmse,-0.024524,-0.063322,0.013926,8170,61,3,0.061021
+48,surface (40 km ring) dressed,bilinear dressed,crps,-0.013927,-0.036353,0.006876,8170,61,3,0.000000
+48,CNN v0 dressed,bilinear dressed,me,-0.002122,-0.228646,0.224402,8170,61,3,0.772603
+48,CNN v0 dressed,bilinear dressed,rmse,0.069760,0.006683,0.141200,8170,61,3,0.000000
+48,CNN v0 dressed,bilinear dressed,crps,0.049604,0.017909,0.083129,8170,61,3,0.000000
+48,lookup own cell (not held out) dressed,bilinear dressed,me,-0.146813,-0.205434,-0.088193,8170,61,3,0.689325
+48,lookup own cell (not held out) dressed,bilinear dressed,rmse,-0.075154,-0.129547,-0.029525,8170,61,3,0.000000
+48,lookup own cell (not held out) dressed,bilinear dressed,crps,-0.041924,-0.074728,-0.014389,8170,61,3,0.000000
+72,surface (40 km ring) dressed,AIFS ENS,me,-0.047828,-0.102675,0.007020,8004,60,3,0.653879
+72,surface (40 km ring) dressed,AIFS ENS,rmse,-0.063659,-0.105610,-0.022261,8004,60,3,0.133488
+72,surface (40 km ring) dressed,AIFS ENS,crps,-0.043317,-0.073318,-0.015081,8004,60,3,0.175656
+72,CNN v0 dressed,AIFS ENS,me,0.000775,-0.272044,0.273594,8004,60,3,0.769086
+72,CNN v0 dressed,AIFS ENS,rmse,0.020816,-0.041092,0.084511,8004,60,3,0.115286
+72,CNN v0 dressed,AIFS ENS,crps,0.012351,-0.018407,0.043109,8004,60,3,0.271953
+72,lookup own cell (not held out) dressed,AIFS ENS,me,-0.138553,-0.207311,-0.069795,8004,60,3,0.700320
+72,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.109825,-0.171905,-0.054139,8004,60,3,0.000000
+72,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.069700,-0.111661,-0.032589,8004,60,3,0.000000
+72,bilinear dressed,AIFS ENS,me,0.000183,-0.026040,0.026573,8004,60,3,0.432125
+72,bilinear dressed,AIFS ENS,rmse,-0.036279,-0.063521,-0.009038,8004,60,3,0.251067
+72,bilinear dressed,AIFS ENS,crps,-0.026374,-0.046352,-0.006395,8004,60,3,0.318709
+72,surface (40 km ring) dressed,bilinear dressed,me,-0.048011,-0.099042,0.003020,8004,60,3,0.777373
+72,surface (40 km ring) dressed,bilinear dressed,rmse,-0.027380,-0.067266,0.005807,8004,60,3,0.000000
+72,surface (40 km ring) dressed,bilinear dressed,crps,-0.016944,-0.040573,0.002584,8004,60,3,0.000000
+72,CNN v0 dressed,bilinear dressed,me,0.000591,-0.257617,0.258799,8004,60,3,0.753409
+72,CNN v0 dressed,bilinear dressed,rmse,0.057096,-0.001733,0.126898,8004,60,3,0.000000
+72,CNN v0 dressed,bilinear dressed,crps,0.038725,0.006332,0.072564,8004,60,3,0.146823
+72,lookup own cell (not held out) dressed,bilinear dressed,me,-0.138736,-0.204506,-0.072966,8004,60,3,0.739994
+72,lookup own cell (not held out) dressed,bilinear dressed,rmse,-0.073546,-0.127983,-0.028601,8004,60,3,0.000000
+72,lookup own cell (not held out) dressed,bilinear dressed,crps,-0.043327,-0.078791,-0.016082,8004,60,3,0.000000
+120,surface (40 km ring) dressed,AIFS ENS,me,0.006078,-0.047897,0.060053,7672,58,3,0.637612
+120,surface (40 km ring) dressed,AIFS ENS,rmse,-0.046290,-0.078511,-0.013695,7672,58,3,0.000000
+120,surface (40 km ring) dressed,AIFS ENS,crps,-0.031749,-0.052459,-0.011097,7672,58,3,0.000000
+120,CNN v0 dressed,AIFS ENS,me,0.021418,-0.325664,0.368500,7672,58,3,0.741350
+120,CNN v0 dressed,AIFS ENS,rmse,0.006284,-0.076353,0.088921,7672,58,3,0.427113
+120,CNN v0 dressed,AIFS ENS,crps,0.000356,-0.040196,0.040907,7672,58,3,0.401418
+120,lookup own cell (not held out) dressed,AIFS ENS,me,-0.079814,-0.144594,-0.015033,7672,58,3,0.656662
+120,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.076062,-0.122808,-0.030518,7672,58,3,0.000000
+120,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.048976,-0.079422,-0.021569,7672,58,3,0.000000
+120,bilinear dressed,AIFS ENS,me,-0.000295,-0.027856,0.027266,7672,58,3,0.628616
+120,bilinear dressed,AIFS ENS,rmse,-0.022657,-0.045216,-0.000099,7672,58,3,0.011361
+120,bilinear dressed,AIFS ENS,crps,-0.015838,-0.030720,-0.000956,7672,58,3,0.198155
+120,surface (40 km ring) dressed,bilinear dressed,me,0.006373,-0.041073,0.053820,7672,58,3,0.688396
+120,surface (40 km ring) dressed,bilinear dressed,rmse,-0.023633,-0.056492,0.005125,7672,58,3,0.000000
+120,surface (40 km ring) dressed,bilinear dressed,crps,-0.015912,-0.035848,0.002138,7672,58,3,0.000000
+120,CNN v0 dressed,bilinear dressed,me,0.021713,-0.312358,0.355784,7672,58,3,0.729088
+120,CNN v0 dressed,bilinear dressed,rmse,0.028941,-0.047593,0.105474,7672,58,3,0.305477
+120,CNN v0 dressed,bilinear dressed,crps,0.016193,-0.020901,0.053290,7672,58,3,0.202590
+120,lookup own cell (not held out) dressed,bilinear dressed,me,-0.079519,-0.137799,-0.021238,7672,58,3,0.634075
+120,lookup own cell (not held out) dressed,bilinear dressed,rmse,-0.053405,-0.096859,-0.015981,7672,58,3,0.000000
+120,lookup own cell (not held out) dressed,bilinear dressed,crps,-0.033138,-0.059866,-0.009995,7672,58,3,0.000000
+168,surface (40 km ring) dressed,AIFS ENS,me,0.155989,0.088812,0.223166,7341,56,3,0.759786
+168,surface (40 km ring) dressed,AIFS ENS,rmse,-0.048068,-0.094817,-0.002553,7341,56,3,0.000000
+168,surface (40 km ring) dressed,AIFS ENS,crps,-0.032850,-0.061977,-0.005371,7341,56,3,0.000000
+168,CNN v0 dressed,AIFS ENS,me,0.083524,-0.302547,0.469594,7341,56,3,0.730435
+168,CNN v0 dressed,AIFS ENS,rmse,-0.023846,-0.149513,0.101820,7341,56,3,0.518304
+168,CNN v0 dressed,AIFS ENS,crps,-0.024198,-0.097565,0.049169,7341,56,3,0.460882
+168,lookup own cell (not held out) dressed,AIFS ENS,me,0.070324,-0.013602,0.154250,7341,56,3,0.745644
+168,lookup own cell (not held out) dressed,AIFS ENS,rmse,-0.062412,-0.109402,-0.019425,7341,56,3,0.000000
+168,lookup own cell (not held out) dressed,AIFS ENS,crps,-0.042543,-0.073883,-0.014397,7341,56,3,0.000000
+168,bilinear dressed,AIFS ENS,me,0.002205,-0.023883,0.028770,7341,56,3,0.592394
+168,bilinear dressed,AIFS ENS,rmse,-0.012282,-0.028708,0.006804,7341,56,3,0.000000
+168,bilinear dressed,AIFS ENS,crps,-0.008291,-0.019079,0.003161,7341,56,3,0.000000
+168,surface (40 km ring) dressed,bilinear dressed,me,0.153784,0.096239,0.211329,7341,56,3,0.793020
+168,surface (40 km ring) dressed,bilinear dressed,rmse,-0.035786,-0.079484,0.006000,7341,56,3,0.000000
+168,surface (40 km ring) dressed,bilinear dressed,crps,-0.024559,-0.052546,0.002570,7341,56,3,0.000000
+168,CNN v0 dressed,bilinear dressed,me,0.081319,-0.291422,0.454060,7341,56,3,0.718616
+168,CNN v0 dressed,bilinear dressed,rmse,-0.011565,-0.133658,0.110529,7341,56,3,0.528340
+168,CNN v0 dressed,bilinear dressed,crps,-0.015908,-0.087077,0.055262,7341,56,3,0.468098
+168,lookup own cell (not held out) dressed,bilinear dressed,me,0.068119,-0.006712,0.142950,7341,56,3,0.749113
+168,lookup own cell (not held out) dressed,bilinear dressed,rmse,-0.050131,-0.091708,-0.011897,7341,56,3,0.000000
+168,lookup own cell (not held out) dressed,bilinear dressed,crps,-0.034252,-0.062567,-0.008968,7341,56,3,0.000000
