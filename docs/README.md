@@ -14,11 +14,11 @@ re-fetch (§5).
 
 ```python
 from dataset import load_stage1, load_stage2, load_stations, check
-d = load_stage2(host)              # X, Y, B, R, lead, fold, valid, orog, lsm, coords
-d = load_stage2(host, aux=True)    # + 7 ERA5 predictor channels
-d = load_stage1(host)              # ERA5 -> CERRA, 3-channel by default
-st, obs = load_stations(host)
-assert all(check(host).values())   # 15 assertions against documented values
+d = load_stage2()              # X, Y, B, R, lead, fold, valid, orog, lsm, coords
+d = load_stage2(aux=True)      # + 7 ERA5 predictor channels
+d = load_stage1()              # ERA5 -> CERRA, 3-channel by default
+st, obs = load_stations()
+assert all(check().values())   # 15 assertions against documented values
 ```
 
 **Five files, one per source.** Nothing derived is stored — pairing, the bilinear
@@ -27,9 +27,9 @@ baseline `B`, the residual `R = Y − B` and the fold assignment are all compute
 call (~25 s for both stages).
 
 That is deliberate. Storing pre-paired training sets meant CERRA lived in three files at
-once and they could silently disagree. Verified: the loader reproduces the old
-the stage-2 set and the stage-1 set **exactly** — X bit-identical, Y/B/R to
-1e-4 (float32 rounding), lead/fold/valid exact.
+once and they could silently disagree. Verified: the loader reproduces the old stage-2 and
+stage-1 sets **exactly** — X bit-identical, Y/B/R to 1e-4 (float32 rounding),
+lead/fold/valid exact.
 
 > Comparing the two requires sorting on **(valid, lead)**, not valid alone: 544 of 546
 > valid times are shared by up to 6 different (init, lead) pairs, so valid is not a
@@ -40,7 +40,7 @@ the stage-2 set and the stage-1 set **exactly** — X bit-identical, Y/B/R to
 | | |
 |---|---|
 | **`README.md`** | this file — index and closing state |
-| **`DATA.md`** | every source, how it was obtained, and 10 traps that silently corrupt results |
+| **`DATA.md`** | every source, how it was obtained, and 11 traps that silently corrupt results |
 | **`COMPARISONS.md`** | which comparison a number belongs to. **Read before quoting any RMSE** |
 | **`GRIDS.md`** | lat/lon ↔ Lambert alignment, worked at St Petersburg; conservative regridding |
 | **`MODEL.md`** | data provenance trail plus the fitted architecture ladder |
@@ -104,7 +104,7 @@ ERA5 was requested with `area=[67.0, 18.5, 53.0, 47.25]`, which reproduces the s
 input grid's 57 × 116 **exactly** — asserted against `src_lat`/`src_lon`, not assumed. All
 2,680 CERRA analyses found a matching ERA5 valid time. 35.7 MB, ~3 min end to end.
 
-`load_stage1(host)` returns the 3-channel form by default — the analysis repeated with
+`load_stage1()` returns the 3-channel form by default — the analysis repeated with
 spread = 0, so the stage-2 architecture consumes it unchanged; pass
 `three_channel=False` for the honest single-channel shape.
 

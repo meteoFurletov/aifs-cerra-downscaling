@@ -60,7 +60,7 @@ report.
 
 ## Part 2 — Architecture, by elimination
 
-![Five models fitted; where the gain is, and where it is not]({{artifact:art_f12aa967-db99-4e5f-a2ed-c8684b863e07}})
+![Five models fitted; where the gain is, and where it is not](../figures/model_ladder.png)
 
 Every rung below was **fitted and cross-validated**, not reasoned about. Gains are
 comparison A (gridded, CERRA as truth): RMSE against the interpolation baseline on the

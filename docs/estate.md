@@ -42,8 +42,8 @@ drafting. A correction that lands in chat twice lands here once.
 - Local only: the 13 GB of raw CERRA GRIB (`data/raw/`), the Copernicus key
   (`~/.cdsapirc`), and the `pipeline/` scripts that rebuild sources or fetch new data.
 - `pipeline/` scripts come from Claude Science's flat folder and read and write the
-  current directory; run them from `data/` or `data/scratch/`. `dataset.py` and the
-  docs still carry leftovers from it (`host` arguments, `{{artifact:...}}` links).
+  current directory; run them from `data/` or `data/scratch/`. `dataset.py` still
+  carries a leftover from it: the optional `host` argument.
 - Cloud sessions have no GPU. Their SessionStart hook runs `uv sync` and fetches the
   sources. Balka reaches them through the environment's setup script
   (`scripts/cloud_env_setup.sh`), because cloud sessions don't install plugins from

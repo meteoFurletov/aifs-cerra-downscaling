@@ -40,7 +40,7 @@ the project design.
    Standard scoring artefacts are the same magnitude as the entire effect being chased.
    See §8.
 
-![Two quantitative warnings from the review: the honest skill ladder, and protocol artefacts against effect size]({{artifact:art_e0a9c8ac-2786-45af-ba7a-2a1c3cea3da6}})
+![Two quantitative warnings from the review: the honest skill ladder, and protocol artefacts against effect size](../figures/lit_skill_accounting.png)
 
 ---
 
