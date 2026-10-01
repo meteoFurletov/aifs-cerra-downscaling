@@ -76,8 +76,9 @@ residual target.
 | 5 | **conv net, 39k params** | **+0.085** |
 
 Rung 5 is the last epoch, averaged over warm-season folds 0–2 (+0.117, +0.093, +0.045).
-`train_downscale.py` reports the best of its test-fold checkpoints instead (+0.090, in
-`results/cnn_results.json`, and in the figure), which picks the epoch on the data it scores.
+`train_downscale.py` reports the best of its four test-fold checkpoints instead (+0.090, in
+`results/cnn_results.json`, the figure and `domain_spec_leningrad.json`), which picks the
+epoch on the data it scores.
 
 > **Not one sample, and not reproducible from committed code.** Rungs 1–4 come from
 > `results/ladder.json`, scored on all 13 folds; no script in the repo produces that file.
@@ -124,7 +125,7 @@ output  (1, 123, 127)  residual, added to bilinear(input)
 
 ### Where the gain actually is
 
-Both breakdowns below are comparison A on warm-season folds 0–2.
+The surface and lead breakdowns below are comparison A on warm-season folds 0–2.
 
 **By surface** — this is the result that matters:
 
@@ -133,6 +134,11 @@ Both breakdowns below are comparison A on warm-season folds 0–2.
 | **Ladoga area** | 2.621 | 1.848 | **+0.773** |
 | Open water | 2.143 | 1.789 | +0.354 |
 | Solid land | 1.926 | 1.881 | +0.045 |
+
+> **From the +0.090 best-checkpoint evaluation, and not reproducible from committed code.**
+> No committed script or Ladoga mask produces this table, and its interpolation column
+> matches no land-sea threshold on folds 0–2. The last-epoch predictions give +0.34 over
+> open water (lsm < 0.05) and +0.05 over solid land (lsm > 0.95).
 
 **17× more gain over Ladoga than over land.** The model found exactly the signal the
 spatial analysis predicted — sub-grid lake-land contrast — without being told where to
@@ -144,16 +150,16 @@ earlier finding that short leads are representation-dominated and long leads are
 forecast-error-dominated. **Report per lead; a pooled number describes no real forecast.**
 
 **At stations, not yet.** A first, provisional pass in comparison B (83 stations, nearest
-cell, the same folds, not held out by location) finds the conv net worse than bilinear at
-every lead but +168 h. The comparison at stations held out by location is in progress
-(`README.md`, "Next step").
+cell, the same folds, not held out by location), not yet committed, finds the conv net
+worse than bilinear at every lead but +168 h. The comparison at stations held out by
+location is in progress ([README.md, Next step](../README.md#next-step)).
 
 ### The honest caveat
 
-High-wavenumber power in the prediction was quoted as **0.088 of the truth's**. No
-committed script computes it and it does not reproduce: the definitions tried give
-0.13–0.21 for the residual. Either way the model is far smoother than the field it
-predicts. It is winning on RMSE by being conservative, which is
+High-wavenumber power in the prediction was quoted as **0.088 of the truth's** (still in
+`domain_spec_leningrad.json`). No committed script computes it and it does not reproduce:
+the definitions tried give 0.13–0.21 for the residual. Either way the model is far
+smoother than the field it predicts. It is winning on RMSE by being conservative, which is
 exactly what an L2-family loss rewards. It has learned *where* the residual lives (the
 lakes) but not its full amplitude.
 

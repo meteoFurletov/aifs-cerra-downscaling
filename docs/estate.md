@@ -39,11 +39,13 @@ drafting. A correction that lands in chat twice lands here once.
   that touches a data path before changing it.
 - `dataset.py` is the only way to build training sets. Nothing derived is stored;
   `check()` stays 15/15 `True`. Stage-2 rows are keyed by **(valid, lead)**.
-- Local only: the 13 GB of raw CERRA GRIB (`data/raw/`), the Copernicus key
-  (`~/.cdsapirc`), and the `pipeline/` scripts that rebuild sources or fetch new data.
+- Local only: the 13 GB of raw CERRA GRIB (`data/raw/`) and the Copernicus key
+  (`~/.cdsapirc`), so the `pipeline/` scripts that rebuild sources or fetch new data
+  run locally only.
 - `pipeline/` scripts come from Claude Science's flat folder and read and write the
-  current directory; run them from `data/` or `data/scratch/`. `dataset.py` still
-  carries a leftover from it: the optional `host` argument.
+  current directory; run them from `data/` or `data/scratch/`. `dataset.py` (optional
+  `host` argument) and `fetch_aifs_overlap.py` (`kernel` import) still carry leftovers
+  from it.
 - Cloud sessions have no GPU. Their SessionStart hook runs `uv sync` and fetches the
   sources. Balka reaches them through the environment's setup script
   (`scripts/cloud_env_setup.sh`), because cloud sessions don't install plugins from

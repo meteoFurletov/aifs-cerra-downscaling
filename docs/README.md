@@ -5,8 +5,8 @@ regional reanalysis grid (5.5 km) over Leningrad Oblast + margin, and verify aga
 station observations.
 
 **Status.** The data phase is closed. Every input, target and truth exists, is validated,
-and restores from artifacts in one call. Stage-2 is trainable today. Stage-1 needs one
-re-fetch (§5).
+and restores from the five source files in one call. Stage-2 is trainable today. Stage-1
+needs one re-fetch (§5).
 
 ---
 
@@ -73,7 +73,7 @@ extended back), `synop_fourway.parquet` (the four-way verification baselines in
 
 Measured over 2025-07 → 2026-05, 334 days, all four sources present.
 
-| Against 83 SYNOP stations | RMSE |
+| Comparison B, against 83 SYNOP stations | RMSE |
 |---|---|
 | CERRA 5.5 km (the target) | **1.076 °C** ← floor; no model beats this |
 | ERA5 0.25° | 1.475 °C |
@@ -82,8 +82,8 @@ Measured over 2025-07 → 2026-05, 334 days, all four sources present.
 - **Headroom = 0.400 °C** — what resolution buys, on truth. Replicated on 2020 with a
   different observation archive (0.288 °C).
 - **Stage-2 objective = 0.588 °C** — AIFS(+24 h) minus CERRA.
-- **Gridded baseline = 1.416 °C** at +24 h (2.065 °C pooled over all leads, a number that
-  describes no real forecast situation — always report per lead).
+- **Gridded baseline (comparison A) = 1.416 °C** at +24 h (2.065 °C pooled over all
+  leads, a number that describes no real forecast situation — always report per lead).
 - At the station cells the error decomposes exactly: **1.384 °C** downscaling gap +
   **1.076 °C** floor → **1.626 °C** experienced. About three quarters of the variance a
   user experiences at +24 h is in the part downscaling addresses.
@@ -93,7 +93,7 @@ Measured over 2025-07 → 2026-05, 334 days, all four sources present.
 **ERA5 → CERRA, 2,184 pairs, 13 folds of exactly 168.** Both sides are analyses, so the
 input carries no forecast error and the model learns the pure spatial operator.
 
-| | Baseline RMSE |
+| | Baseline RMSE, comparison A (gridded, CERRA as truth) |
 |---|---|
 | stage 1: ERA5 → CERRA | **1.236 °C** |
 | stage 2: AIFS +0 h → CERRA | 1.318 °C |
@@ -165,10 +165,10 @@ Folds 0–1 are pure summer, 2 autumn/summer, 3–5 autumn, **6–8 winter**, 9 
 test than random splitting, but it means results must be reported per fold, never pooled.
 
 **This changes how the reported model result must be read.** The comparison-A gains,
-+0.085 °C mean and +0.773 °C over Ladoga, were tested on folds 0, 1, 2 — 576 summer and
-144 autumn samples, **zero winter samples**. They are warm-season numbers. Winter is where the lake-land
-contrast is largest (sd 1.702 °C) and least calendar-predictable, so it is the most likely
-place for the estimate to move.
++0.085 °C mean and +0.34 °C over open water, were tested on folds 0, 1, 2 — 576 summer
+and 144 autumn samples, **zero winter samples**. They are warm-season numbers. Winter is
+where the lake-land contrast is largest (sd 1.702 °C) and least calendar-predictable, so
+it is the most likely place for the estimate to move.
 
 ### Finding: one winter only
 
@@ -204,15 +204,16 @@ baseline:
 |---|---|
 | per-cell linear, 10 local features | +0.034 °C |
 | global ridge on 40 residual PCs | **−0.133 °C** (overfits: 6.6k predictors, 3k samples) |
-| conv net, 39k params | **+0.085 °C** (last epoch, warm-season folds 0–2) |
+| conv net, 39k params | **+0.085 °C** (last epoch, pooled over leads, warm-season folds 0–2) |
 
 Not one sample: the linear rows come from `results/ladder.json` (all 13 folds; no committed
 script produces it), the conv net from folds 0–2 only. See `MODEL.md` Part 2.
 
 Those two failures pin the architecture from both sides: it needs a spatial receptive field
-*and* shared weights. The conv net gains **+0.773 °C over Ladoga against +0.045 over
-land** — it found the sub-grid lake signal without being told where to look. At stations
-(comparison B, provisional) it does not yet beat bilinear; see `MODEL.md`.
+*and* shared weights. At its last epoch the conv net gains **+0.34 °C over open water
+against +0.05 over land** — it found the sub-grid lake signal without being told where to
+look. At stations (comparison B, provisional) it does not beat bilinear at five of six
+leads; see `MODEL.md`.
 
 Open caveat: the prediction is far smoother than the truth. The model improves accuracy,
 not realism. See `MODEL.md` §"honest caveat".

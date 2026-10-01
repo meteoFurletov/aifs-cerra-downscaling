@@ -5,8 +5,8 @@ reanalysis grid (5.5 km) over Leningrad Oblast and its lakes, and verify the res
 against independent SYNOP station observations.
 
 Moved out of Claude Science on 2026-09-24 (project "Downscaling of NWP for northwest
-of Russia"). Every file the project held is here, sorted into folders. The one file
-left behind is the saved Copernicus API key.
+of Russia"). Every file the project held was moved to the owner's checkout; the public
+repo carries the code, docs, results and figures, not the data (see [Layout](#layout)).
 
 ## Quick start
 
@@ -36,9 +36,11 @@ SessionStart hook in `.claude/settings.json`.
 Store with your own key in `~/.cdsapirc`, AIFS ENS from dynamical.org, SYNOP from OGIMET.
 The `pipeline/` scripts hold the retrieval, decoding and cropping steps, and
 `docs/DATA.md` §2 says what each source costs: CERRA cannot be cut to a region, so a year
-is 6.7 GB downloaded for 0.17 GB kept. Two gaps remain: `fetch_aifs_overlap.py` opens the
-store through a Claude Science helper that is not in this repo, and no committed script
-packs the outputs into the five files.
+is 6.7 GB downloaded for 0.17 GB kept. Three gaps remain: ERA5 has no committed request
+(`docs/README.md` §5 gives its area), `fetch_aifs_overlap.py` opens the store through a
+Claude Science helper that is not in this repo, and no committed script packs the outputs
+into the five files. `fetch_cerra_target.py` asks for 2015–24; set its `YEARS` for
+2025–26.
 
 ## Layout
 
@@ -63,12 +65,14 @@ packs the outputs into the five files.
   validated. See `docs/README.md`.
 - **Deterministic baseline fitted.** In comparison A (gridded, CERRA as truth; see
   `docs/COMPARISONS.md`) a 39k-parameter CNN gains +0.085 °C over bilinear
-  interpolation at its last epoch on held-out warm-season folds 0–2, almost all of it
-  over Ladoga (+0.77 °C there, +0.05 °C over land). The +0.09 °C quoted earlier was the
-  best epoch picked on the test fold itself. At stations (comparison B, provisional:
-  nearest cell, the same folds, not held out by location) it does not yet beat bilinear
-  at five of six leads; the held-out comparison is the next step. It is far too smooth:
-  the next rung is a generative model. See `docs/MODEL.md`.
+  interpolation at its last epoch on held-out warm-season folds 0–2, pooled over leads
+  (+0.11 °C at +0 h to +0.07 °C at +168 h). The gain is largest over water: +0.34 °C
+  over open water against +0.05 °C over land. The +0.090 °C in
+  `results/cnn_results.json` and the `docs/MODEL.md` figure is the best of four
+  checkpoints, picked on the test fold itself. At stations (comparison B, a provisional
+  first pass not yet committed: nearest cell, the same folds, not held out by location)
+  it does not beat bilinear at five of six leads; the held-out comparison is the next
+  step. It is far too smooth: the next rung is a generative model. See `docs/MODEL.md`.
 - **Related work.** Jua, "Universal Diffusion-Based Probabilistic Downscaling"
   (arXiv 2602.11893): the same ERA5 → CERRA setup at European scale, with a diffusion
   model applied zero-shot to AIFS and other forecasts.
@@ -107,8 +111,9 @@ redistributed.
   Modified here: cropped, reduced to control, ensemble mean and spread, and interpolated.
   ECMWF does not accept any liability whatsoever for any error or omission in the data,
   their availability, or for any loss or damage arising from their use.
-- **SYNOP**: WMO FM-12 reports from Russian, Finnish and Estonian stations, retrieved
-  through [OGIMET](https://www.ogimet.com). The reports are the copyright of the
+- **SYNOP**: WMO FM-12 reports from 299 stations in Russia, Finland (including Åland),
+  Estonia, Latvia, Sweden, Lithuania and Belarus, retrieved through
+  [OGIMET](https://www.ogimet.com). The reports are the copyright of the
   national services that issue them, subject to WMO Resolution 40.
 - Also used: NOAA NCEI's Integrated Surface Database (ISD) for the 2015–24 station
   archive and comparison C, and the Iowa Environmental Mesonet (IEM, Iowa State
