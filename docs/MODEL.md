@@ -77,7 +77,11 @@ residual target.
 
 Rung 5 is the last epoch, averaged over warm-season folds 0–2 (+0.117, +0.093, +0.045).
 `train_downscale.py` reports the best of its test-fold checkpoints instead (+0.090, in
-`results/cnn_results.json`), which picks the epoch on the data it scores.
+`results/cnn_results.json`, and in the figure), which picks the epoch on the data it scores.
+
+> **Not one sample, and not reproducible from committed code.** Rungs 1–4 come from
+> `results/ladder.json`, scored on all 13 folds; no script in the repo produces that file.
+> Rung 5 covers folds 0–2 only.
 
 Rung 4 is the informative failure: 6,614 predictors against ~3,000 samples overfits so
 badly it is *worse than doing nothing*. Rung 3 is the other bound — local features, however
@@ -146,8 +150,10 @@ every lead but +168 h. The comparison at stations held out by location is in pro
 
 ### The honest caveat
 
-High-wavenumber power in the prediction is **0.088 of the truth's** — the model is far
-smoother than the field it predicts. It is winning on RMSE by being conservative, which is
+High-wavenumber power in the prediction was quoted as **0.088 of the truth's**. No
+committed script computes it and it does not reproduce: the definitions tried give
+0.13–0.21 for the residual. Either way the model is far smoother than the field it
+predicts. It is winning on RMSE by being conservative, which is
 exactly what an L2-family loss rewards. It has learned *where* the residual lives (the
 lakes) but not its full amplitude.
 
@@ -165,6 +171,6 @@ only be attempted now that a deterministic baseline exists to beat.
 3. **Run the conservation check** — coarsen the model's output back to 0.25 ° with
    `esmf_roundtrip.py`. A model that improves station RMSE while failing this is
    redistributing heat, not resolving it.
-4. **Add a spectral term to the loss** and re-measure the 0.088 power ratio. Only after
-   1–3 pass.
+4. **Add a spectral term to the loss** and measure the power ratio with a committed
+   script. Only after 1–3 pass.
 5. **Then** consider capacity, individual members, or a diffusion decoder.

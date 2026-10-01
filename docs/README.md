@@ -206,13 +206,16 @@ baseline:
 | global ridge on 40 residual PCs | **−0.133 °C** (overfits: 6.6k predictors, 3k samples) |
 | conv net, 39k params | **+0.085 °C** (last epoch, warm-season folds 0–2) |
 
+Not one sample: the linear rows come from `results/ladder.json` (all 13 folds; no committed
+script produces it), the conv net from folds 0–2 only. See `MODEL.md` Part 2.
+
 Those two failures pin the architecture from both sides: it needs a spatial receptive field
 *and* shared weights. The conv net gains **+0.773 °C over Ladoga against +0.045 over
 land** — it found the sub-grid lake signal without being told where to look. At stations
 (comparison B, provisional) it does not yet beat bilinear; see `MODEL.md`.
 
-Open caveat: high-wavenumber power in the prediction is 0.088 of the truth's. The model
-improves accuracy, not realism. See `MODEL.md` §"honest caveat".
+Open caveat: the prediction is far smoother than the truth. The model improves accuracy,
+not realism. See `MODEL.md` §"honest caveat".
 
 ## 8. Environments
 
