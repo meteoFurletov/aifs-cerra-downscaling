@@ -41,14 +41,16 @@ Conventions this file enforces
     PermissionError unless unlock_test=True (--unlock-test). Dev rows are folds 0-2.
   * Prediction files are keyed on (valid, lead), never on row position. A file is
     refused when a key is not a load_stage2 row or repeats, when its rows disagree
-    with its keys, or when at some lead its fields track another valid time or
-    another lead's input (_check_tracking, per lead).
+    with its keys, or when at some lead, or in one (lead, temporal fold, valid hour)
+    segment, its fields track another valid time or another lead's input
+    (_check_tracking).
   * common_valid=True keeps the (station, valid) pairs scored at every lead only:
     lead 168 starts a week later, so the full tables do not share verification times.
   * Bootstrap intervals are for score differences between two forecasts, per lead:
     circular moving blocks of 5 valid days over the days present, every station of a
     drawn day kept with it, stations optionally resampled too; 95 % intervals from the
-    replicates, rescaled for the block bootstrap's small-sample bias (see bootstrap).
+    replicates, rescaled for the block bootstrap's small-sample bias, and widened where
+    the temporal folds disagree by more than 5-day blocks allow (see bootstrap).
     A lead with fewer than 4 blocks' worth of valid days gets no interval.
 
 Prediction file (.npz; the format of scratch/preds/*.npz, harness.save_pred)
@@ -169,7 +171,10 @@ def forecasts(S, preds=None, check_tracking=True):
     for name, src in (preds or {}).items():
         if name in F or name + " dressed" in F or name.startswith("CERRA"):
             raise ValueError(f"prediction name {name!r} clashes with a built-in row")
-        mu, cover = load_pred(S, src, check_tracking)
+        try:
+            mu, cover = load_pred(S, src, check_tracking)
+        except ValueError as e:
+            raise ValueError(f"prediction {name!r}: {e}") from None
         F[name] = _fc("point", mu, cover=cover)
         F[name + " dressed"] = _fc("dressed", mu, sd_a, cover)
     y = _at_cerra(S, S["d"]["Y"])
@@ -232,33 +237,42 @@ def _valid_ns(S, valid):
                      "since the epoch")
 
 
-def _check_tracking(S, r, field, step=3, floor=0.25, max_lag_h=14 * 24, min_pairs=3):
-    """Refuse a file whose fields, at any lead, follow another valid time or another lead.
+def _check_tracking(S, r, field, step=3, floor=0.25, max_lag_h=14 * 24, min_pairs=5):
+    """Refuse a file whose fields, at a lead or in one segment of a lead, follow another
+    valid time or another lead.
 
-    Two tests per lead on every 3rd cell, each field's domain mean removed (a bias does not
-    count). A file fails if either fails at any one lead.
-      distance  each field against the bilinear fields of its own row and of the rows at
-                the same lead 12 and 24 h either side: at least `floor` of them must sit
-                nearest their own. Catches fields one row or one day off.
-      tendency  the change between consecutive fields of the same lead and valid hour,
-                pattern-correlated with the change between the bilinear fields of the
-                same rows. On average it must correlate better with its own rows' change
-                than with that of the same lead shifted 12 h to 14 days either way, or
-                of any other lead at the same valid times. A model's day-to-day change
-                follows its input's whatever its bias or damping, so this catches
-                larger shifts, shuffled fields and a wrong lead.
+    Two tests on every 3rd cell, each field's domain mean removed (a bias does not count).
+    A file fails if either fails anywhere.
+      distance  per lead: each field against the bilinear fields of its own row and of the
+                rows at the same lead 12 and 24 h either side: at least `floor` of them
+                must sit nearest their own.
+      tendency  per segment, a (lead, temporal fold, valid hour), the unit by which
+                per-fold or per-hour predictions get stitched into one file: the change
+                between consecutive fields of the segment, pattern-correlated with the
+                change between the bilinear fields of the same rows. On average it must
+                correlate better with its own rows' change than with that of the same
+                lead shifted 12 h to 14 days either way, or of any other lead at the same
+                valid times (an alternative counts where it has at least half the
+                segment's pairs). A model's day-to-day change follows its input's whatever
+                its bias or damping, so one misaligned segment fails however many others
+                are right: a segment a day or a week off, another fold's or another lead's
+                fields, shuffled fields. Pooling a lead let the aligned majority hide it.
     On the dev files (v1, the lookups, CNN v0) every lead clears the distance test at
-    >= 93 % and the tendency test with a mean correlation margin >= 0.09 (>= 0.06 with
-    iid N(0, 1) noise added to every cell); a model damped to 0.1 of its anomaly, and a
-    lead x hour climatology (no change, so the distance test only), clear both. Every
-    shifted, shuffled or wrong-lead variant tried fails at its lead (margin <= -0.04).
+    >= 93 % and every segment the tendency test with a mean correlation margin >= 0.07
+    (>= 0.028 for bilinear + mean residual with iid N(0, 2) noise on every cell); a model
+    damped to 0.1 of its anomaly, and a lead x hour climatology (no change, so the distance
+    test only), clear both. In every partly misaligned copy of v2b_lookup_nohour tried (one
+    fold, one fold at one lead or the 12 UTC fields 1 to 7 days off, two folds swapped, one
+    fold's leads exchanged)
+    each misaligned segment fails (margin <= -0.069) and each aligned one passes (>= 0.081).
     A field that knows the analysis fails the tendency test from +48 h on, its changes
     following the shortest lead's input: CERRA itself is refused, and is already the
-    table's ceiling row. check_tracking=False overrides. A lead with fewer than
-    min_pairs consecutive same-hour pairs gets the distance test only.
-    A guard against misalignment, not proof of alignment.
+    table's ceiling row. check_tracking=False overrides. Not caught: a misalignment inside
+    a segment (a few days of a fold), or in a segment with fewer than min_pairs pairs,
+    which gets the lead's distance test only. A guard against misalignment, not proof of
+    alignment.
     """
-    valid, lead, hour = S["valid"].asi8, S["lead"], S["hour"]
+    valid, lead, hour, tfold = S["valid"].asi8, S["lead"], S["hour"], S["fold"]
     Bs = S["d"]["B"][:, ::step, ::step].astype("float64")
     Bs -= Bs.mean((1, 2), keepdims=True)
     f = np.asarray(field)[:, ::step, ::step].astype("float64")
@@ -278,7 +292,7 @@ def _check_tracking(S, r, field, step=3, floor=0.25, max_lag_h=14 * 24, min_pair
             c[has] = np.where(den > 0, (xx * d).sum((1, 2)) / den, np.nan)
         return c
 
-    bad = []
+    bad, bad_leads = [], []
     for L in np.unique(lead[r]):
         i = np.where(lead[r] == L)[0]
         own = dist(i, r[i])
@@ -293,15 +307,15 @@ def _check_tracking(S, r, field, step=3, floor=0.25, max_lag_h=14 * 24, min_pair
             if frac < floor:
                 bad.append(f"+{L} h: {frac:.0%} of fields sit nearest their own row's bilinear "
                            "field (one row or one day off?)")
+                bad_leads.append(int(L))
 
-        p1, p2 = [], []
-        for h in np.unique(hour[r[i]]):
-            j = i[hour[r[i]] == h]
-            j = j[np.argsort(valid[r[j]])]
-            p1.append(j[:-1]); p2.append(j[1:])
-        p1, p2 = np.concatenate(p1), np.concatenate(p2)
+    segments = pd.DataFrame(dict(L=lead[r], k=tfold[r], h=hour[r])).groupby(["L", "k", "h"]).indices
+    for (L, k, h), i in segments.items():
+        j = i[np.argsort(valid[r[i]])]
+        p1, p2 = j[:-1], j[1:]
         if len(p1) < min_pairs:
             continue
+        need = max(min_pairs, -(-len(p1) // 2))
         x = f[p2] - f[p1]
         v1, v2, LL = valid[r[p1]], valid[r[p2]], lead[r[p1]]
         mine = corr(x, r[p1], r[p2])
@@ -314,17 +328,21 @@ def _check_tracking(S, r, field, step=3, floor=0.25, max_lag_h=14 * 24, min_pair
         for name, (w1, w2, wl) in alts.items():
             c = corr(x, _rows_of(S, w1, wl), _rows_of(S, w2, wl))
             ok = np.isfinite(mine) & np.isfinite(c)
-            if ok.sum() >= min_pairs:
+            if ok.sum() >= need:
                 m = float((mine[ok] - c[ok]).mean())
                 if worst is None or m < worst[1]:
                     worst = (name, m)
         if worst is not None and worst[1] <= 0:
-            bad.append(f"+{L} h: day-to-day changes follow the bilinear field at {worst[0]} "
-                       f"as well as or better than their own (mean correlation margin {worst[1]:+.3f})")
+            bad.append(f"+{L} h, fold {k}, {h:02d} UTC: day-to-day changes follow the bilinear "
+                       f"field at {worst[0]} as well as or better than their own (mean correlation "
+                       f"margin {worst[1]:+.3f})")
+            bad_leads.append(int(L))
     if bad:
-        raise ValueError("the file looks misaligned: " + "; ".join(bad) + ". A field that knows the "
-                         "analysis (CERRA itself) fails the same way. check_tracking=False "
-                         "(--no-tracking-check) overrides")
+        shown = bad[:8] + ([f"and {len(bad) - 8} more"] if len(bad) > 8 else [])
+        leads = ", ".join(f"+{L} h" for L in sorted(set(bad_leads)))
+        raise ValueError(f"the file looks misaligned at {leads}: " + "; ".join(shown) + ". A field "
+                         "that knows the analysis (CERRA itself) fails the same way. "
+                         "check_tracking=False (--no-tracking-check) overrides")
 
 
 # ---------------------------------------------------------------- scoring
@@ -483,9 +501,29 @@ def bootstrap(S, F, rows, a, b, n_boot=2000, block_days=BOOT_BLOCK_DAYS,
     synthetic day + station + noise data at the dev size this covers 94-95 % from noise
     only to station-dominated, where the uncorrected crossed resample covered 95-99.7 %.
 
+    Temporal folds. 5-day blocks carry dependence up to about 5 days. A difference that
+    drifts over weeks (an ME difference that moves with the season, a model refitted per
+    fold) makes the folds disagree by more than the blocks allow, and the block interval
+    is then too narrow: on the dev rows the per-fold ME intervals of a lookup model
+    against bilinear were mutually disjoint. So with G >= 3 temporal folds at a lead, the
+    between-fold variance VF = G/(G-1) sum_g U_g^2 (U_g the fold totals of the linearised
+    difference; G-1 degrees of freedom) is set against the block variance VB; its excess
+    tau = max(VF - VB, 0) is added as a between-fold component (DerSimonian & Laird 1986),
+    and the interval widened to cover estimate +- t_nu sqrt(VB + tau [+ station part]), nu
+    by Satterthwaite. tau = 0 leaves the block interval as it is. On synthetic data on the
+    real +24 h and +168 h layouts (3 folds, 600-1000 data sets per case) this covers
+    95-96 % with short memory (mean width 1.2 x the true 95 % width), 93.5-94.5 % for the
+    day structure of the real CRPS differences, 88 % with a fold-level step (sd 0.08)
+    where blocks alone covered 57-60 %, and 83-85 % with AR(1) day effects at lag-1
+    0.88-0.91 (the real ME differences) where blocks alone covered 62-70 %; crossed with
+    stations 89 % there (82 % before). Three folds cannot do better: VF has 2 degrees of
+    freedom. With fewer than 3 folds (one or two scored) there is no check.
+
     A lead with fewer than BOOT_MIN_BLOCKS * block_days valid days gets lo = hi = NaN and
     a warning: too few distinct replicates for an interval.
-    Returns lead, a, b, metric (me, rmse, crps), estimate, lo, hi, n, days.
+    Returns lead, a, b, metric (me, rmse, crps), estimate, lo, hi, n, days, folds (G) and
+    fold_share = tau / (VB + tau), the between-fold part of the day variance (NaN without
+    the check).
     """
     if int(block_days) != block_days or block_days < 1:
         raise ValueError(f"block_days must be a positive integer, got {block_days}")
@@ -499,6 +537,10 @@ def bootstrap(S, F, rows, a, b, n_boot=2000, block_days=BOOT_BLOCK_DAYS,
         m = T["lead"] == L
         days, di = np.unique(T["day"][m], return_inverse=True)
         K = len(days)
+        day_fold = np.zeros(K, int)
+        day_fold[di] = T["tfold"][m]
+        gi = np.unique(day_fold, return_inverse=True)[1]
+        G = int(gi.max()) + 1
         cell = di * n_st + T["station"][m]
 
         def tot(x):
@@ -533,16 +575,18 @@ def bootstrap(S, F, rows, a, b, n_boot=2000, block_days=BOOT_BLOCK_DAYS,
                               n=-(ra[0] - rb[0]) / (2 * N)),
                     crps=dict(ca=1 / N, cb=-1 / N, n=-diff["crps"][0] / N))
         for k, v in diff.items():
-            lo = hi = np.nan
+            lo = hi = share = np.nan
             if enough:
                 c, nu = 1 / np.sqrt(alpha), nu_d
+                u = sum(g * sums[s] for s, g in grad[k].items())     # (K, n_st), sums to 0
+                Wd = W[1:] - 1
+                VD = np.var(Wd @ u.sum(1))
+                d_part, s_part = VD / alpha, 0.0
                 if resample_stations:
-                    u = sum(g * sums[s] for s, g in grad[k].items())     # (K, n_st), sums to 0
-                    Wd, Vd = W[1:] - 1, V[1:] - 1
-                    VD, VS = np.var(Wd @ u.sum(1)), np.var(Vd @ u.sum(0))
+                    Vd = V[1:] - 1
+                    VS = np.var(Vd @ u.sum(0))
                     VI = np.var(np.einsum("bk,km,bm->b", Wd, u, Vd))
                     beta = 1 - 1 / n_st
-                    d_part = VD / alpha
                     s_part = max(VS / beta - VI / (alpha * beta), 0.0)
                     have, want = VD + VS + VI, d_part + s_part
                     if have > 0:
@@ -551,8 +595,18 @@ def bootstrap(S, F, rows, a, b, n_boot=2000, block_days=BOOT_BLOCK_DAYS,
                         nu = want ** 2 / (d_part ** 2 / nu_d + s_part ** 2 / max(n_st - 1, 1))
                 c *= student_t.ppf((1 + level) / 2, nu) / zq
                 lo, hi = v[0] + c * (np.quantile(v[1:], q) - v[0])
+                if G >= 3:
+                    U = np.bincount(gi, u.sum(1), G)                     # fold totals
+                    tau = max(G / (G - 1) * (U ** 2).sum() - d_part, 0.0)
+                    share = tau / (d_part + tau) if d_part + tau > 0 else 0.0
+                    if tau > 0:
+                        var = d_part + tau + s_part
+                        nu_t = var ** 2 / (d_part ** 2 / nu_d + tau ** 2 / (G - 1)
+                                           + s_part ** 2 / max(n_st - 1, 1))
+                        hw = student_t.ppf((1 + level) / 2, nu_t) * np.sqrt(var)
+                        lo, hi = min(lo, v[0] - hw), max(hi, v[0] + hw)
             out.append(dict(lead=int(L), a=a, b=b, metric=k, estimate=v[0], lo=lo, hi=hi,
-                            n=int(n[0]), days=K))
+                            n=int(n[0]), days=K, folds=G, fold_share=share))
     return pd.DataFrame(out)
 
 
@@ -561,7 +615,7 @@ def bootstrap(S, F, rows, a, b, n_boot=2000, block_days=BOOT_BLOCK_DAYS,
 def _fmt(v, col):
     if pd.isna(v):
         return ""
-    if col in ("n", "days", "lead", "hour", "sfold", "tfold"):
+    if col in ("n", "days", "lead", "hour", "sfold", "tfold", "folds"):
         return str(int(v))
     return f"{v:.3f}" if isinstance(v, (float, np.floating)) else str(v)
 
@@ -586,8 +640,8 @@ def tables_md(t, title, note):
 
 
 def bootstrap_md(bs, title, note):
-    cols = ["a", "b", "metric", "estimate", "lo", "hi", "n", "days"]
-    heads = ["A", "B", "metric", "A - B", "2.5 %", "97.5 %", "n", "days"]
+    cols = ["a", "b", "metric", "estimate", "lo", "hi", "n", "days", "folds", "fold_share"]
+    heads = ["A", "B", "metric", "A - B", "2.5 %", "97.5 %", "n", "days", "folds", "fold share"]
     lines = [f"# {title}", "", note, ""]
     for L, g in bs.groupby("lead", sort=True):
         lines += [f"## Lead +{L} h", ""] + _md_table(g, cols, heads) + [""]
@@ -671,11 +725,13 @@ def _pred_file(S, rows, field, keys_from=None):
                 valid=S["valid"].asi8[k], lead=S["lead"][k])
 
 
-def _synthetic(obs, lead=0):
-    """A stand-in for load() over synthetic station-times: one row per 12 h, one lead."""
+def _synthetic(obs, lead=0, fold=None):
+    """A stand-in for load() over synthetic station-times: one row per 12 h, one lead.
+    fold (per row, non-decreasing) labels temporal folds, 5 days apart as the real ones."""
     n, k = obs.shape
-    v = pd.DatetimeIndex(FOLD_EPOCH + pd.to_timedelta(np.arange(n) * 12, "h")).as_unit("ns")
-    return dict(valid=v, lead=np.full(n, lead, np.int64), fold=np.zeros(n, int), hour=v.hour.values,
+    fold = np.zeros(n, int) if fold is None else np.asarray(fold, int)
+    v = pd.DatetimeIndex(FOLD_EPOCH + pd.to_timedelta(np.arange(n) * 12 + fold * 120, "h")).as_unit("ns")
+    return dict(valid=v, lead=np.full(n, lead, np.int64), fold=fold, hour=v.hour.values,
                 st=pd.DataFrame({"fold": np.zeros(k, int)}), obs=obs)
 
 
@@ -801,24 +857,50 @@ def self_check(S=None):
     _refused(lambda: load_pred(S, odd), ValueError, "within a year")
     done.append("valid in ns/us/ms/s or datetime64 and harness.save_pred's format load alike")
 
-    # tracking, per lead: a model (bilinear + mean residual) with fields moved in time or lead
+    # tracking: a model (bilinear + mean residual) with fields moved in time or lead
     M0 = B[dev] + S["d"]["R"][dev].mean(0)
+    ld, fo, ho = S["lead"][dev], S["fold"][dev], S["hour"][dev]
 
-    def moved(hours=0, from_lead=None, at=LEADS):
-        """M0 with the fields at leads `at` taken from valid - hours, or from lead from_lead."""
-        sel = np.isin(S["lead"][dev], at)
+    def moved(*moves):
+        """M0 with fields moved: each (sel, hours, from_lead) gives the dev rows in sel the
+        field of valid - hours at lead from_lead (None: their own). Rows whose source is not
+        a dev row are dropped."""
         src = dev.copy()
-        src[sel] = _rows_of(S, S["valid"].asi8[dev[sel]] - hours * NS_HOUR,
-                            S["lead"][dev[sel]] if from_lead is None else np.full(sel.sum(), from_lead))
+        for sel, hours, from_lead in moves:
+            src[sel] = _rows_of(S, S["valid"].asi8[dev[sel]] - hours * NS_HOUR,
+                                ld[sel] if from_lead is None else np.full(sel.sum(), from_lead))
         j = np.searchsorted(dev, src).clip(0, len(dev) - 1)
         ok = dev[j] == src                                # the source is a dev row
         return _pred_file(S, dev[ok], M0[j[ok]])
-    for kw, where in ((dict(hours=24, at=(168,)), "+168 h"),        # one lead a day late
-                      (dict(from_lead=0, at=(168,)), "+168 h"),     # +168 h keys hold +0 h fields
-                      (dict(from_lead=48, at=(24,)), "+24 h"),      # neighbouring leads swapped
-                      (dict(hours=168), "+0 h"),                    # every lead a week late
-                      (dict(hours=-96), "+0 h")):                   # every lead 4 days early
-        _refused(lambda: load_pred(S, moved(**kw)), ValueError, where)
+    every = np.ones(len(dev), bool)
+    for f, where in ((moved((ld == 168, 24, None)), "+168 h"),     # one lead a day late
+                     (moved((ld == 168, 0, 0)), "+168 h"),         # +168 h keys hold +0 h fields
+                     (moved((ld == 24, 0, 48)), "+24 h"),          # neighbouring leads swapped
+                     (moved((every, 168, None)), "+0 h"),          # every lead a week late
+                     (moved((every, -96, None)), "+0 h")):         # every lead 4 days early
+        _refused(lambda: load_pred(S, f), ValueError, where)
+
+    # one segment misaligned, the rest right (per-fold or per-hour predictions stitched with
+    # one part off): refused, naming the bad segments and none of the aligned ones
+    def why(f):
+        try:
+            load_pred(S, f)
+        except ValueError as e:
+            return str(e)
+        raise AssertionError("a partly misaligned file was accepted")
+    day, gap = 24, 26 * 24                                # folds start 26 days apart
+    for f, where, clean in (
+            (moved((fo == 2, day, None)), "fold 2", ("fold 0", "fold 1")),
+            (moved(((fo == 2) & (ld == 24), day, None)), "misaligned at +24 h:", ("fold 0", "fold 1")),
+            (moved((fo == 1, 2 * day, None)), "fold 1", ("fold 0", "fold 2")),
+            (moved((fo == 1, -gap, None), (fo == 2, gap, None)), "fold 1", ("fold 0",)),   # swapped
+            (moved((ho == 12, day, None)), "12 UTC", ("00 UTC",)),
+            (moved(((fo == 2) & (ld == 0), 0, 168), ((fo == 2) & (ld == 168), 0, 0)),
+             "misaligned at +0 h, +168 h:", ("fold 0", "fold 1")),
+            (moved(((fo == 2) & (ld == 24), 0, 48), ((fo == 2) & (ld == 48), 0, 24)),
+             "misaligned at +24 h, +48 h:", ("fold 0", "fold 1"))):
+        msg = why(f)
+        assert where in msg and not any(c in msg for c in clean), msg
     perm = np.arange(len(dev))
     for L in LEADS:
         i = np.where(S["lead"][dev] == L)[0]
@@ -835,8 +917,10 @@ def self_check(S=None):
     Y = S["d"]["Y"]
     _refused(lambda: load_pred(S, _pred_file(S, dev, Y[dev])), ValueError, "+48 h")   # knows the analysis
     load_pred(S, _pred_file(S, dev, Y[dev]), check_tracking=False)
-    done.append("tracking per lead: one lead a day late, a wrong lead, every lead a week late or "
-                "4 days early, shuffled, CERRA refused; noisy, damped, constant models accepted")
+    done.append("tracking: one lead a day late, a wrong lead, every lead a week late or 4 days "
+                "early, shuffled, CERRA refused; one fold a day or two late (at every lead or one), "
+                "two folds swapped, the 12 UTC fields a day late, one fold's leads exchanged refused "
+                "by segment; noisy, damped, constant models accepted")
 
     # partial coverage: refused, or every forecast shrinks to the shared rows
     l24 = dev[S["lead"][dev] == 24]
@@ -890,9 +974,18 @@ def self_check(S=None):
                          ["--pred", f"{tmp}/runC/lr=0.002/model.npz", "--pred", f"a={tmp}/runA/model.npz"]):
                 with contextlib.redirect_stderr(io.StringIO()):
                     _refused(lambda: main(argv), Loaded)
+            # a partly misaligned file: the CLI stops before scoring and names it
+            (Path(tmp) / "late.npz").write_bytes(moved(((fo == 2) & (ld == 168), day, None)).getvalue())
+            g["load"] = lambda: S
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()) as out:
+                _refused(lambda: main(["--pred", f"late={tmp}/late.npz"]), SystemExit)
+            assert "prediction 'late'" in err.getvalue() and "+168 h, fold 2" in err.getvalue(), err.getvalue()
+            assert out.getvalue() == "", "the CLI printed a table for a misaligned file"
     finally:
         g["load"] = real_load
-    done.append("--pred: repeated names refused, paths with '=' parsed")
+    done.append("--pred: repeated names refused, paths with '=' parsed, a partly misaligned file "
+                "stops the CLI")
 
     # shared valid times and groupings
     tc = score(S, F, dev, common_valid=True)
@@ -984,6 +1077,58 @@ def self_check(S=None):
     assert 0.95 < ratios[2] < 1.1, f"crossed, day + station + noise: width / true {ratios[2]:.3f}"
     done.append("bootstrap widths on known truth: days only {:.2f}, crossed noise only {:.2f}, "
                 "crossed with station effects {:.2f} x the true 95 % width".format(*ratios))
+
+    # temporal folds that disagree, known truth 0: 3 folds x 21 days x 2 times x 83 stations,
+    # x = fold step N(0, tau^2) + day N(0, 0.05^2) + N(0, 0.4^2). The same data with the fold
+    # labels hidden is what 5-day blocks alone give
+    def fold_cover(tau, reps=150):
+        rng = np.random.default_rng(11)
+        K, C = 63, 83
+        fold = np.repeat(np.arange(3), 2 * K // 3)
+        hits, width = np.zeros(2), np.zeros(2)
+        for i in range(reps):
+            x = ((rng.normal(0, tau, 3)[fold] + np.repeat(rng.normal(0, 0.05, K), 2))[:, None]
+                 + rng.normal(0, 0.4, (2 * K, C)))
+            obs = rng.normal(15, 5, (2 * K, C))
+            Fx = {"A": _fc("point", obs + x), "B": _fc("point", obs)}
+            syn = _synthetic(obs, fold=fold)
+            for j, s in enumerate((syn, dict(syn, fold=np.zeros_like(fold)))):
+                z = bootstrap(s, Fx, np.arange(2 * K), "A", "B", n_boot=300, seed=i)
+                lo, hi = z.loc[z.metric == "me", ["lo", "hi"]].values[0]
+                hits[j] += lo <= 0 <= hi
+                width[j] += hi - lo
+        return hits / reps, width[0] / width[1]
+    (step, hidden), _ = fold_cover(0.1)
+    assert step >= 0.87 and hidden <= 0.7, f"fold step: coverage {step:.2f}, folds hidden {hidden:.2f}"
+    (flat, _), wr = fold_cover(0.0)
+    assert 0.91 <= flat <= 0.99 and wr <= 1.3, f"no fold effect: coverage {flat:.2f}, width x {wr:.2f}"
+
+    # the dev rows: a lookup (bilinear + mean residual per cell, lead and hour, fitted on the
+    # other dev folds) has an ME difference against bilinear that moves by fold. Its interval
+    # holds every fold's own estimate; 5-day blocks alone (fold labels hidden) miss two of
+    # the three at every lead
+    look = np.empty(M0.shape, "float32")
+    for k in DEV_FOLDS:
+        for L in LEADS:
+            for h in (0, 12):
+                fit = ((S["lead"] == L) & (S["hour"] == h) & np.isin(S["fold"], DEV_FOLDS)
+                       & (S["fold"] != k))
+                sel = (ld == L) & (ho == h) & (fo == k)
+                look[sel] = B[dev[sel]] + S["d"]["R"][fit].mean(0)
+    Fl = forecasts(S, {"look": _pred_file(S, dev, look)})
+    bl = bootstrap(S, Fl, dev, "look dressed", "bilinear dressed", n_boot=300).set_index(["lead", "metric"])
+    hid = bootstrap(dict(S, fold=np.zeros_like(S["fold"])), Fl, dev, "look dressed", "bilinear dressed",
+                    n_boot=300).set_index(["lead", "metric"])
+    tf = score(S, Fl, dev, by="tfold").pivot_table(index=["lead", "tfold"], columns="forecast", values="me")
+    per_fold = tf["look dressed"] - tf["bilinear dressed"]
+    for L in LEADS:
+        r, h, e = bl.loc[(L, "me")], hid.loc[(L, "me")], per_fold.loc[L]
+        assert r.folds == 3 and r.fold_share > 0.5, (L, r)
+        assert r.lo <= e.min() and e.max() <= r.hi, f"+{L} h: [{r.lo:.3f}, {r.hi:.3f}] misses a fold {e.values}"
+        assert ((e < h.lo) | (e > h.hi)).sum() >= 1, f"+{L} h: folds agree, the check proves nothing"
+    done.append(f"bootstrap with disagreeing folds: fold-step coverage {step:.2f} (folds hidden "
+                f"{hidden:.2f}), {flat:.2f} without a fold effect (width x {wr:.2f}); a fold-fitted "
+                "lookup's ME interval holds every fold's estimate at every lead")
     return done
 
 
@@ -1054,7 +1199,10 @@ def main(argv=None):
         preds[name] = path
 
     S = load()
-    F = forecasts(S, preds, check_tracking=not a.no_tracking_check)
+    try:
+        F = forecasts(S, preds, check_tracking=not a.no_tracking_check)
+    except ValueError as e:
+        p.error(str(e))
     rows = select_rows(S, folds=a.folds, unlock_test=a.unlock_test)
     kw = dict(unlock_test=a.unlock_test, intersect=a.intersect)
     t = score(S, F, rows, by=a.by, common_valid=a.common_valid, **kw)
@@ -1081,7 +1229,10 @@ def main(argv=None):
     bnote = (f"Circular moving-block bootstrap, {a.n_boot} replicates, blocks of {a.block_days} valid "
              f"days, stations kept together{' and resampled (crossed)' if a.resample_stations else ''}, "
              f"seed {a.seed}; 95 % intervals for A - B on the table's station-times, the replicate "
-             "spread scaled for the block bootstrap's small-sample bias (score_stations.bootstrap). "
+             "spread scaled for the block bootstrap's small-sample bias. With 3 or more temporal "
+             "folds, where the folds disagree by more than the blocks allow, the excess is added "
+             "as a between-fold variance and the interval widened; fold share is its part of the "
+             "day variance (score_stations.bootstrap). "
              f"Blank: fewer than {BOOT_MIN_BLOCKS * a.block_days} valid days at that lead. "
              "Negative RMSE/CRPS differences favour A.")
     md = tables_md(t, "Station scores per lead", note)
@@ -1107,7 +1258,8 @@ def main(argv=None):
             sub = (f"Comparison B, temporal folds {' '.join(map(str, a.folds))}, valid times shared "
                    f"by all leads, n = {int(tc.n.iloc[0])} station-times per lead.\nDressed = N(mean, "
                    f"AIFS spread at the 0.25 deg cell). Bars: 95 % circular moving-block bootstrap intervals "
-                   f"({a.block_days}-day blocks{', stations resampled' if a.resample_stations else ''}).")
+                   f"({a.block_days}-day blocks{', stations resampled' if a.resample_stations else ''}; "
+                   "widened where the temporal folds disagree).")
             plot_crps(tc, dc, a.out / "crps_by_lead.png", sub)
 
 
