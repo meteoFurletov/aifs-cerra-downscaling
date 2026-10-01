@@ -86,3 +86,30 @@ public write-up by 31 October 2026.
   that holds their inputs, usually `data/` or `data/scratch/`.
 - `data/raw/cerra_upload_*.grib` are the original CERRA downloads, 12.8 GB. CERRA
   cannot be cut to a region before download, so keep them.
+
+## Data and credits
+
+The repo holds code, results and figures; the data sources themselves are not
+redistributed.
+
+- **CERRA** and **ERA5**: Copernicus Climate Change Service (C3S) Climate Data Store,
+  CC BY 4.0. CERRA single levels, doi:[10.24381/cds.622a565a](https://doi.org/10.24381/cds.622a565a);
+  ERA5 single levels, doi:[10.24381/cds.adbb2d47](https://doi.org/10.24381/cds.adbb2d47).
+  Contains modified Copernicus Climate Change Service information 2026. Neither the
+  European Commission nor ECMWF is responsible for any use that may be made of the
+  Copernicus information or data it contains.
+- **AIFS ENS**: ECMWF AIFS ENS forecast data processed by dynamical.org from ECMWF Open
+  Data, doi:[10.5281/zenodo.18777399](https://doi.org/10.5281/zenodo.18777399).
+  © 2026 European Centre for Medium-Range Weather Forecasts (ECMWF),
+  [www.ecmwf.int](https://www.ecmwf.int), published under
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and the
+  [ECMWF Terms of Use](https://apps.ecmwf.int/datasets/licences/general/).
+  Modified here: cropped, reduced to control, ensemble mean and spread, and interpolated.
+  ECMWF does not accept any liability whatsoever for any error or omission in the data,
+  their availability, or for any loss or damage arising from their use.
+- **SYNOP**: WMO FM-12 reports from Russian, Finnish and Estonian stations, retrieved
+  through [OGIMET](https://www.ogimet.com). The reports are the copyright of the
+  national services that issue them, subject to WMO Resolution 40.
+- Also used: NOAA NCEI's Integrated Surface Database (ISD) for the 2015–24 station
+  archive and comparison C, and the Iowa Environmental Mesonet (IEM, Iowa State
+  University) as a METAR cross-check.
