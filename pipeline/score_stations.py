@@ -25,8 +25,11 @@ Rows of every table
                     same AIFS spread, so CRPS compares like with like
 
 Columns: n, ME (forecast - obs), RMSE, CRPS (a point row's CRPS is its MAE) and
-spread/RMSE = sqrt(mean(sd^2) * (M+1)/M) / RMSE with M = 51 members, which is 1 for a
-reliable ensemble: its mean misses by (M+1)/M times the member variance.
+spread/RMSE = sqrt(mean(s^2) * (M+1)/M) / RMSE with M = 51 members, where s^2 is the
+unbiased member variance. The data's spread is the members' np.std (ddof=0,
+pipeline/fetch_aifs_overlap.py), so s^2 = sd^2 * M/(M-1) and the ratio is
+sqrt(mean(sd^2) * (M+1)/(M-1)) / RMSE: 1 for a reliable ensemble, whose mean misses
+by (M+1)/M times the member variance. CRPS uses the spread as stored.
 
 Conventions this file enforces
 ------------------------------
@@ -38,30 +41,37 @@ Conventions this file enforces
     PermissionError unless unlock_test=True (--unlock-test). Dev rows are folds 0-2.
   * Prediction files are keyed on (valid, lead), never on row position. A file is
     refused when a key is not a load_stage2 row or repeats, when its rows disagree
-    with its keys, or when under a quarter of its fields sit nearer their own row's
-    bilinear field than a neighbouring valid time's (fields written one row off).
+    with its keys, or when at some lead its fields track another valid time or
+    another lead's input (_check_tracking, per lead).
   * common_valid=True keeps the (station, valid) pairs scored at every lead only:
     lead 168 starts a week later, so the full tables do not share verification times.
   * Bootstrap intervals are for score differences between two forecasts, per lead:
-    moving blocks of 5 valid days over the days present, every station of a drawn day
-    kept with it, stations optionally resampled too; 95 % percentile intervals.
+    circular moving blocks of 5 valid days over the days present, every station of a
+    drawn day kept with it, stations optionally resampled too; 95 % intervals from the
+    replicates, rescaled for the block bootstrap's small-sample bias (see bootstrap).
+    A lead with fewer than 4 blocks' worth of valid days gets no interval.
 
-Prediction file (.npz; the format of scratch/preds/*.npz)
----------------------------------------------------------
+Prediction file (.npz; the format of scratch/preds/*.npz, harness.save_pred)
+----------------------------------------------------------------------------
   rows   (n,) int          load_stage2 row indices, checked against the keys
   field  (n, 123, 127)     full 2 m temperature on the target window, degC
-  valid  (n,) int64        valid time, ns since the epoch (datetime64 accepted)
+  valid  (n,) int64        valid time since the epoch in ns, us, ms or s, the unit read
+                           from the magnitude (save_pred writes load_stage2's own unit,
+                           us under pandas 3), or datetime64
   lead   (n,) int          lead, hours
+  Other arrays (save_pred's config) are ignored.
 """
 import argparse
 import contextlib
 import io
 import sys
+import tempfile
+import warnings
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
+from scipy.stats import norm, t as student_t
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dataset import DATA_DIR, FOLD_EPOCH, load_stage2, load_stations  # noqa: E402
@@ -69,7 +79,11 @@ from dataset import DATA_DIR, FOLD_EPOCH, load_stage2, load_stations  # noqa: E4
 LEADS = (0, 24, 48, 72, 120, 168)
 DEV_FOLDS = (0, 1, 2)
 M_MEMBERS = 51
+# the stored spread is np.std over members (ddof=0): M/(M-1) makes it the unbiased member
+# variance, (M+1)/M is the spread/RMSE estimator's own factor
+SPREAD_VAR_FACTOR = (M_MEMBERS / (M_MEMBERS - 1)) * ((M_MEMBERS + 1) / M_MEMBERS)
 BOOT_BLOCK_DAYS = 5
+BOOT_MIN_BLOCKS = 4                        # a lead needs >= 4 * block_days valid days for an interval
 GROUPINGS = ("hour", "sfold", "tfold")     # valid hour, station spatial fold, temporal fold
 NS_HOUR = 3_600_000_000_000
 NS_DAY = 24 * NS_HOUR
@@ -172,14 +186,15 @@ def load_pred(S, src, check_tracking=True):
     if missing:
         raise ValueError(f"prediction file lacks {sorted(missing)}")
     rows, field, valid, lead = (np.asarray(z[k]) for k in ("rows", "field", "valid", "lead"))
-    if np.issubdtype(valid.dtype, np.datetime64):
-        valid = valid.astype("datetime64[ns]").astype(np.int64)
     n = len(rows)
+    if n == 0:
+        raise ValueError("prediction file holds no rows")
     if field.shape != (n,) + S["d"]["Y"].shape[1:] or valid.shape != (n,) or lead.shape != (n,):
         raise ValueError(f"shapes disagree: rows {rows.shape}, field {field.shape}, "
                          f"valid {valid.shape}, lead {lead.shape}")
-    if not all(np.issubdtype(a.dtype, np.integer) for a in (rows, valid, lead)):
-        raise ValueError("rows, valid (ns) and lead must be integers")
+    if not all(np.issubdtype(a.dtype, np.integer) for a in (rows, lead)):
+        raise ValueError("rows and lead must be integers")
+    valid = _valid_ns(S, valid)
     r = _rows_of(S, valid, lead)
     if (r < 0).any():
         raise ValueError(f"{int((r < 0).sum())} of {n} (valid, lead) keys are not load_stage2 rows")
@@ -199,33 +214,117 @@ def load_pred(S, src, check_tracking=True):
     return mu, cover
 
 
-def _check_tracking(S, r, field, step=3, floor=0.25):
-    """Refuse a file whose fields follow neighbouring valid times rather than their own.
+def _valid_ns(S, valid):
+    """A file's valid times as int64 ns. Integers may count ns, us, ms or s since the epoch:
+    the unit is the one that puts every value within a year of the stage-2 period (the
+    four differ by factors of 1000, so at most one does)."""
+    if np.issubdtype(valid.dtype, np.datetime64):
+        return valid.astype("datetime64[ns]").astype(np.int64)
+    if not np.issubdtype(valid.dtype, np.integer):
+        raise ValueError(f"valid must be datetime64 or integers since the epoch, got {valid.dtype}")
+    ref = S["valid"].asi8
+    lo, hi = ref.min() - 366 * NS_DAY, ref.max() + 366 * NS_DAY
+    v = valid.astype("float64")
+    for per in (1, 1_000, 1_000_000, 1_000_000_000):
+        if ((v * per >= lo) & (v * per <= hi)).all():
+            return valid.astype(np.int64) * per
+    raise ValueError("valid is not a time within a year of the stage-2 period in ns, us, ms or s "
+                     "since the epoch")
 
-    Each field is compared, in pattern (the domain-mean difference removed, so a bias
-    does not count), with the bilinear field of its own row and of the rows at the same
-    lead 12 and 24 h either side. A model field corrects its own row's bilinear field,
-    so most sit nearest that row: CERRA itself 77 % of rows (32 % at +168 h alone), a
-    cell x hour x lead lookup 100 %. A file written one row or one day off: under 10 %.
-    A guard against gross misalignment, not proof of alignment.
+
+def _check_tracking(S, r, field, step=3, floor=0.25, max_lag_h=14 * 24, min_pairs=3):
+    """Refuse a file whose fields, at any lead, follow another valid time or another lead.
+
+    Two tests per lead on every 3rd cell, each field's domain mean removed (a bias does not
+    count). A file fails if either fails at any one lead.
+      distance  each field against the bilinear fields of its own row and of the rows at
+                the same lead 12 and 24 h either side: at least `floor` of them must sit
+                nearest their own. Catches fields one row or one day off.
+      tendency  the change between consecutive fields of the same lead and valid hour,
+                pattern-correlated with the change between the bilinear fields of the
+                same rows. On average it must correlate better with its own rows' change
+                than with that of the same lead shifted 12 h to 14 days either way, or
+                of any other lead at the same valid times. A model's day-to-day change
+                follows its input's whatever its bias or damping, so this catches
+                larger shifts, shuffled fields and a wrong lead.
+    On the dev files (v1, the lookups, CNN v0) every lead clears the distance test at
+    >= 93 % and the tendency test with a mean correlation margin >= 0.09 (>= 0.06 with
+    iid N(0, 1) noise added to every cell); a model damped to 0.1 of its anomaly, and a
+    lead x hour climatology (no change, so the distance test only), clear both. Every
+    shifted, shuffled or wrong-lead variant tried fails at its lead (margin <= -0.04).
+    A field that knows the analysis fails the tendency test from +48 h on, its changes
+    following the shortest lead's input: CERRA itself is refused, and is already the
+    table's ceiling row. check_tracking=False overrides. A lead with fewer than
+    min_pairs consecutive same-hour pairs gets the distance test only.
+    A guard against misalignment, not proof of alignment.
     """
-    B = S["d"]["B"][:, ::step, ::step]
-    f = np.asarray(field)[:, ::step, ::step]
+    valid, lead, hour = S["valid"].asi8, S["lead"], S["hour"]
+    Bs = S["d"]["B"][:, ::step, ::step].astype("float64")
+    Bs -= Bs.mean((1, 2), keepdims=True)
+    f = np.asarray(field)[:, ::step, ::step].astype("float64")
+    f -= f.mean((1, 2), keepdims=True)
 
-    def dist(rr, sel):
-        return (f[sel] - B[rr]).std((1, 2))
+    def dist(i, q):
+        return np.sqrt(((f[i] - Bs[q]) ** 2).mean((1, 2)))
 
-    own = dist(r, np.ones(len(r), bool))
-    near = np.full(len(r), np.inf)
-    for h in (-24, -12, 12, 24):
-        q = _rows_of(S, S["valid"].asi8[r] + h * NS_HOUR, S["lead"][r])
-        has = q >= 0
-        near[has] = np.minimum(near[has], dist(q[has], has))
-    has = np.isfinite(near)
-    frac = float((own[has] < near[has]).mean()) if has.any() else 1.0
-    if frac < floor:
-        raise ValueError(f"only {frac:.0%} of fields sit nearest their own row's bilinear field: "
-                         "the file looks misaligned (check_tracking=False overrides)")
+    def corr(x, q1, q2):
+        """Pattern correlation of each change x with Bs[q2] - Bs[q1]; NaN where undefined."""
+        c = np.full(len(x), np.nan)
+        has = (q1 >= 0) & (q2 >= 0)
+        d = Bs[q2[has]] - Bs[q1[has]]
+        xx = x[has]
+        den = np.sqrt((xx * xx).sum((1, 2)) * (d * d).sum((1, 2)))
+        with np.errstate(invalid="ignore", divide="ignore"):
+            c[has] = np.where(den > 0, (xx * d).sum((1, 2)) / den, np.nan)
+        return c
+
+    bad = []
+    for L in np.unique(lead[r]):
+        i = np.where(lead[r] == L)[0]
+        own = dist(i, r[i])
+        near = np.full(len(i), np.inf)
+        for h in (-24, -12, 12, 24):
+            q = _rows_of(S, valid[r[i]] + h * NS_HOUR, lead[r[i]])
+            has = q >= 0
+            near[has] = np.minimum(near[has], dist(i[has], q[has]))
+        has = np.isfinite(near)
+        if has.any():
+            frac = float((own[has] < near[has]).mean())
+            if frac < floor:
+                bad.append(f"+{L} h: {frac:.0%} of fields sit nearest their own row's bilinear "
+                           "field (one row or one day off?)")
+
+        p1, p2 = [], []
+        for h in np.unique(hour[r[i]]):
+            j = i[hour[r[i]] == h]
+            j = j[np.argsort(valid[r[j]])]
+            p1.append(j[:-1]); p2.append(j[1:])
+        p1, p2 = np.concatenate(p1), np.concatenate(p2)
+        if len(p1) < min_pairs:
+            continue
+        x = f[p2] - f[p1]
+        v1, v2, LL = valid[r[p1]], valid[r[p2]], lead[r[p1]]
+        mine = corr(x, r[p1], r[p2])
+        alts = {f"+{L2} h at the same valid times": (v1, v2, np.full(len(p1), L2))
+                for L2 in np.unique(lead) if L2 != L}
+        for s in range(-max_lag_h, max_lag_h + 1, 12):
+            if s:
+                alts[f"+{L} h, valid {s:+d} h"] = (v1 + s * NS_HOUR, v2 + s * NS_HOUR, LL)
+        worst = None
+        for name, (w1, w2, wl) in alts.items():
+            c = corr(x, _rows_of(S, w1, wl), _rows_of(S, w2, wl))
+            ok = np.isfinite(mine) & np.isfinite(c)
+            if ok.sum() >= min_pairs:
+                m = float((mine[ok] - c[ok]).mean())
+                if worst is None or m < worst[1]:
+                    worst = (name, m)
+        if worst is not None and worst[1] <= 0:
+            bad.append(f"+{L} h: day-to-day changes follow the bilinear field at {worst[0]} "
+                       f"as well as or better than their own (mean correlation margin {worst[1]:+.3f})")
+    if bad:
+        raise ValueError("the file looks misaligned: " + "; ".join(bad) + ". A field that knows the "
+                         "analysis (CERRA itself) fails the same way. check_tracking=False "
+                         "(--no-tracking-check) overrides")
 
 
 # ---------------------------------------------------------------- scoring
@@ -238,9 +337,13 @@ def crps_gauss(y, mu, sd):
     if not (np.isfinite(sd).all() and (sd >= 0).all()):
         raise ValueError("spread must be finite and >= 0")
     out = np.abs(y - mu)
-    p = sd > 0
-    z = (y[p] - mu[p]) / sd[p]
-    out[p] = sd[p] * (z * (2 * norm.cdf(z) - 1) + 2 * norm.pdf(z) - 1 / np.sqrt(np.pi))
+    p = np.where(sd > 0)[0]
+    with np.errstate(over="ignore"):
+        z = (y[p] - mu[p]) / sd[p]
+    # a subnormal spread can overflow z; there the sd -> 0 limit |y - mu| already in out holds
+    p, z = p[np.isfinite(z)], z[np.isfinite(z)]
+    with np.errstate(over="ignore", under="ignore"):         # pdf(z) of a huge z is 0
+        out[p] = sd[p] * (z * (2 * norm.cdf(z) - 1) + 2 * norm.pdf(z) - 1 / np.sqrt(np.pi))
     return out.reshape(shape)
 
 
@@ -334,7 +437,7 @@ def score(S, F, rows, by=(), **kw):
             n=("n", "sum"), me=("me", "mean"), se=("se", "mean"), crps=("crps", "mean"),
             var=("var", "mean"))
         a["rmse"] = np.sqrt(a.se)
-        a["spread_rmse"] = np.sqrt(a["var"] * (M_MEMBERS + 1) / M_MEMBERS) / a.rmse
+        a["spread_rmse"] = np.sqrt(a["var"] * SPREAD_VAR_FACTOR) / a.rmse
         out.append(a.reset_index().assign(forecast=name, kind=f["kind"]))
     t = pd.concat(out, ignore_index=True).sort_values(keys, kind="stable", ignore_index=True)
     assert (t.groupby(keys).n.nunique() == 1).all(), "forecasts scored on different station-times"
@@ -344,26 +447,52 @@ def score(S, F, rows, by=(), **kw):
 # ---------------------------------------------------------------- bootstrap
 
 def _block_days(rng, K, block, n_boot):
-    """(n_boot, K) day indices: moving-block resamples of K days, runs of block days."""
+    """(n_boot, K) day indices: circular moving-block resamples (Politis & Romano 1992),
+    ceil(K/block) runs of `block` consecutive days that wrap from the last day to the
+    first, cut to K days. Every day has the same expected count, 1."""
     L = min(block, K)
-    starts = rng.integers(0, K - L + 1, size=(n_boot, -(-K // L)))
-    return (starts[:, :, None] + np.arange(L)).reshape(n_boot, -1)[:, :K]
+    starts = rng.integers(0, K, size=(n_boot, -(-K // L)))
+    return ((starts[:, :, None] + np.arange(L)) % K).reshape(n_boot, -1)[:, :K]
 
 
 def bootstrap(S, F, rows, a, b, n_boot=2000, block_days=BOOT_BLOCK_DAYS,
               resample_stations=False, seed=0, level=0.95, **kw):
-    """Score differences a - b per lead, with moving-block bootstrap intervals.
+    """Score differences a - b per lead, with block-bootstrap intervals.
 
     The station-times are those score() uses for the same F and kw, so the estimate is
-    the difference of two table rows. Valid days (UTC dates) are drawn in moving blocks
-    of block_days consecutive days, taken over the days present in order (a block may
-    straddle a fold gap); every station of a drawn day comes with it. resample_stations
-    also redraws the stations with replacement, independently of the days.
+    the difference of two table rows. Valid days (UTC dates) are drawn in circular moving
+    blocks of block_days consecutive days over the days present, in order (a block may
+    straddle a fold gap, or wrap from the last day to the first); every station of a
+    drawn day comes with it.
+
+    The interval is estimate + c * (replicate quantiles - estimate). Days only:
+    c = sqrt(K/(K-L)) * t_nu/z, nu = 1.5 K/L, for K days and blocks of L. The circular
+    block's replicate variance is (1 - L/K) times the sampling variance on serially
+    uncorrelated days, and the block variance estimate has about 1.5 K/L degrees of
+    freedom (Kuensch 1989), so a z-width interval from ~12 blocks undercovers. On iid
+    synthetic data this covers 94-96 % at 20-62 days, where the plain moving block
+    covered 82-92 %. Serial correlation in the day effects lowers coverage (93 % at
+    AR(1) 0.5).
+
+    resample_stations also redraws the C stations with replacement, crossed with the
+    days. That pigeonhole resample counts the station-time noise three times (Owen
+    2007), so c also rescales the replicates' linearised variance VD + VS + VI (day,
+    station and interaction parts, read off the same replicates) to the crossed
+    sampling variance VD/(1-L/K) + max(VS/(1-1/C) - VI/((1-L/K)(1-1/C)), 0), never
+    narrower than days only; nu then combines the two parts (Satterthwaite). On
+    synthetic day + station + noise data at the dev size this covers 94-95 % from noise
+    only to station-dominated, where the uncorrected crossed resample covered 95-99.7 %.
+
+    A lead with fewer than BOOT_MIN_BLOCKS * block_days valid days gets lo = hi = NaN and
+    a warning: too few distinct replicates for an interval.
     Returns lead, a, b, metric (me, rmse, crps), estimate, lo, hi, n, days.
     """
+    if int(block_days) != block_days or block_days < 1:
+        raise ValueError(f"block_days must be a positive integer, got {block_days}")
     T, E = _station_times(S, F, rows, **kw)
     rng = np.random.default_rng(seed)
-    q = [(1 - level) / 2, (1 + level) / 2]
+    q = np.array([(1 - level) / 2, (1 + level) / 2])
+    zq = norm.ppf((1 + level) / 2)
     n_st = len(S["st"])
     out = []
     for L in np.unique(T["lead"]):
@@ -388,11 +517,40 @@ def bootstrap(S, F, rows, a, b, n_boot=2000, block_days=BOOT_BLOCK_DAYS,
         A = {k: np.einsum("bk,km,bm->b", W, s, V) for k, s in sums.items()}
         n = A["n"]
         assert (n > 0).all(), "a bootstrap replicate drew no station-times"
-        diff = dict(me=(A["ea"] - A["eb"]) / n,
-                    rmse=np.sqrt(A["sa"] / n) - np.sqrt(A["sb"] / n),
-                    crps=(A["ca"] - A["cb"]) / n)
+        ra, rb = np.sqrt(A["sa"] / n), np.sqrt(A["sb"] / n)
+        diff = dict(me=(A["ea"] - A["eb"]) / n, rmse=ra - rb, crps=(A["ca"] - A["cb"]) / n)
+        enough = K >= BOOT_MIN_BLOCKS * block_days
+        if not enough:
+            warnings.warn(f"lead +{L} h, {a} - {b}: {K} valid days, fewer than {BOOT_MIN_BLOCKS} "
+                          f"blocks of {block_days}: no interval", stacklevel=2)
+        Lb = min(block_days, K)
+        alpha, nu_d = 1 - Lb / K, 1.5 * K / Lb
+        N = n[0]
+        # each difference's gradient in the sums at the full sample: its linearisation
+        grad = dict(me=dict(ea=1 / N, eb=-1 / N, n=-diff["me"][0] / N),
+                    rmse=dict(sa=1 / (2 * N * ra[0]) if ra[0] > 0 else 0.0,
+                              sb=-1 / (2 * N * rb[0]) if rb[0] > 0 else 0.0,
+                              n=-(ra[0] - rb[0]) / (2 * N)),
+                    crps=dict(ca=1 / N, cb=-1 / N, n=-diff["crps"][0] / N))
         for k, v in diff.items():
-            lo, hi = np.quantile(v[1:], q)
+            lo = hi = np.nan
+            if enough:
+                c, nu = 1 / np.sqrt(alpha), nu_d
+                if resample_stations:
+                    u = sum(g * sums[s] for s, g in grad[k].items())     # (K, n_st), sums to 0
+                    Wd, Vd = W[1:] - 1, V[1:] - 1
+                    VD, VS = np.var(Wd @ u.sum(1)), np.var(Vd @ u.sum(0))
+                    VI = np.var(np.einsum("bk,km,bm->b", Wd, u, Vd))
+                    beta = 1 - 1 / n_st
+                    d_part = VD / alpha
+                    s_part = max(VS / beta - VI / (alpha * beta), 0.0)
+                    have, want = VD + VS + VI, d_part + s_part
+                    if have > 0:
+                        c = np.sqrt(want / have)
+                    if want > 0:
+                        nu = want ** 2 / (d_part ** 2 / nu_d + s_part ** 2 / max(n_st - 1, 1))
+                c *= student_t.ppf((1 + level) / 2, nu) / zq
+                lo, hi = v[0] + c * (np.quantile(v[1:], q) - v[0])
             out.append(dict(lead=int(L), a=a, b=b, metric=k, estimate=v[0], lo=lo, hi=hi,
                             n=int(n[0]), days=K))
     return pd.DataFrame(out)
@@ -513,6 +671,14 @@ def _pred_file(S, rows, field, keys_from=None):
                 valid=S["valid"].asi8[k], lead=S["lead"][k])
 
 
+def _synthetic(obs, lead=0):
+    """A stand-in for load() over synthetic station-times: one row per 12 h, one lead."""
+    n, k = obs.shape
+    v = pd.DatetimeIndex(FOLD_EPOCH + pd.to_timedelta(np.arange(n) * 12, "h")).as_unit("ns")
+    return dict(valid=v, lead=np.full(n, lead, np.int64), fold=np.zeros(n, int), hour=v.hour.values,
+                st=pd.DataFrame({"fold": np.zeros(k, int)}), obs=obs)
+
+
 def _refused(call, exc, match=""):
     try:
         call()
@@ -537,19 +703,25 @@ def self_check(S=None):
                 + quad(lambda x: norm.sf(x, mu, sd) ** 2, y, np.inf)[0])
     assert abs(crps_gauss(y, mu, sd) - integral) < 1e-7
     _refused(lambda: crps_gauss(0.0, 0.0, -1.0), ValueError, "spread")
+    # a subnormal spread overflows z = (y - mu)/sd: the limit |y - mu| must stand, not inf
+    tiny = crps_gauss(np.ones(5), 0.0, [1e-300, 1e-308, 5e-309, 1e-310, 5e-324])
+    assert np.isfinite(tiny).all() and np.allclose(tiny, 1.0, rtol=0, atol=1e-12), tiny
     # synthetic stations: truth drawn from the forecast itself
     rng = np.random.default_rng(7)
     n, k = 2000, 100
-    v = pd.DatetimeIndex(FOLD_EPOCH + pd.to_timedelta(np.arange(n) * 12, "h")).as_unit("ns")
     mu, sd, z = rng.normal(size=(n, k)), rng.uniform(0.5, 2.0, (n, k)), rng.standard_normal((n, k))
-    syn = dict(valid=v, lead=np.zeros(n, np.int64), fold=np.zeros(n, int), hour=v.hour.values,
-               st=pd.DataFrame({"fold": np.zeros(k, int)}), obs=mu + sd * z)
+    syn = _synthetic(mu + sd * z)
     ts = score(syn, {"g": _fc("ensemble", mu, sd)}, np.arange(n))
     assert abs(ts.crps[0] / (sd.mean() / np.sqrt(np.pi)) - 1) < 0.005    # E CRPS = sd / sqrt(pi)
-    syn["obs"] = mu + sd * np.sqrt((M_MEMBERS + 1) / M_MEMBERS) * z     # a reliable 51-member mean
-    ts = score(syn, {"g": _fc("ensemble", mu, sd)}, np.arange(n))
-    assert abs(ts.spread_rmse[0] - 1) < 0.006, ts.spread_rmse[0]
-    done.append("crps and spread/RMSE known answers")
+    # a reliable 51-member ensemble, its spread stored as aifs.npz stores it: np.std, ddof=0
+    sigma = rng.uniform(0.5, 2.0, (n, k))
+    members = mu[..., None] + sigma[..., None] * rng.standard_normal((n, k, M_MEMBERS))
+    syn = _synthetic(mu + sigma * rng.standard_normal((n, k)))
+    ts = score(syn, {"g": _fc("ensemble", members.mean(-1), members.std(-1))}, np.arange(n))
+    assert abs(ts.spread_rmse[0] - 1) < 0.005, ts.spread_rmse[0]     # ddof ignored: 0.990
+    del members
+    done.append("crps and spread/RMSE known answers (subnormal spread; ddof=0 spread of a "
+                "reliable 51-member ensemble gives 1)")
 
     # the reference numbers
     dev = select_rows(S)
@@ -612,8 +784,59 @@ def self_check(S=None):
     _refused(lambda: load_pred(S, late), ValueError, "not load_stage2 rows")
     rep = np.r_[dev, dev[:1]]
     _refused(lambda: load_pred(S, _pred_file(S, rep, B[rep])), ValueError, "repeated")
-    load_pred(S, _pred_file(S, dev, S["d"]["Y"][dev]))         # CERRA, the furthest from B, passes
     done.append("key alignment: shuffled realigned, off-by-one rows/keys/fields refused")
+
+    # valid units: harness.save_pred writes load_stage2's own unit (us under pandas 3) and a
+    # config array; any of ns/us/ms/s or datetime64 loads to the same rows
+    native = np.asarray(S["d"]["valid"].values)
+    harness = _npz(rows=dev, field=np.asarray(B[dev], "float32"), lead=S["d"]["lead"][dev],
+                   valid=native[dev].astype("int64"), config=np.array(repr({"seed": 0})))
+    assert np.array_equal(load_pred(S, harness)[0], mu_plain, equal_nan=True), "save_pred file"
+    for unit in ("s", "ms", "us", "ns"):
+        vu = S["valid"][dev].values.astype(f"datetime64[{unit}]")
+        for vv in (vu.astype("int64"), vu):
+            f = _npz(rows=dev, field=B[dev], valid=vv, lead=S["lead"][dev])
+            assert np.array_equal(load_pred(S, f)[0], mu_plain, equal_nan=True), f"valid in {unit}"
+    odd = _npz(rows=dev, field=B[dev], valid=S["valid"].asi8[dev] // 7, lead=S["lead"][dev])
+    _refused(lambda: load_pred(S, odd), ValueError, "within a year")
+    done.append("valid in ns/us/ms/s or datetime64 and harness.save_pred's format load alike")
+
+    # tracking, per lead: a model (bilinear + mean residual) with fields moved in time or lead
+    M0 = B[dev] + S["d"]["R"][dev].mean(0)
+
+    def moved(hours=0, from_lead=None, at=LEADS):
+        """M0 with the fields at leads `at` taken from valid - hours, or from lead from_lead."""
+        sel = np.isin(S["lead"][dev], at)
+        src = dev.copy()
+        src[sel] = _rows_of(S, S["valid"].asi8[dev[sel]] - hours * NS_HOUR,
+                            S["lead"][dev[sel]] if from_lead is None else np.full(sel.sum(), from_lead))
+        j = np.searchsorted(dev, src).clip(0, len(dev) - 1)
+        ok = dev[j] == src                                # the source is a dev row
+        return _pred_file(S, dev[ok], M0[j[ok]])
+    for kw, where in ((dict(hours=24, at=(168,)), "+168 h"),        # one lead a day late
+                      (dict(from_lead=0, at=(168,)), "+168 h"),     # +168 h keys hold +0 h fields
+                      (dict(from_lead=48, at=(24,)), "+24 h"),      # neighbouring leads swapped
+                      (dict(hours=168), "+0 h"),                    # every lead a week late
+                      (dict(hours=-96), "+0 h")):                   # every lead 4 days early
+        _refused(lambda: load_pred(S, moved(**kw)), ValueError, where)
+    perm = np.arange(len(dev))
+    for L in LEADS:
+        i = np.where(S["lead"][dev] == L)[0]
+        perm[i] = np.random.default_rng(L).permutation(i)
+    _refused(lambda: load_pred(S, _pred_file(S, dev, M0[perm])), ValueError, "misaligned")
+    clim = np.zeros_like(M0)
+    for L in LEADS:
+        for h in (0, 12):
+            i = (S["lead"][dev] == L) & (S["hour"][dev] == h)
+            clim[i] = M0[i].mean(0)
+    noise = np.random.default_rng(2).normal(0, 1, M0.shape).astype("float32")
+    for ok_model in (M0, M0 + noise, clim + 0.1 * (M0 - clim), clim):    # noisy, damped, constant
+        load_pred(S, _pred_file(S, dev, ok_model))
+    Y = S["d"]["Y"]
+    _refused(lambda: load_pred(S, _pred_file(S, dev, Y[dev])), ValueError, "+48 h")   # knows the analysis
+    load_pred(S, _pred_file(S, dev, Y[dev]), check_tracking=False)
+    done.append("tracking per lead: one lead a day late, a wrong lead, every lead a week late or "
+                "4 days early, shuffled, CERRA refused; noisy, damped, constant models accepted")
 
     # partial coverage: refused, or every forecast shrinks to the shared rows
     l24 = dev[S["lead"][dev] == 24]
@@ -635,16 +858,41 @@ def self_check(S=None):
     g = globals()
     real_load = g["load"]
 
+    class Loaded(Exception):
+        pass
+
     def tripwire():
-        raise AssertionError("the CLI passed the fold guard")
+        raise Loaded("the CLI got past its argument checks")
     g["load"] = tripwire                     # a broken guard trips here, before any scoring
     try:
         for argv in (["--folds", "3"], ["--folds", "0", "1", "2", "5"]):
             with contextlib.redirect_stderr(io.StringIO()):
                 _refused(lambda: main(argv), SystemExit)
+        done.append("sealed folds 3-12 refused (library and CLI)")
+
+        # --pred: names unique, paths may hold '='
+        assert _parse_pred("cnn=a.npz") == ("cnn", "a.npz")
+        assert _parse_pred("runs/a.npz") == ("a", "runs/a.npz")
+        assert _parse_pred("lookup=runC/lr=0.002/model.npz") == ("lookup", "runC/lr=0.002/model.npz")
+        assert _parse_pred("runC/lr=0.002/model.npz") == ("model", "runC/lr=0.002/model.npz")
+        assert _parse_pred("./lr=0.002/model.npz") == ("model", "./lr=0.002/model.npz")
+        with tempfile.TemporaryDirectory() as tmp:
+            for d in ("runA", "runB", "runC/lr=0.002"):
+                (Path(tmp) / d).mkdir(parents=True)
+                (Path(tmp) / d / "model.npz").write_bytes(b"")
+            for argv in (["--pred", f"{tmp}/runA/model.npz", "--pred", f"{tmp}/runB/model.npz"],
+                         ["--pred", f"x={tmp}/runA/model.npz", "--pred", f"x={tmp}/runB/model.npz"]):
+                err = io.StringIO()
+                with contextlib.redirect_stderr(err):
+                    _refused(lambda: main(argv), SystemExit)
+                assert "repeats" in err.getvalue(), err.getvalue()
+            for argv in (["--pred", f"lookup={tmp}/runC/lr=0.002/model.npz"],
+                         ["--pred", f"{tmp}/runC/lr=0.002/model.npz", "--pred", f"a={tmp}/runA/model.npz"]):
+                with contextlib.redirect_stderr(io.StringIO()):
+                    _refused(lambda: main(argv), Loaded)
     finally:
         g["load"] = real_load
-    done.append("sealed folds 3-12 refused (library and CLI)")
+    done.append("--pred: repeated names refused, paths with '=' parsed")
 
     # shared valid times and groupings
     tc = score(S, F, dev, common_valid=True)
@@ -685,24 +933,70 @@ def self_check(S=None):
     assert np.allclose(b1r.lo, -b1.hi, atol=1e-9) and np.allclose(b1r.hi, -b1.lo, atol=1e-9)
     b5 = bootstrap(S, Fb, dev, "b+5", "bilinear", n_boot=300, resample_stations=True)
     assert (b5[b5.metric != "me"].lo > 0).all(), "+5 C shift not worse with certainty"
-    idx = _block_days(np.random.default_rng(0), 63, 5, 50)
-    assert idx.shape == (50, 63) and (np.diff(idx[:, :60].reshape(50, 12, 5), axis=2) == 1).all()
-    whole = bootstrap(S, Fb, dev, "b+1", "bilinear", n_boot=50, block_days=10_000)
-    assert np.allclose(whole.lo, whole.estimate, atol=1e-12) and \
-        np.allclose(whole.hi, whole.estimate, atol=1e-12), "a block of every day is not the sample"
-    spread = bootstrap(S, Fb, dev, "b+1", "bilinear", n_boot=50, block_days=10_000, resample_stations=True)
-    spread = spread[spread.metric == "rmse"]
-    assert (spread.lo < spread.estimate).all() and (spread.estimate < spread.hi).all(), \
-        "resampling stations adds no spread"
+    idx = _block_days(np.random.default_rng(0), 63, 5, 2000)
+    assert idx.shape == (2000, 63) and (np.diff(idx[:, :60].reshape(2000, 12, 5), axis=2) % 63 == 1).all()
+    counts = np.stack([np.bincount(i, minlength=63) for i in idx])
+    assert np.abs(counts.mean(0) - 1).max() < 0.1, "circular blocks weight the days unevenly"
+    days_only = bootstrap(S, Fb, dev, "b+1", "bilinear", n_boot=300, seed=4)
+    crossed = bootstrap(S, Fb, dev, "b+1", "bilinear", n_boot=300, seed=4, resample_stations=True)
+    w = [(x[x.metric == "rmse"].hi - x[x.metric == "rmse"].lo).values for x in (days_only, crossed)]
+    assert (w[1] > w[0]).all(), "resampling stations adds no spread"
     done.append("bootstrap: self [0, 0], +1 C shift ME [1, 1] and sign, antisymmetric, +5 C worse, "
-                "blocks contiguous, stations resampled")
+                "circular blocks contiguous and even, stations resampled")
+
+    # too few days at a lead: no interval, never a zero-width one
+    days = S["valid"].asi8[l24] // NS_DAY
+    for n_days, has in ((5, False), (19, False), (20, True)):
+        r = l24[np.isin(days, np.unique(days)[:n_days])]
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            z = bootstrap(S, Fb, r, "b+1", "bilinear", n_boot=200)
+        z = z[z.metric != "me"]
+        assert z.lo.notna().all() == has and z.hi.notna().all() == has, (n_days, z)
+        assert has or any("no interval" in str(c.message) for c in caught)
+        assert not has or (z.lo < z.hi).all()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        whole = bootstrap(S, Fb, dev, "b+1", "bilinear", n_boot=50, block_days=10_000)
+    assert whole[["lo", "hi"]].isna().all().all(), "a block longer than the days present gave an interval"
+    done.append("bootstrap: under 4 blocks of days at a lead gives no interval, not a zero-width one")
+
+    # known-truth widths: 62 days x 2 times x 83 stations, ME difference = mean of x. The
+    # plain moving block gave 0.94 days only (91-92 % coverage) and 1.68 crossed on noise
+    def mean_width(sA, sB, sE, rs, reps=100):
+        rng = np.random.default_rng(1)
+        K, C = 62, 83
+        out = []
+        for i in range(reps):
+            x = (np.repeat(rng.normal(0, sA, K), 2)[:, None] + rng.normal(0, sB, C)
+                 + rng.normal(0, sE, (2 * K, C)))
+            obs = rng.normal(15, 5, (2 * K, C))
+            Fx = {"A": _fc("point", obs + x), "B": _fc("point", obs)}
+            z = bootstrap(_synthetic(obs), Fx, np.arange(2 * K), "A", "B", n_boot=500,
+                          resample_stations=rs, seed=i)
+            out.append(float(np.diff(z.loc[z.metric == "me", ["lo", "hi"]].values[0])[0]))
+        true_sd = np.sqrt(sA ** 2 / K + sE ** 2 / (2 * K * C) + (sB ** 2 / C if rs else 0))
+        return np.mean(out) / (2 * norm.ppf(0.975) * true_sd)
+    ratios = [mean_width(0, 0, 1, False), mean_width(0, 0, 1, True),
+              mean_width(0.0204, 0.143, 0.412, True)]
+    assert 0.99 < ratios[0] < 1.12, f"days-only width / true 95 % width {ratios[0]:.3f}"
+    assert 0.99 < ratios[1] < 1.2, f"crossed, noise only: width / true {ratios[1]:.3f}"
+    assert 0.95 < ratios[2] < 1.1, f"crossed, day + station + noise: width / true {ratios[2]:.3f}"
+    done.append("bootstrap widths on known truth: days only {:.2f}, crossed noise only {:.2f}, "
+                "crossed with station effects {:.2f} x the true 95 % width".format(*ratios))
     return done
 
 
 # ---------------------------------------------------------------- CLI
 
 def _parse_pred(s):
-    name, _, path = s.rpartition("=")
+    """--pred [NAME=]FILE -> (name, path). NAME is the text before the first '=' when it is
+    not empty and holds no '/'; otherwise, or when only the whole argument names a file,
+    the whole argument is the path (so run/lr=0.002/model.npz works). The name defaults to
+    the file's stem; ./lr=0.002/model.npz forces a path whose first directory has '='."""
+    name, eq, path = s.partition("=")
+    if not eq or not name or "/" in name or (Path(s).is_file() and not Path(path).is_file()):
+        name, path = "", s
     return (name or Path(path).stem), path
 
 
@@ -711,7 +1005,8 @@ def main(argv=None):
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--check", action="store_true", help="run the self-check and exit")
     p.add_argument("--pred", action="append", default=[], metavar="[NAME=]FILE",
-                   help="a model's prediction file (.npz); repeatable")
+                   help="a model's prediction file (.npz); repeatable. NAME defaults to the file "
+                        "stem, must be unique and holds no '/'; a path may contain '='")
     p.add_argument("--folds", type=int, nargs="+", default=list(DEV_FOLDS),
                    help="temporal folds to score (default: dev folds 0 1 2)")
     p.add_argument("--unlock-test", action="store_true",
@@ -729,7 +1024,8 @@ def main(argv=None):
     p.add_argument("--n-boot", type=int, default=2000)
     p.add_argument("--block-days", type=int, default=BOOT_BLOCK_DAYS)
     p.add_argument("--resample-stations", action="store_true",
-                   help="bootstrap also redraws stations with replacement")
+                   help="bootstrap also redraws stations with replacement, crossed with the days "
+                        "(the crossed resample's double-counted station-time noise is removed)")
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--no-tracking-check", action="store_true",
                    help="accept prediction fields that do not track their own valid time")
@@ -745,9 +1041,19 @@ def main(argv=None):
         p.error(f"folds {sealed} are the sealed confirmatory test; --unlock-test only for a frozen model")
     if a.figure and a.out is None:
         p.error("--figure needs --out")
+    if a.block_days < 1:
+        p.error("--block-days must be >= 1")
+    preds = {}
+    for s in a.pred:
+        name, path = _parse_pred(s)
+        if name in preds:
+            p.error(f"--pred name {name!r} repeats ({preds[name]}, {path}); name each file: "
+                    "--pred NAME=FILE")
+        if not Path(path).is_file():
+            p.error(f"--pred {s!r}: no file {path!r}")
+        preds[name] = path
 
     S = load()
-    preds = dict(_parse_pred(s) for s in a.pred)
     F = forecasts(S, preds, check_tracking=not a.no_tracking_check)
     rows = select_rows(S, folds=a.folds, unlock_test=a.unlock_test)
     kw = dict(unlock_test=a.unlock_test, intersect=a.intersect)
@@ -770,10 +1076,13 @@ def main(argv=None):
             f"{', valid times shared by all leads' if a.common_valid else ''}"
             f"{', rows all prediction files cover' if a.intersect else ''}. "
             "ME = forecast - obs; a point row's CRPS is its MAE; dressed = N(mean, AIFS spread "
-            f"at the 0.25 deg cell); spread/RMSE = sqrt(mean(sd^2)(M+1)/M)/RMSE, M = {M_MEMBERS}.")
-    bnote = (f"Moving-block bootstrap, {a.n_boot} replicates, blocks of {a.block_days} valid days, "
-             f"stations kept together{' and resampled' if a.resample_stations else ''}, seed {a.seed}; "
-             "95 % percentile intervals for A - B on the table's station-times. "
+            "at the 0.25 deg cell); spread/RMSE = sqrt(mean(s^2)(M+1)/M)/RMSE with s^2 the unbiased "
+            f"member variance (stored spread^2 x M/(M-1)), M = {M_MEMBERS}.")
+    bnote = (f"Circular moving-block bootstrap, {a.n_boot} replicates, blocks of {a.block_days} valid "
+             f"days, stations kept together{' and resampled (crossed)' if a.resample_stations else ''}, "
+             f"seed {a.seed}; 95 % intervals for A - B on the table's station-times, the replicate "
+             "spread scaled for the block bootstrap's small-sample bias (score_stations.bootstrap). "
+             f"Blank: fewer than {BOOT_MIN_BLOCKS * a.block_days} valid days at that lead. "
              "Negative RMSE/CRPS differences favour A.")
     md = tables_md(t, "Station scores per lead", note)
     bmd = bootstrap_md(bs, "Score differences per lead", bnote)
@@ -797,7 +1106,7 @@ def main(argv=None):
             dc.to_csv(a.out / "crps_by_lead_diff.csv", index=False, float_format="%.6f")
             sub = (f"Comparison B, temporal folds {' '.join(map(str, a.folds))}, valid times shared "
                    f"by all leads, n = {int(tc.n.iloc[0])} station-times per lead.\nDressed = N(mean, "
-                   f"AIFS spread at the 0.25 deg cell). Bars: 95 % moving-block bootstrap intervals "
+                   f"AIFS spread at the 0.25 deg cell). Bars: 95 % circular moving-block bootstrap intervals "
                    f"({a.block_days}-day blocks{', stations resampled' if a.resample_stations else ''}).")
             plot_crps(tc, dc, a.out / "crps_by_lead.png", sub)
 
