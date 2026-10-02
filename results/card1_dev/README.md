@@ -1,8 +1,9 @@
 # Card 1 on the development folds (provisional)
 
 Output of `pipeline/score_stations.py --resample-stations --figure` on temporal folds 0–2 (one
-summer, 2025-07-02 to 2025-09-12), 83 scored SYNOP stations, 2 Oct 2026. **Provisional:** the
-confirmatory test on the sealed folds 3–12 has not been run.
+summer, 2025-07-02 to 2025-09-12), 83 scored SYNOP stations, 2 Oct 2026. **Superseded:** the
+confirmatory test on the sealed folds 3–12 ([card1_confirmatory](../card1_confirmatory/README.md))
+does not confirm the headline below.
 
 Model rows (prediction files built from the night's experiments, branch `night-experiments`,
 `experiments/2026-10-02-night/`; not committed, ~45 MB each):
