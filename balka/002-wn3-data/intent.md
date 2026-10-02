@@ -1,12 +1,12 @@
 # Intent: WN3 2 m temperature ensembles over the domain
 
-Author: Nikita Furletov. Owner: Nikita Furletov. Status: parked. Date: 2026-09-27.
-Parked 2026-09-30: no access to WeatherNext data yet (request filed 2026-09-27, not granted).
+Author: Nikita Furletov. Owner: Nikita Furletov. Status: accepted. Date: 2026-09-27.
+Resumed 2026-10-02: WeatherNext access granted.
 
 ## Problem
 
-Part of [001-weathernext3](../001-weathernext3/intent.md). We hold no WN3 data and have no
-access to it yet. We do not know how large the ensembles are over our domain, or how much
+Part of [001-weathernext3](../001-weathernext3/intent.md). We hold no WN3 data yet; access was
+granted on 2026-10-02. We do not know how large the ensembles are over our domain, or how much
 of the comparison B window (2025-07 → 2026-05) the archive covers.
 
 ## Outcome
@@ -25,10 +25,11 @@ we score and a period we chose knowing its size and coverage.
 
 ## Out of scope
 
-- Any scoring; that is 004–006.
+- Any scoring; that is the later children of 001.
 - WN3 variables other than 2 m temperature.
 
 ## Open questions
 
-- Access: the WeatherNext data request form must be filed and approved (5–7 business days), and a credential put in the cloud environment.
+- Access from a cloud session: the `wn3-reader` key must be in the environment, and it is unchecked whether the grant covers that service account as well as the account on the form.
 - Whether WN3 becomes a sixth canonical source on the HF dataset or stays local; the size decides.
+- Training leakage: WN3's production model was trained on data, station reports included, up to 2026-06-30, so it may have seen the whole comparison B window (2025-07 → 2026-05). Which model version produced each archived period decides the period: that window, if it came from versions trained only on earlier years; otherwise runs from 2026-07 on, after the cutoff.

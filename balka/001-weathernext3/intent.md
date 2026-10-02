@@ -1,7 +1,7 @@
 # Intent: see what WeatherNext 3 can do for 2 m temperature next to AIFS ENS
 
-Author: Nikita Furletov. Owner: Nikita Furletov. Status: parked. Date: 2026-09-27.
-Parked 2026-09-30: no access to WeatherNext data yet (request filed 2026-09-27, not granted).
+Author: Nikita Furletov. Owner: Nikita Furletov. Status: split. Date: 2026-09-27.
+Resumed 2026-10-02: WeatherNext access granted.
 
 ## Problem
 
