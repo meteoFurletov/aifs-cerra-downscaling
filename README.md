@@ -118,3 +118,7 @@ redistributed.
 - Also used: NOAA NCEI's Integrated Surface Database (ISD) for the 2015–24 station
   archive and comparison C, and the Iowa Environmental Mesonet (IEM, Iowa State
   University) as a METAR cross-check.
+
+## Licence
+
+The code is under the [MIT licence](LICENSE). The data keep their own licences, above.
