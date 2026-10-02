@@ -71,17 +71,21 @@ into the five files. `fetch_cerra_target.py` asks for 2015–24; set its `YEARS`
   `results/cnn_results.json` and the `docs/MODEL.md` figure is the best of four
   checkpoints, picked on the test fold itself. At stations (comparison B, a provisional
   first pass not yet committed: nearest cell, the same folds, not held out by location)
-  it does not beat bilinear at five of six leads; the held-out comparison is the next
-  step. It is far too smooth: the next rung is a generative model. See `docs/MODEL.md`.
+  it does not beat bilinear at five of six leads. It is far too smooth: the next rung is
+  a generative model. See `docs/MODEL.md`.
+- **Against the raw AIFS ensemble at held-out stations** (comparison B, sealed folds
+  3–12, autumn to spring, scored once on 2 Oct 2026): a correction learned from CERRA
+  (the surface model, held out by a 40 km ring) does not beat the raw ensemble in CRPS at
+  any lead, and is worse than bilinear at +0 to +72 h. Bilinear interpolation beats the
+  raw nearest-cell ensemble at every lead. The summer gains on the dev folds did not
+  hold. See [`results/card1_confirmatory`](results/card1_confirmatory/README.md).
 - **Related work.** Jua, "Universal Diffusion-Based Probabilistic Downscaling"
   (arXiv 2602.11893): the same ERA5 → CERRA setup at European scale, with a diffusion
   model applied zero-shot to AIFS and other forecasts.
 
 ## Next step
 
-The comparison that paper did not make: the downscaled forecast against the **raw
-AIFS ensemble**, scored at stations held out by location, per lead time. Target: a
-public write-up by 31 October 2026.
+The public write-up of the comparison above, by 31 October 2026.
 
 ## Notes
 
