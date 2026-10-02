@@ -10,10 +10,9 @@ drafting. A correction that lands in chat twice lands here once.
   Not "AIFS" alone, which also names the single deterministic model.
 - **WeatherNext 3 (WN3)**: Google DeepMind's AI ensemble forecast, 64 members, 15 days,
   initialised hourly; 2 m temperature on a 0.05° grid, calibrated to stations. A model
-  compared alongside AIFS ENS, not an input. Data sits in GCS as Zarr, behind the
-  WeatherNext data request form; the 2024–25 archive is still being backfilled.
-  Data for any time 1 h or more in the past is CC BY 4.0 (credit Google DeepMind); newer
-  data falls under the GDM Real-Time Experimental Data Terms of Use.
+  compared alongside AIFS ENS, not an input. Data sits in GCS as Zarr; access was granted
+  on 2026-10-02 to the account on the request form (whether `wn3-reader` is covered is
+  unchecked). The 2024–25 archive is still being backfilled.
 - **Station head**: a network fitted to SYNOP observations that predicts at any point from
   forecast fields and local geography, after WN3's method (Rasp et al. 2026, arXiv 2609.03582).
 - **CERRA**: Copernicus regional reanalysis, 5.5 km Lambert grid, the target. It is
@@ -43,6 +42,10 @@ drafting. A correction that lands in chat twice lands here once.
 
 ## Facts
 
+- WN3 licence: download only runs whose whole 15-day window ended more than 1 h ago.
+  Everything held is then CC BY 4.0: credit "WeatherNext 3, Google DeepMind", link the
+  licence and say what was changed. Newer data falls under the GDM Real-Time Experimental
+  Data Terms of Use (sharing limits, a set citation text, revocable); keep none of it.
 - Before quoting any score, read [COMPARISONS.md §6](COMPARISONS.md). Every number
   names its comparison and is reported per lead and season. Beating comparison A is
   not validation; station claims need the spatial holdout.
