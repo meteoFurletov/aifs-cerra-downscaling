@@ -8,6 +8,13 @@ drafting. A correction that lands in chat twice lands here once.
 - **AIFS ENS**: ECMWF's AI *ensemble* forecast, 0.25°, the model input. Held as
   control, ensemble mean and spread per lead (`aifs.npz`), not as 51 members.
   Not "AIFS" alone, which also names the single deterministic model.
+- **WeatherNext 3 (WN3)**: Google DeepMind's AI ensemble forecast, 64 members, 15 days,
+  initialised hourly; 2 m temperature on a 0.05° grid, calibrated to stations. A model
+  compared alongside AIFS ENS, not an input. Data sits in GCS as Zarr; access was granted
+  on 2026-10-02 to the account on the request form (whether `wn3-reader` is covered is
+  unchecked). The 2024–25 archive is still being backfilled.
+- **Station head**: a network fitted to SYNOP observations that predicts at any point from
+  forecast fields and local geography, after WN3's method (Rasp et al. 2026, arXiv 2609.03582).
 - **CERRA**: Copernicus regional reanalysis, 5.5 km Lambert grid, the target. It is
   the *truth* in comparison A and a *scored product* in comparison B.
 - **ERA5**: global reanalysis, 0.25°. It is an analysis with no lead time: the stage-1
@@ -27,11 +34,18 @@ drafting. A correction that lands in chat twice lands here once.
   2025-07-02, shared by both stages. Station spatial folds are `stations.fold`.
 - **Stores**: code at GitHub `meteoFurletov/aifs-cerra-downscaling` (public); the five
   canonical sources at HF dataset `meteof/aifs-cerra-downscaling-data` (private).
+- **WN3 access**: service account `wn3-reader@claude-cloud-meteof-weather.iam.gserviceaccount.com`
+  in Google Cloud project `claude-cloud-meteof-weather`, which pays the Requester Pays reads.
+  Cloud sessions get it through the variables `WN3_GCP_KEY_JSON` and `WN3_BILLING_PROJECT`.
 - **Sibling**: `../improver-nw-russia`, the PhD post-processing core (IMPROVER over
   GEFS + AIFS). Separate repo; nothing here imports it.
 
 ## Facts
 
+- WN3 licence: download only runs whose whole 15-day window ended more than 1 h ago.
+  Everything held is then CC BY 4.0: credit "WeatherNext 3, Google DeepMind", link the
+  licence and say what was changed. Newer data falls under the GDM Real-Time Experimental
+  Data Terms of Use (sharing limits, a set citation text, revocable); keep none of it.
 - Before quoting any score, read [COMPARISONS.md §6](COMPARISONS.md). Every number
   names its comparison and is reported per lead and season. Beating comparison A is
   not validation; station claims need the spatial holdout.
