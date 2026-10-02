@@ -10,9 +10,11 @@ drafting. A correction that lands in chat twice lands here once.
   Not "AIFS" alone, which also names the single deterministic model.
 - **WeatherNext 3 (WN3)**: Google DeepMind's AI ensemble forecast, 64 members, 15 days,
   initialised hourly; 2 m temperature on a 0.05° grid, calibrated to stations. A model
-  compared alongside AIFS ENS, not an input. Data sits in GCS as Zarr; access was granted
-  on 2026-10-02 to the account on the request form (whether `wn3-reader` is covered is
-  unchecked). The 2024–25 archive is still being backfilled.
+  compared alongside AIFS ENS, not an input. Zarr in GCS: all members at
+  `gs://weathernext3_spatial/weathernext_3_0_0/zarr/` (Requester Pays), mean and
+  percentiles at `gs://weathernext3_statistics_spatial/weathernext_3_0_0_statistics/zarr/`.
+  The access granted on 2026-10-02 covers `wn3-reader`, which listed both that day. The
+  2024–25 archive is still being backfilled.
 - **Station head**: a network fitted to SYNOP observations that predicts at any point from
   forecast fields and local geography, after WN3's method (Rasp et al. 2026, arXiv 2609.03582).
 - **CERRA**: Copernicus regional reanalysis, 5.5 km Lambert grid, the target. It is
@@ -35,8 +37,11 @@ drafting. A correction that lands in chat twice lands here once.
 - **Stores**: code at GitHub `meteoFurletov/aifs-cerra-downscaling` (public); the five
   canonical sources at HF dataset `meteof/aifs-cerra-downscaling-data` (private).
 - **WN3 access**: service account `wn3-reader@claude-cloud-meteof-weather.iam.gserviceaccount.com`
-  in Google Cloud project `claude-cloud-meteof-weather`, which pays the Requester Pays reads.
-  Cloud sessions get it through the variables `WN3_GCP_KEY_JSON` and `WN3_BILLING_PROJECT`.
+  in Google Cloud project `claude-cloud-meteof-weather`, which pays the Requester Pays reads
+  (the account is a Service Usage Consumer there). Its JSON key and the billing project are
+  the secrets `WN3_GCP_KEY_JSON` and `WN3_BILLING_PROJECT`.
+- **Infisical**: the secrets store, Infisical Cloud (app.infisical.com). This repo's secrets
+  are in project `weather`, environment `dev`; `.infisical.json` names the project.
 - **Sibling**: `../improver-nw-russia`, the PhD post-processing core (IMPROVER over
   GEFS + AIFS). Separate repo; nothing here imports it.
 
@@ -63,6 +68,12 @@ drafting. A correction that lands in chat twice lands here once.
   (`scripts/cloud_env_setup.sh`), because cloud sessions don't install plugins from
   `enabledPlugins`. Once it is installed, `claude plugin list` shows balka twice (user
   and project scope): the same install, harmless.
+- Secrets come from Infisical only, never from a file or the repo. Locally, wrap the
+  command: `infisical run --env=dev -- <command>`. In cloud sessions the environment holds
+  only the machine identity (`INFISICAL_CLIENT_ID`, `INFISICAL_CLIENT_SECRET`), and the
+  SessionStart hook passes the secrets to every Bash command. WN3 reads there need
+  `app.infisical.com`, `oauth2.googleapis.com` and `storage.googleapis.com` on the network
+  allowlist. `infisical secrets` prints values in clear; check one through `infisical run`.
 - Deadline: the public write-up (downscaled forecast against raw AIFS ENS, per lead,
   at stations held out by location) is due 31 October 2026.
 
