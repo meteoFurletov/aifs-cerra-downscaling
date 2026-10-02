@@ -8,13 +8,13 @@ drafting. A correction that lands in chat twice lands here once.
 - **AIFS ENS**: ECMWF's AI *ensemble* forecast, 0.25°, the model input. Held as
   control, ensemble mean and spread per lead (`aifs.npz`), not as 51 members.
   Not "AIFS" alone, which also names the single deterministic model.
-- **WeatherNext 3 (WN3)**: Google DeepMind's AI ensemble forecast, 64 members, 15 days,
-  initialised hourly; 2 m temperature on a 0.05° grid, calibrated to stations. A model
+- **WeatherNext 3 (WN3)**: Google DeepMind's AI ensemble forecast, 64 members; runs at
+  00/06/12/18 UTC go 15 days, the hourly runs between them 48 h. 2 m temperature on a 0.05°
+  grid, calibrated to stations. A model
   compared alongside AIFS ENS, not an input. Zarr in GCS: all members at
   `gs://weathernext3_spatial/weathernext_3_0_0/zarr/` (Requester Pays), mean and
   percentiles at `gs://weathernext3_statistics_spatial/weathernext_3_0_0_statistics/zarr/`.
-  The access granted on 2026-10-02 covers `wn3-reader`, which listed both that day. The
-  2024–25 archive is still being backfilled.
+  The access granted on 2026-10-02 covers `wn3-reader`. Layout and size are under Facts.
 - **Station head**: a network fitted to SYNOP observations that predicts at any point from
   forecast fields and local geography, after WN3's method (Rasp et al. 2026, arXiv 2609.03582).
 - **CERRA**: Copernicus regional reanalysis, 5.5 km Lambert grid, the target. It is
@@ -37,8 +37,10 @@ drafting. A correction that lands in chat twice lands here once.
 - **Stores**: code at GitHub `meteoFurletov/aifs-cerra-downscaling` (public); the five
   canonical sources at HF dataset `meteof/aifs-cerra-downscaling-data` (private).
 - **WN3 access**: service account `wn3-reader@claude-cloud-meteof-weather.iam.gserviceaccount.com`
-  in Google Cloud project `claude-cloud-meteof-weather`, which pays the Requester Pays reads
-  (the account is a Service Usage Consumer there). Its JSON key and the billing project are
+  in Google Cloud project `claude-cloud-meteof-weather`, the billing project for Requester
+  Pays reads; the statistics need none. Its billing account is a Free Trial, linked
+  2026-10-02: $300 for 90 days, never charged unless upgraded to a paid account, and the
+  project stops when the credit or the days run out. The key and the billing project are
   the secrets `WN3_GCP_KEY_JSON` and `WN3_BILLING_PROJECT`.
 - **Infisical**: the secrets store, Infisical Cloud (app.infisical.com). This repo's secrets
   are in project `weather`, environment `dev`; `.infisical.json` names the project.
@@ -47,6 +49,13 @@ drafting. A correction that lands in chat twice lands here once.
 
 ## Facts
 
+- WN3 layout (read 2026-10-02): both stores in GCS region us-east1, one Zarr per run,
+  hourly from 2026-01-01 on; 2024–25 is still being backfilled. Leads run +1 h to +360 h:
+  **there is no lead 0**. 2 m temperature comes raw at 0.1° (`temperature_2m`) and
+  station-calibrated at 0.05° (`station_head_temperature_2m`). An all-members chunk is one
+  member × 6 h of leads × the whole globe: ~118 MB at 0.1°, ~470 MB at 0.05°. So one lead,
+  all members, one run is ~7.6 GB or ~30 GB, whatever the domain. The statistics hold
+  `_mean` and `_p10`…`_p90` of both, chunked one lead × the globe.
 - WN3 licence: download only runs whose whole 15-day window ended more than 1 h ago.
   Everything held is then CC BY 4.0: credit "WeatherNext 3, Google DeepMind", link the
   licence and say what was changed. Newer data falls under the GDM Real-Time Experimental
@@ -58,11 +67,16 @@ drafting. A correction that lands in chat twice lands here once.
   that touches a data path before changing it.
 - `dataset.py` is the only way to build training sets. Nothing derived is stored;
   `check()` stays 15/15 `True`. Stage-2 rows are keyed by **(valid, lead)**.
+- AIFS ENS v1 ran operationally until 2026-05-12, v2 since. `aifs.npz` holds 39 v2 inits
+  (2026-05-12 to 05-31), most of temporal fold 12 (valid 2026-05-10 to 05-30); report that
+  fold apart when the version could matter.
 - Local only: the 13 GB of raw CERRA GRIB (`data/raw/`), the Copernicus key
   (`~/.cdsapirc`), and the `pipeline/` scripts that rebuild sources or fetch new data.
 - `pipeline/` scripts come from Claude Science's flat folder and read and write the
   current directory; run them from `data/` or `data/scratch/`. `dataset.py` and the
   docs still carry leftovers from it (`host` arguments, `{{artifact:...}}` links).
+- Since 2026-10-02 work is local: cloud sessions are not used, and their wiring below
+  (the SessionStart hook, the setup script, the Infisical step) stays, dormant.
 - Cloud sessions have no GPU. Their SessionStart hook runs `uv sync` and fetches the
   sources. Balka reaches them through the environment's setup script
   (`scripts/cloud_env_setup.sh`), because cloud sessions don't install plugins from
