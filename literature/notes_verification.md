@@ -174,7 +174,7 @@ A Monte Carlo experiment over calibrated Gaussian ensembles confirms this to wit
 at every size tested (M = 2 gives 50.10% ± 0.06 against an exact 50%; M = 51 gives 1.88% ± 0.12
 against an exact 1.96%), and confirms the fair estimator is unbiased at all sizes.
 
-![Standard CRPS inflation as a function of ensemble size. Left: the relative penalty applied to a perfectly calibrated ensemble is exactly 1/M — 2.0% at the 51 members of AIFS ENS, 10% at a 10-member subsample. Shaded band marks the ~2% scale of post-processing gains this project has previously measured. Right: expected score for the two estimators; only the fair CRPS is comparable across ensemble sizes.]({{artifact:art_446aa4aa-0911-430e-9942-068e2dc138e1}})
+![Standard CRPS inflation as a function of ensemble size. Left: the relative penalty applied to a perfectly calibrated ensemble is exactly 1/M — 2.0% at the 51 members of AIFS ENS, 10% at a 10-member subsample. Shaded band marks the ~2% scale of post-processing gains this project has previously measured. Right: expected score for the two estimators; only the fair CRPS is comparable across ensemble sizes.](../figures/fig_crps_finite_ensemble_bias.png)
 
 Read the left panel against your own numbers. Earlier work in this project found that the best
 correction method beat ERA5 by **+2.2%**, and that two other methods came in *negative*. The

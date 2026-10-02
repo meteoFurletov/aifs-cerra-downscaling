@@ -5,8 +5,8 @@ regional reanalysis grid (5.5 km) over Leningrad Oblast + margin, and verify aga
 station observations.
 
 **Status.** The data phase is closed. Every input, target and truth exists, is validated,
-and restores from artifacts in one call. Stage-2 is trainable today. Stage-1 needs one
-re-fetch (§5).
+and restores from the five source files in one call. Stage-2 is trainable today. Stage-1
+needs one re-fetch (§5).
 
 ---
 
@@ -14,11 +14,11 @@ re-fetch (§5).
 
 ```python
 from dataset import load_stage1, load_stage2, load_stations, check
-d = load_stage2(host)              # X, Y, B, R, lead, fold, valid, orog, lsm, coords
-d = load_stage2(host, aux=True)    # + 7 ERA5 predictor channels
-d = load_stage1(host)              # ERA5 -> CERRA, 3-channel by default
-st, obs = load_stations(host)
-assert all(check(host).values())   # 15 assertions against documented values
+d = load_stage2()              # X, Y, B, R, lead, fold, valid, orog, lsm, coords
+d = load_stage2(aux=True)      # + 7 ERA5 predictor channels
+d = load_stage1()              # ERA5 -> CERRA, 3-channel by default
+st, obs = load_stations()
+assert all(check().values())   # 15 assertions against documented values
 ```
 
 **Five files, one per source.** Nothing derived is stored — pairing, the bilinear
@@ -27,9 +27,9 @@ baseline `B`, the residual `R = Y − B` and the fold assignment are all compute
 call (~25 s for both stages).
 
 That is deliberate. Storing pre-paired training sets meant CERRA lived in three files at
-once and they could silently disagree. Verified: the loader reproduces the old
-the stage-2 set and the stage-1 set **exactly** — X bit-identical, Y/B/R to
-1e-4 (float32 rounding), lead/fold/valid exact.
+once and they could silently disagree. Verified: the loader reproduces the old stage-2 and
+stage-1 sets **exactly** — X bit-identical, Y/B/R to 1e-4 (float32 rounding),
+lead/fold/valid exact.
 
 > Comparing the two requires sorting on **(valid, lead)**, not valid alone: 544 of 546
 > valid times are shared by up to 6 different (init, lead) pairs, so valid is not a
@@ -40,7 +40,7 @@ the stage-2 set and the stage-1 set **exactly** — X bit-identical, Y/B/R to
 | | |
 |---|---|
 | **`README.md`** | this file — index and closing state |
-| **`DATA.md`** | every source, how it was obtained, and 10 traps that silently corrupt results |
+| **`DATA.md`** | every source, how it was obtained, and 11 traps that silently corrupt results |
 | **`COMPARISONS.md`** | which comparison a number belongs to. **Read before quoting any RMSE** |
 | **`GRIDS.md`** | lat/lon ↔ Lambert alignment, worked at St Petersburg; conservative regridding |
 | **`MODEL.md`** | data provenance trail plus the fitted architecture ladder |
@@ -73,7 +73,7 @@ extended back), `synop_fourway.parquet` (the four-way verification baselines in
 
 Measured over 2025-07 → 2026-05, 334 days, all four sources present.
 
-| Against 83 SYNOP stations | RMSE |
+| Comparison B, against 83 SYNOP stations | RMSE |
 |---|---|
 | CERRA 5.5 km (the target) | **1.076 °C** ← floor; no model beats this |
 | ERA5 0.25° | 1.475 °C |
@@ -82,8 +82,8 @@ Measured over 2025-07 → 2026-05, 334 days, all four sources present.
 - **Headroom = 0.400 °C** — what resolution buys, on truth. Replicated on 2020 with a
   different observation archive (0.288 °C).
 - **Stage-2 objective = 0.588 °C** — AIFS(+24 h) minus CERRA.
-- **Gridded baseline = 1.416 °C** at +24 h (2.065 °C pooled over all leads, a number that
-  describes no real forecast situation — always report per lead).
+- **Gridded baseline (comparison A) = 1.416 °C** at +24 h (2.065 °C pooled over all
+  leads, a number that describes no real forecast situation — always report per lead).
 - At the station cells the error decomposes exactly: **1.384 °C** downscaling gap +
   **1.076 °C** floor → **1.626 °C** experienced. About three quarters of the variance a
   user experiences at +24 h is in the part downscaling addresses.
@@ -93,7 +93,7 @@ Measured over 2025-07 → 2026-05, 334 days, all four sources present.
 **ERA5 → CERRA, 2,184 pairs, 13 folds of exactly 168.** Both sides are analyses, so the
 input carries no forecast error and the model learns the pure spatial operator.
 
-| | Baseline RMSE |
+| | Baseline RMSE, comparison A (gridded, CERRA as truth) |
 |---|---|
 | stage 1: ERA5 → CERRA | **1.236 °C** |
 | stage 2: AIFS +0 h → CERRA | 1.318 °C |
@@ -104,7 +104,7 @@ ERA5 was requested with `area=[67.0, 18.5, 53.0, 47.25]`, which reproduces the s
 input grid's 57 × 116 **exactly** — asserted against `src_lat`/`src_lon`, not assumed. All
 2,680 CERRA analyses found a matching ERA5 valid time. 35.7 MB, ~3 min end to end.
 
-`load_stage1(host)` returns the 3-channel form by default — the analysis repeated with
+`load_stage1()` returns the 3-channel form by default — the analysis repeated with
 spread = 0, so the stage-2 architecture consumes it unchanged; pass
 `three_channel=False` for the honest single-channel shape.
 
@@ -164,11 +164,11 @@ Folds 0–1 are pure summer, 2 autumn/summer, 3–5 autumn, **6–8 winter**, 9 
 10–12 spring. Leave-one-fold-out therefore holds out a *season* — a harder and more honest
 test than random splitting, but it means results must be reported per fold, never pooled.
 
-**This changes how the reported model result must be read.** The +0.090 °C mean gain and
-the +0.773 °C Ladoga gain were tested on folds 0, 1, 2 — 576 summer and 144 autumn samples,
-**zero winter samples**. They are warm-season numbers. Winter is where the lake-land
-contrast is largest (sd 1.702 °C) and least calendar-predictable, so it is the most likely
-place for the estimate to move.
+**This changes how the reported model result must be read.** The comparison-A gains,
++0.085 °C mean and +0.34 °C over open water, were tested on folds 0, 1, 2 — 576 summer
+and 144 autumn samples, **zero winter samples**. They are warm-season numbers. Winter is
+where the lake-land contrast is largest (sd 1.702 °C) and least calendar-predictable, so
+it is the most likely place for the estimate to move.
 
 ### Finding: one winter only
 
@@ -197,28 +197,34 @@ CERRA years, at one full-field browser download each.
 
 ## 7. What the data says about the model
 
-Fitted and cross-validated, gains against the interpolation baseline:
+Fitted and cross-validated, comparison-A gains (CERRA as truth) against the interpolation
+baseline:
 
 | Model | Gain |
 |---|---|
 | per-cell linear, 10 local features | +0.034 °C |
 | global ridge on 40 residual PCs | **−0.133 °C** (overfits: 6.6k predictors, 3k samples) |
-| conv net, 39k params | **+0.090 °C** |
+| conv net, 39k params | **+0.085 °C** (last epoch, pooled over leads, warm-season folds 0–2) |
+
+Not one sample: the linear rows come from `results/ladder.json` (all 13 folds; no committed
+script produces it), the conv net from folds 0–2 only. See `MODEL.md` Part 2.
 
 Those two failures pin the architecture from both sides: it needs a spatial receptive field
-*and* shared weights. The conv net gains **+0.773 °C over Ladoga against +0.045 over
-land** — it found the sub-grid lake signal without being told where to look.
+*and* shared weights. At its last epoch the conv net gains **+0.34 °C over open water
+against +0.05 over land** — it found the sub-grid lake signal without being told where to
+look. At stations (comparison B, provisional) it does not beat bilinear at five of six
+leads; see `MODEL.md`.
 
-Open caveat: high-wavenumber power in the prediction is 0.088 of the truth's. The model
-improves accuracy, not realism. See `MODEL.md` §"honest caveat".
+Open caveat: the prediction is far smoother than the truth. The model improves accuracy,
+not realism. See `MODEL.md` §"honest caveat".
 
-## 8. Environments
+## 8. Environment
 
-| Env | Contains |
-|---|---|
-| `downscale` | the working environment — xarray, cfgrib, eccodes, pyproj, cartopy, zarr |
-| `downscale-esmf` | + `xesmf` / `esmpy`. Needs `ESMFMKFILE`; `esmf_roundtrip.py` sets it itself |
-| `downscale-torch` | + `torch` (CUDA available on the local 1650 Ti) |
+`uv sync` installs what `dataset.py` needs. `pyproject.toml` adds two extras: `grib` for
+the data-building scripts in `pipeline/`, `train` for torch
+(`uv sync --extra grib --extra train`). Kept separate deliberately: torch is heavy and
+not needed for data work.
 
-Kept separate deliberately: ESMF and torch are both heavy and neither is needed for data
-work.
+> Note: the work itself ran in local conda environments (`downscale`, `downscale-esmf`,
+> `downscale-torch`). `esmf_roundtrip.py` still needs `xesmf` / `esmpy`, which no extra
+> provides; it sets `ESMFMKFILE` itself.
