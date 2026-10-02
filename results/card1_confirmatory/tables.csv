@@ -1,0 +1,541 @@
+lead,tfold,forecast,kind,n,me,rmse,crps,spread_rmse
+0,3,AIFS ENS,ensemble,3468,0.040541,1.437827,0.844346,0.341459
+0,3,bilinear,point,3468,0.057911,1.406175,0.994505,
+0,3,bilinear dressed,dressed,3468,0.057911,1.406175,0.822623,0.349145
+0,3,surface (40 km ring),point,3468,-0.055065,1.361275,0.994202,
+0,3,surface (40 km ring) dressed,dressed,3468,-0.055065,1.361275,0.818529,0.360661
+0,3,lookup own cell (not held out),point,3468,-0.149237,1.349960,1.000372,
+0,3,lookup own cell (not held out) dressed,dressed,3468,-0.149237,1.349960,0.824473,0.363684
+0,3,CERRA (ceiling),point,3468,-0.231928,0.933753,0.666509,
+0,3,CERRA (ceiling) dressed,dressed,3468,-0.231928,0.933753,0.521989,0.525791
+0,4,AIFS ENS,ensemble,3290,-0.082612,1.110845,0.614154,0.403862
+0,4,bilinear,point,3290,-0.067065,1.069121,0.735056,
+0,4,bilinear dressed,dressed,3290,-0.067065,1.069121,0.588365,0.419623
+0,4,surface (40 km ring),point,3290,-0.176040,1.111417,0.806610,
+0,4,surface (40 km ring) dressed,dressed,3290,-0.176040,1.111417,0.649064,0.403654
+0,4,lookup own cell (not held out),point,3290,-0.272719,1.122896,0.830722,
+0,4,lookup own cell (not held out) dressed,dressed,3290,-0.272719,1.122896,0.672000,0.399528
+0,4,CERRA (ceiling),point,3290,-0.361879,0.770366,0.571639,
+0,4,CERRA (ceiling) dressed,dressed,3290,-0.361879,0.770366,0.441296,0.582357
+0,5,AIFS ENS,ensemble,3337,-0.113896,1.048035,0.557490,0.400209
+0,5,bilinear,point,3337,-0.088637,1.018597,0.669323,
+0,5,bilinear dressed,dressed,3337,-0.088637,1.018597,0.530520,0.411775
+0,5,surface (40 km ring),point,3337,-0.193316,1.070382,0.734974,
+0,5,surface (40 km ring) dressed,dressed,3337,-0.193316,1.070382,0.589249,0.391853
+0,5,lookup own cell (not held out),point,3337,-0.300245,1.093680,0.763661,
+0,5,lookup own cell (not held out) dressed,dressed,3337,-0.300245,1.093680,0.614899,0.383506
+0,5,CERRA (ceiling),point,3337,-0.321647,0.801530,0.544815,
+0,5,CERRA (ceiling) dressed,dressed,3337,-0.321647,0.801530,0.418372,0.523290
+0,6,AIFS ENS,ensemble,3469,-0.227426,0.899360,0.530015,0.429180
+0,6,bilinear,point,3469,-0.212377,0.883047,0.645543,
+0,6,bilinear dressed,dressed,3469,-0.212377,0.883047,0.516153,0.437108
+0,6,surface (40 km ring),point,3469,-0.332404,0.961620,0.727777,
+0,6,surface (40 km ring) dressed,dressed,3469,-0.332404,0.961620,0.589369,0.401392
+0,6,lookup own cell (not held out),point,3469,-0.433237,1.022377,0.789103,
+0,6,lookup own cell (not held out) dressed,dressed,3469,-0.433237,1.022377,0.646469,0.377539
+0,6,CERRA (ceiling),point,3469,-0.322729,0.599796,0.463475,
+0,6,CERRA (ceiling) dressed,dressed,3469,-0.322729,0.599796,0.350996,0.643530
+0,7,AIFS ENS,ensemble,3482,-0.058871,1.403977,0.734458,0.495043
+0,7,bilinear,point,3482,-0.025134,1.341241,0.893389,
+0,7,bilinear dressed,dressed,3482,-0.025134,1.341241,0.691491,0.518199
+0,7,surface (40 km ring),point,3482,-0.138941,1.389856,0.952197,
+0,7,surface (40 km ring) dressed,dressed,3482,-0.138941,1.389856,0.738641,0.500073
+0,7,lookup own cell (not held out),point,3482,-0.236470,1.404570,0.971777,
+0,7,lookup own cell (not held out) dressed,dressed,3482,-0.236470,1.404570,0.756648,0.494834
+0,7,CERRA (ceiling),point,3482,-0.250918,0.978985,0.686115,
+0,7,CERRA (ceiling) dressed,dressed,3482,-0.250918,0.978985,0.515217,0.709949
+0,8,AIFS ENS,ensemble,3098,0.031724,1.797194,0.994996,0.476066
+0,8,bilinear,point,3098,0.054250,1.754599,1.207258,
+0,8,bilinear dressed,dressed,3098,0.054250,1.754599,0.963501,0.487623
+0,8,surface (40 km ring),point,3098,-0.046002,1.762308,1.233150,
+0,8,surface (40 km ring) dressed,dressed,3098,-0.046002,1.762308,0.981813,0.485490
+0,8,lookup own cell (not held out),point,3098,-0.141987,1.759129,1.240700,
+0,8,lookup own cell (not held out) dressed,dressed,3098,-0.141987,1.759129,0.986982,0.486367
+0,8,CERRA (ceiling),point,3098,-0.375186,1.407635,0.995268,
+0,8,CERRA (ceiling) dressed,dressed,3098,-0.375186,1.407635,0.778784,0.607816
+0,9,AIFS ENS,ensemble,3447,-0.285257,1.513146,0.836515,0.414496
+0,9,bilinear,point,3447,-0.286373,1.487150,1.019820,
+0,9,bilinear dressed,dressed,3447,-0.286373,1.487150,0.820419,0.421742
+0,9,surface (40 km ring),point,3447,-0.425477,1.524174,1.089459,
+0,9,surface (40 km ring) dressed,dressed,3447,-0.425477,1.524174,0.876746,0.411497
+0,9,lookup own cell (not held out),point,3447,-0.506952,1.551662,1.125264,
+0,9,lookup own cell (not held out) dressed,dressed,3447,-0.506952,1.551662,0.907935,0.404208
+0,9,CERRA (ceiling),point,3447,-0.362597,1.162228,0.757758,
+0,9,CERRA (ceiling) dressed,dressed,3447,-0.362597,1.162228,0.592769,0.539648
+0,10,AIFS ENS,ensemble,3428,-0.204931,1.565251,0.978897,0.370558
+0,10,bilinear,point,3428,-0.230964,1.504142,1.148820,
+0,10,bilinear dressed,dressed,3428,-0.230964,1.504142,0.940687,0.385612
+0,10,surface (40 km ring),point,3428,-0.361529,1.517945,1.181581,
+0,10,surface (40 km ring) dressed,dressed,3428,-0.361529,1.517945,0.969243,0.382106
+0,10,lookup own cell (not held out),point,3428,-0.441805,1.523553,1.197011,
+0,10,lookup own cell (not held out) dressed,dressed,3428,-0.441805,1.523553,0.983677,0.380699
+0,10,CERRA (ceiling),point,3428,-0.413572,1.067674,0.769119,
+0,10,CERRA (ceiling) dressed,dressed,3428,-0.413572,1.067674,0.605091,0.543252
+0,11,AIFS ENS,ensemble,3420,-0.143080,1.712081,1.036095,0.336765
+0,11,bilinear,point,3420,-0.154798,1.629193,1.190672,
+0,11,bilinear dressed,dressed,3420,-0.154798,1.629193,0.985747,0.353899
+0,11,surface (40 km ring),point,3420,-0.271774,1.614991,1.203622,
+0,11,surface (40 km ring) dressed,dressed,3420,-0.271774,1.614991,0.994595,0.357011
+0,11,lookup own cell (not held out),point,3420,-0.370279,1.591875,1.208863,
+0,11,lookup own cell (not held out) dressed,dressed,3420,-0.370279,1.591875,0.996972,0.362195
+0,11,CERRA (ceiling),point,3420,-0.275545,1.240194,0.869455,
+0,11,CERRA (ceiling) dressed,dressed,3420,-0.275545,1.240194,0.693328,0.464903
+0,12,AIFS ENS,ensemble,3435,0.027008,1.652152,0.983564,0.385559
+0,12,bilinear,point,3435,0.009449,1.573687,1.156248,
+0,12,bilinear dressed,dressed,3435,0.009449,1.573687,0.940410,0.404783
+0,12,surface (40 km ring),point,3435,-0.104140,1.579470,1.180474,
+0,12,surface (40 km ring) dressed,dressed,3435,-0.104140,1.579470,0.961466,0.403301
+0,12,lookup own cell (not held out),point,3435,-0.195285,1.561189,1.179229,
+0,12,lookup own cell (not held out) dressed,dressed,3435,-0.195285,1.561189,0.961134,0.408024
+0,12,CERRA (ceiling),point,3435,-0.240580,1.154384,0.849212,
+0,12,CERRA (ceiling) dressed,dressed,3435,-0.240580,1.154384,0.663488,0.551811
+24,3,AIFS ENS,ensemble,3468,-0.094875,1.579218,0.847115,0.571832
+24,3,bilinear,point,3468,-0.075501,1.515875,1.087998,
+24,3,bilinear dressed,dressed,3468,-0.075501,1.515875,0.810975,0.595726
+24,3,surface (40 km ring),point,3468,-0.149423,1.490387,1.093364,
+24,3,surface (40 km ring) dressed,dressed,3468,-0.149423,1.490387,0.812357,0.605914
+24,3,lookup own cell (not held out),point,3468,-0.233568,1.437125,1.067680,
+24,3,lookup own cell (not held out) dressed,dressed,3468,-0.233568,1.437125,0.789769,0.628370
+24,3,CERRA (ceiling),point,3468,-0.231928,0.933753,0.666509,
+24,3,CERRA (ceiling) dressed,dressed,3468,-0.231928,0.933753,0.485476,0.967116
+24,4,AIFS ENS,ensemble,3290,-0.106986,1.138473,0.580399,0.642388
+24,4,bilinear,point,3290,-0.090852,1.113388,0.771468,
+24,4,bilinear dressed,dressed,3290,-0.090852,1.113388,0.567386,0.656861
+24,4,surface (40 km ring),point,3290,-0.158398,1.129080,0.811316,
+24,4,surface (40 km ring) dressed,dressed,3290,-0.158398,1.129080,0.598392,0.647732
+24,4,lookup own cell (not held out),point,3290,-0.245195,1.136354,0.841553,
+24,4,lookup own cell (not held out) dressed,dressed,3290,-0.245195,1.136354,0.621209,0.643586
+24,4,CERRA (ceiling),point,3290,-0.361879,0.770366,0.571639,
+24,4,CERRA (ceiling) dressed,dressed,3290,-0.361879,0.770366,0.414339,0.949343
+24,5,AIFS ENS,ensemble,3337,-0.082304,1.116214,0.548545,0.750830
+24,5,bilinear,point,3337,-0.054619,1.094891,0.728128,
+24,5,bilinear dressed,dressed,3337,-0.054619,1.094891,0.530109,0.765452
+24,5,surface (40 km ring),point,3337,-0.111361,1.116409,0.769395,
+24,5,surface (40 km ring) dressed,dressed,3337,-0.111361,1.116409,0.559505,0.750699
+24,5,lookup own cell (not held out),point,3337,-0.206620,1.134429,0.797344,
+24,5,lookup own cell (not held out) dressed,dressed,3337,-0.206620,1.134429,0.582073,0.738774
+24,5,CERRA (ceiling),point,3337,-0.321647,0.801530,0.544815,
+24,5,CERRA (ceiling) dressed,dressed,3337,-0.321647,0.801530,0.396522,1.045608
+24,6,AIFS ENS,ensemble,3469,-0.360900,1.111116,0.555777,0.733455
+24,6,bilinear,point,3469,-0.342210,1.079818,0.746287,
+24,6,bilinear dressed,dressed,3469,-0.342210,1.079818,0.539843,0.754714
+24,6,surface (40 km ring),point,3469,-0.422455,1.139116,0.812559,
+24,6,surface (40 km ring) dressed,dressed,3469,-0.422455,1.139116,0.592638,0.715426
+24,6,lookup own cell (not held out),point,3469,-0.514117,1.207511,0.892679,
+24,6,lookup own cell (not held out) dressed,dressed,3469,-0.514117,1.207511,0.654140,0.674904
+24,6,CERRA (ceiling),point,3469,-0.322729,0.599796,0.463475,
+24,6,CERRA (ceiling) dressed,dressed,3469,-0.322729,0.599796,0.345489,1.358719
+24,7,AIFS ENS,ensemble,3482,-0.182098,1.931851,1.006818,0.676651
+24,7,bilinear,point,3482,-0.146918,1.882442,1.342298,
+24,7,bilinear dressed,dressed,3482,-0.146918,1.882442,0.979194,0.694411
+24,7,surface (40 km ring),point,3482,-0.223788,1.932001,1.395689,
+24,7,surface (40 km ring) dressed,dressed,3482,-0.223788,1.932001,1.020662,0.676598
+24,7,lookup own cell (not held out),point,3482,-0.308842,1.957419,1.430587,
+24,7,lookup own cell (not held out) dressed,dressed,3482,-0.308842,1.957419,1.046185,0.667812
+24,7,CERRA (ceiling),point,3482,-0.250918,0.978985,0.686115,
+24,7,CERRA (ceiling) dressed,dressed,3482,-0.250918,0.978985,0.514292,1.335248
+24,8,AIFS ENS,ensemble,3098,-0.078058,2.562544,1.421906,0.627970
+24,8,bilinear,point,3098,-0.059012,2.517296,1.887338,
+24,8,bilinear dressed,dressed,3098,-0.059012,2.517296,1.388966,0.639258
+24,8,surface (40 km ring),point,3098,-0.121983,2.513427,1.903219,
+24,8,surface (40 km ring) dressed,dressed,3098,-0.121983,2.513427,1.397032,0.640242
+24,8,lookup own cell (not held out),point,3098,-0.216103,2.515124,1.910604,
+24,8,lookup own cell (not held out) dressed,dressed,3098,-0.216103,2.515124,1.402742,0.639810
+24,8,CERRA (ceiling),point,3098,-0.375186,1.407635,0.995268,
+24,8,CERRA (ceiling) dressed,dressed,3098,-0.375186,1.407635,0.741864,1.143195
+24,9,AIFS ENS,ensemble,3447,-0.168422,1.657031,0.839414,0.615796
+24,9,bilinear,point,3447,-0.170714,1.633148,1.117040,
+24,9,bilinear dressed,dressed,3447,-0.170714,1.633148,0.825322,0.624802
+24,9,surface (40 km ring),point,3447,-0.250524,1.652464,1.163032,
+24,9,surface (40 km ring) dressed,dressed,3447,-0.250524,1.652464,0.858706,0.617498
+24,9,lookup own cell (not held out),point,3447,-0.323468,1.668180,1.199501,
+24,9,lookup own cell (not held out) dressed,dressed,3447,-0.323468,1.668180,0.886914,0.611680
+24,9,CERRA (ceiling),point,3447,-0.362597,1.162228,0.757758,
+24,9,CERRA (ceiling) dressed,dressed,3447,-0.362597,1.162228,0.559370,0.877963
+24,10,AIFS ENS,ensemble,3428,-0.110371,1.592176,0.903289,0.615292
+24,10,bilinear,point,3428,-0.135254,1.542339,1.175218,
+24,10,bilinear dressed,dressed,3428,-0.135254,1.542339,0.875467,0.635174
+24,10,surface (40 km ring),point,3428,-0.214215,1.553669,1.198888,
+24,10,surface (40 km ring) dressed,dressed,3428,-0.214215,1.553669,0.894504,0.630542
+24,10,lookup own cell (not held out),point,3428,-0.280959,1.557586,1.215300,
+24,10,lookup own cell (not held out) dressed,dressed,3428,-0.280959,1.557586,0.906767,0.628956
+24,10,CERRA (ceiling),point,3428,-0.413572,1.067674,0.769119,
+24,10,CERRA (ceiling) dressed,dressed,3428,-0.413572,1.067674,0.566919,0.917558
+24,11,AIFS ENS,ensemble,3420,-0.135686,1.796576,1.001147,0.550292
+24,11,bilinear,point,3420,-0.151839,1.726399,1.273256,
+24,11,bilinear dressed,dressed,3420,-0.151839,1.726399,0.962105,0.572662
+24,11,surface (40 km ring),point,3420,-0.225270,1.724355,1.280295,
+24,11,surface (40 km ring) dressed,dressed,3420,-0.225270,1.724355,0.967743,0.573340
+24,11,lookup own cell (not held out),point,3420,-0.309126,1.682234,1.253606,
+24,11,lookup own cell (not held out) dressed,dressed,3420,-0.309126,1.682234,0.946428,0.587696
+24,11,CERRA (ceiling),point,3420,-0.275545,1.240194,0.869455,
+24,11,CERRA (ceiling) dressed,dressed,3420,-0.275545,1.240194,0.645246,0.797167
+24,12,AIFS ENS,ensemble,3435,-0.130046,1.809840,1.012414,0.584763
+24,12,bilinear,point,3435,-0.151042,1.735390,1.305897,
+24,12,bilinear dressed,dressed,3435,-0.151042,1.735390,0.975295,0.609850
+24,12,surface (40 km ring),point,3435,-0.234858,1.746937,1.323740,
+24,12,surface (40 km ring) dressed,dressed,3435,-0.234858,1.746937,0.988864,0.605819
+24,12,lookup own cell (not held out),point,3435,-0.312184,1.725800,1.321638,
+24,12,lookup own cell (not held out) dressed,dressed,3435,-0.312184,1.725800,0.985110,0.613238
+24,12,CERRA (ceiling),point,3435,-0.240580,1.154384,0.849212,
+24,12,CERRA (ceiling) dressed,dressed,3435,-0.240580,1.154384,0.620786,0.916789
+48,3,AIFS ENS,ensemble,3468,-0.009930,1.713692,0.932937,0.609096
+48,3,bilinear,point,3468,0.009235,1.658811,1.216102,
+48,3,bilinear dressed,dressed,3468,0.009235,1.658811,0.900525,0.629248
+48,3,surface (40 km ring),point,3468,-0.030360,1.633787,1.218639,
+48,3,surface (40 km ring) dressed,dressed,3468,-0.030360,1.633787,0.899409,0.638886
+48,3,lookup own cell (not held out),point,3468,-0.112175,1.573515,1.179326,
+48,3,lookup own cell (not held out) dressed,dressed,3468,-0.112175,1.573515,0.867049,0.663358
+48,3,CERRA (ceiling),point,3468,-0.231928,0.933753,0.666509,
+48,3,CERRA (ceiling) dressed,dressed,3468,-0.231928,0.933753,0.493046,1.117859
+48,4,AIFS ENS,ensemble,3290,-0.094157,1.163474,0.595677,0.723741
+48,4,bilinear,point,3290,-0.077203,1.140610,0.806203,
+48,4,bilinear dressed,dressed,3290,-0.077203,1.140610,0.584334,0.738248
+48,4,surface (40 km ring),point,3290,-0.114130,1.158271,0.839758,
+48,4,surface (40 km ring) dressed,dressed,3290,-0.114130,1.158271,0.610749,0.726992
+48,4,lookup own cell (not held out),point,3290,-0.201799,1.158958,0.859538,
+48,4,lookup own cell (not held out) dressed,dressed,3290,-0.201799,1.158958,0.625191,0.726561
+48,4,CERRA (ceiling),point,3290,-0.361879,0.770366,0.571639,
+48,4,CERRA (ceiling) dressed,dressed,3290,-0.361879,0.770366,0.417118,1.093056
+48,5,AIFS ENS,ensemble,3337,-0.173958,1.260428,0.626562,0.866607
+48,5,bilinear,point,3337,-0.142607,1.232732,0.842074,
+48,5,bilinear dressed,dressed,3337,-0.142607,1.232732,0.607679,0.886077
+48,5,surface (40 km ring),point,3337,-0.183294,1.255214,0.884511,
+48,5,surface (40 km ring) dressed,dressed,3337,-0.183294,1.255214,0.636953,0.870207
+48,5,lookup own cell (not held out),point,3337,-0.272470,1.258184,0.893879,
+48,5,lookup own cell (not held out) dressed,dressed,3337,-0.272470,1.258184,0.645195,0.868153
+48,5,CERRA (ceiling),point,3337,-0.321647,0.801530,0.544815,
+48,5,CERRA (ceiling) dressed,dressed,3337,-0.321647,0.801530,0.414043,1.362763
+48,6,AIFS ENS,ensemble,3469,-0.370825,1.268680,0.627098,0.831261
+48,6,bilinear,point,3469,-0.351679,1.242921,0.850601,
+48,6,bilinear dressed,dressed,3469,-0.351679,1.242921,0.615548,0.848488
+48,6,surface (40 km ring),point,3469,-0.402590,1.293512,0.910054,
+48,6,surface (40 km ring) dressed,dressed,3469,-0.402590,1.293512,0.660415,0.815303
+48,6,lookup own cell (not held out),point,3469,-0.494789,1.346031,0.969872,
+48,6,lookup own cell (not held out) dressed,dressed,3469,-0.494789,1.346031,0.704571,0.783492
+48,6,CERRA (ceiling),point,3469,-0.322729,0.599796,0.463475,
+48,6,CERRA (ceiling) dressed,dressed,3469,-0.322729,0.599796,0.367219,1.758272
+48,7,AIFS ENS,ensemble,3482,-0.369623,2.235834,1.179949,0.756577
+48,7,bilinear,point,3482,-0.329904,2.191891,1.618847,
+48,7,bilinear dressed,dressed,3482,-0.329904,2.191891,1.156471,0.771744
+48,7,surface (40 km ring),point,3482,-0.396738,2.241925,1.675007,
+48,7,surface (40 km ring) dressed,dressed,3482,-0.396738,2.241925,1.199976,0.754521
+48,7,lookup own cell (not held out),point,3482,-0.477651,2.269497,1.707881,
+48,7,lookup own cell (not held out) dressed,dressed,3482,-0.477651,2.269497,1.225908,0.745354
+48,7,CERRA (ceiling),point,3482,-0.250918,0.978985,0.686115,
+48,7,CERRA (ceiling) dressed,dressed,3482,-0.250918,0.978985,0.556924,1.727891
+48,8,AIFS ENS,ensemble,3098,-0.285543,2.692701,1.487767,0.720442
+48,8,bilinear,point,3098,-0.266173,2.649636,2.017368,
+48,8,bilinear dressed,dressed,3098,-0.266173,2.649636,1.458615,0.732151
+48,8,surface (40 km ring),point,3098,-0.322955,2.651840,2.033191,
+48,8,surface (40 km ring) dressed,dressed,3098,-0.322955,2.651840,1.466678,0.731543
+48,8,lookup own cell (not held out),point,3098,-0.417124,2.661030,2.046147,
+48,8,lookup own cell (not held out) dressed,dressed,3098,-0.417124,2.661030,1.477490,0.729016
+48,8,CERRA (ceiling),point,3098,-0.375186,1.407635,0.995268,
+48,8,CERRA (ceiling) dressed,dressed,3098,-0.375186,1.407635,0.768464,1.378152
+48,9,AIFS ENS,ensemble,3447,-0.149375,1.775391,0.876459,0.700726
+48,9,bilinear,point,3447,-0.154098,1.760585,1.183979,
+48,9,bilinear dressed,dressed,3447,-0.154098,1.760585,0.865843,0.706619
+48,9,surface (40 km ring),point,3447,-0.207075,1.775288,1.216930,
+48,9,surface (40 km ring) dressed,dressed,3447,-0.207075,1.775288,0.888719,0.700767
+48,9,lookup own cell (not held out),point,3447,-0.275790,1.795837,1.250839,
+48,9,lookup own cell (not held out) dressed,dressed,3447,-0.275790,1.795837,0.914860,0.692748
+48,9,CERRA (ceiling),point,3447,-0.362597,1.162228,0.757758,
+48,9,CERRA (ceiling) dressed,dressed,3447,-0.362597,1.162228,0.570744,1.070413
+48,10,AIFS ENS,ensemble,3428,-0.130719,1.737994,0.981230,0.667192
+48,10,bilinear,point,3428,-0.155743,1.698535,1.301252,
+48,10,bilinear dressed,dressed,3428,-0.155743,1.698535,0.957054,0.682692
+48,10,surface (40 km ring),point,3428,-0.211050,1.707834,1.323161,
+48,10,surface (40 km ring) dressed,dressed,3428,-0.211050,1.707834,0.972398,0.678975
+48,10,lookup own cell (not held out),point,3428,-0.273479,1.716629,1.343688,
+48,10,lookup own cell (not held out) dressed,dressed,3428,-0.273479,1.716629,0.986681,0.675496
+48,10,CERRA (ceiling),point,3428,-0.413572,1.067674,0.769119,
+48,10,CERRA (ceiling) dressed,dressed,3428,-0.413572,1.067674,0.573084,1.086077
+48,11,AIFS ENS,ensemble,3420,-0.122443,1.882218,1.045906,0.630159
+48,11,bilinear,point,3420,-0.140687,1.825524,1.359029,
+48,11,bilinear dressed,dressed,3420,-0.140687,1.825524,1.015856,0.649730
+48,11,surface (40 km ring),point,3420,-0.186855,1.827893,1.363140,
+48,11,surface (40 km ring) dressed,dressed,3420,-0.186855,1.827893,1.021199,0.648887
+48,11,lookup own cell (not held out),point,3420,-0.267349,1.789056,1.343982,
+48,11,lookup own cell (not held out) dressed,dressed,3420,-0.267349,1.789056,1.002857,0.662973
+48,11,CERRA (ceiling),point,3420,-0.275545,1.240194,0.869455,
+48,11,CERRA (ceiling) dressed,dressed,3420,-0.275545,1.240194,0.648857,0.956380
+48,12,AIFS ENS,ensemble,3435,-0.205807,1.991319,1.103645,0.679222
+48,12,bilinear,point,3435,-0.225327,1.930140,1.455201,
+48,12,bilinear dressed,dressed,3435,-0.225327,1.930140,1.072626,0.700751
+48,12,surface (40 km ring),point,3435,-0.285678,1.939319,1.471741,
+48,12,surface (40 km ring) dressed,dressed,3435,-0.285678,1.939319,1.082403,0.697434
+48,12,lookup own cell (not held out),point,3435,-0.362955,1.921152,1.464782,
+48,12,lookup own cell (not held out) dressed,dressed,3435,-0.362955,1.921152,1.078105,0.704030
+48,12,CERRA (ceiling),point,3435,-0.240580,1.154384,0.849212,
+48,12,CERRA (ceiling) dressed,dressed,3435,-0.240580,1.154384,0.631258,1.171662
+72,3,AIFS ENS,ensemble,3468,-0.060537,1.857486,1.017440,0.651296
+72,3,bilinear,point,3468,-0.041089,1.804745,1.339136,
+72,3,bilinear dressed,dressed,3468,-0.041089,1.804745,0.985664,0.670330
+72,3,surface (40 km ring),point,3468,-0.078379,1.785073,1.342914,
+72,3,surface (40 km ring) dressed,dressed,3468,-0.078379,1.785073,0.985689,0.677717
+72,3,lookup own cell (not held out),point,3468,-0.160897,1.731594,1.307650,
+72,3,lookup own cell (not held out) dressed,dressed,3468,-0.160897,1.731594,0.956515,0.698648
+72,3,CERRA (ceiling),point,3468,-0.231928,0.933753,0.666509,
+72,3,CERRA (ceiling) dressed,dressed,3468,-0.231928,0.933753,0.504332,1.295605
+72,4,AIFS ENS,ensemble,3290,-0.007028,1.260289,0.646408,0.771870
+72,4,bilinear,point,3290,0.008981,1.242909,0.888403,
+72,4,bilinear dressed,dressed,3290,0.008981,1.242909,0.638116,0.782663
+72,4,surface (40 km ring),point,3290,-0.015487,1.257152,0.918567,
+72,4,surface (40 km ring) dressed,dressed,3290,-0.015487,1.257152,0.661427,0.773796
+72,4,lookup own cell (not held out),point,3290,-0.104250,1.253692,0.932374,
+72,4,lookup own cell (not held out) dressed,dressed,3290,-0.104250,1.253692,0.671066,0.775931
+72,4,CERRA (ceiling),point,3290,-0.361879,0.770366,0.571639,
+72,4,CERRA (ceiling) dressed,dressed,3290,-0.361879,0.770366,0.423120,1.262749
+72,5,AIFS ENS,ensemble,3337,-0.229944,1.431805,0.721286,0.934275
+72,5,bilinear,point,3337,-0.198655,1.410718,0.993021,
+72,5,bilinear dressed,dressed,3337,-0.198655,1.410718,0.705743,0.948240
+72,5,surface (40 km ring),point,3337,-0.236749,1.430799,1.030115,
+72,5,surface (40 km ring) dressed,dressed,3337,-0.236749,1.430799,0.730379,0.934931
+72,5,lookup own cell (not held out),point,3337,-0.329505,1.442621,1.037642,
+72,5,lookup own cell (not held out) dressed,dressed,3337,-0.329505,1.442621,0.739516,0.927270
+72,5,CERRA (ceiling),point,3337,-0.321647,0.801530,0.544815,
+72,5,CERRA (ceiling) dressed,dressed,3337,-0.321647,0.801530,0.441877,1.668931
+72,6,AIFS ENS,ensemble,3469,-0.251054,1.512694,0.767862,0.894993
+72,6,bilinear,point,3469,-0.231360,1.496773,1.053561,
+72,6,bilinear dressed,dressed,3469,-0.231360,1.496773,0.759321,0.904513
+72,6,surface (40 km ring),point,3469,-0.265690,1.528521,1.098983,
+72,6,surface (40 km ring) dressed,dressed,3469,-0.265690,1.528521,0.792452,0.885725
+72,6,lookup own cell (not held out),point,3469,-0.358422,1.564393,1.142372,
+72,6,lookup own cell (not held out) dressed,dressed,3469,-0.358422,1.564393,0.823406,0.865416
+72,6,CERRA (ceiling),point,3469,-0.322729,0.599796,0.463475,
+72,6,CERRA (ceiling) dressed,dressed,3469,-0.322729,0.599796,0.401708,2.257185
+72,7,AIFS ENS,ensemble,3482,-0.606997,2.703663,1.430354,0.806847
+72,7,bilinear,point,3482,-0.566188,2.663878,1.993087,
+72,7,bilinear dressed,dressed,3482,-0.566188,2.663878,1.407716,0.818898
+72,7,surface (40 km ring),point,3482,-0.638552,2.712881,2.052602,
+72,7,surface (40 km ring) dressed,dressed,3482,-0.638552,2.712881,1.451195,0.804106
+72,7,lookup own cell (not held out),point,3482,-0.728106,2.742061,2.092244,
+72,7,lookup own cell (not held out) dressed,dressed,3482,-0.728106,2.742061,1.479198,0.795549
+72,7,CERRA (ceiling),point,3482,-0.250918,0.978985,0.686115,
+72,7,CERRA (ceiling) dressed,dressed,3482,-0.250918,0.978985,0.628286,2.228270
+72,8,AIFS ENS,ensemble,3098,-0.191218,2.902106,1.582463,0.809790
+72,8,bilinear,point,3098,-0.171822,2.873338,2.199858,
+72,8,bilinear dressed,dressed,3098,-0.171822,2.873338,1.564165,0.817898
+72,8,surface (40 km ring),point,3098,-0.219234,2.875286,2.206605,
+72,8,surface (40 km ring) dressed,dressed,3098,-0.219234,2.875286,1.569668,0.817344
+72,8,lookup own cell (not held out),point,3098,-0.317903,2.886668,2.222291,
+72,8,lookup own cell (not held out) dressed,dressed,3098,-0.317903,2.886668,1.581073,0.814121
+72,8,CERRA (ceiling),point,3098,-0.375186,1.407635,0.995268,
+72,8,CERRA (ceiling) dressed,dressed,3098,-0.375186,1.407635,0.813965,1.669536
+72,9,AIFS ENS,ensemble,3447,-0.380376,1.997349,1.008083,0.845449
+72,9,bilinear,point,3447,-0.386678,1.983632,1.399464,
+72,9,bilinear dressed,dressed,3447,-0.386678,1.983632,0.999323,0.851296
+72,9,surface (40 km ring),point,3447,-0.449048,1.999913,1.428461,
+72,9,surface (40 km ring) dressed,dressed,3447,-0.449048,1.999913,1.019467,0.844365
+72,9,lookup own cell (not held out),point,3447,-0.522466,2.026523,1.463340,
+72,9,lookup own cell (not held out) dressed,dressed,3447,-0.522466,2.026523,1.043426,0.833278
+72,9,CERRA (ceiling),point,3447,-0.362597,1.162228,0.757758,
+72,9,CERRA (ceiling) dressed,dressed,3447,-0.362597,1.162228,0.612332,1.452949
+72,10,AIFS ENS,ensemble,3428,-0.136567,1.886922,1.063710,0.733150
+72,10,bilinear,point,3428,-0.161586,1.851288,1.436023,
+72,10,bilinear dressed,dressed,3428,-0.161586,1.851288,1.041571,0.747262
+72,10,surface (40 km ring),point,3428,-0.209221,1.855088,1.447714,
+72,10,surface (40 km ring) dressed,dressed,3428,-0.209221,1.855088,1.052023,0.745731
+72,10,lookup own cell (not held out),point,3428,-0.274238,1.859356,1.459382,
+72,10,lookup own cell (not held out) dressed,dressed,3428,-0.274238,1.859356,1.060289,0.744020
+72,10,CERRA (ceiling),point,3428,-0.413572,1.067674,0.769119,
+72,10,CERRA (ceiling) dressed,dressed,3428,-0.413572,1.067674,0.589243,1.295711
+72,11,AIFS ENS,ensemble,3420,-0.052503,2.026614,1.125020,0.729263
+72,11,bilinear,point,3420,-0.071879,1.977367,1.502824,
+72,11,bilinear dressed,dressed,3420,-0.071879,1.977367,1.097006,0.747425
+72,11,surface (40 km ring),point,3420,-0.103924,1.976865,1.505046,
+72,11,surface (40 km ring) dressed,dressed,3420,-0.103924,1.976865,1.100585,0.747615
+72,11,lookup own cell (not held out),point,3420,-0.186900,1.942046,1.489460,
+72,11,lookup own cell (not held out) dressed,dressed,3420,-0.186900,1.942046,1.082800,0.761019
+72,11,CERRA (ceiling),point,3420,-0.275545,1.240194,0.869455,
+72,11,CERRA (ceiling) dressed,dressed,3420,-0.275545,1.240194,0.667367,1.191696
+72,12,AIFS ENS,ensemble,3435,-0.121386,2.209120,1.217805,0.757931
+72,12,bilinear,point,3435,-0.141684,2.153608,1.634117,
+72,12,bilinear dressed,dressed,3435,-0.141684,2.153608,1.187995,0.777468
+72,12,surface (40 km ring),point,3435,-0.185642,2.154312,1.634368,
+72,12,surface (40 km ring) dressed,dressed,3435,-0.185642,2.154312,1.187373,0.777214
+72,12,lookup own cell (not held out),point,3435,-0.266756,2.126603,1.623701,
+72,12,lookup own cell (not held out) dressed,dressed,3435,-0.266756,2.126603,1.178556,0.787341
+72,12,CERRA (ceiling),point,3435,-0.240580,1.154384,0.849212,
+72,12,CERRA (ceiling) dressed,dressed,3435,-0.240580,1.154384,0.654429,1.450436
+120,3,AIFS ENS,ensemble,3468,0.073728,2.203934,1.216049,0.817615
+120,3,bilinear,point,3468,0.092427,2.157061,1.658746,
+120,3,bilinear dressed,dressed,3468,0.092427,2.157061,1.186338,0.835382
+120,3,surface (40 km ring),point,3468,0.134412,2.149601,1.665683,
+120,3,surface (40 km ring) dressed,dressed,3468,0.134412,2.149601,1.189399,0.838281
+120,3,lookup own cell (not held out),point,3468,0.049057,2.091607,1.621048,
+120,3,lookup own cell (not held out) dressed,dressed,3468,0.049057,2.091607,1.154573,0.861524
+120,3,CERRA (ceiling),point,3468,-0.231928,0.933753,0.666509,
+120,3,CERRA (ceiling) dressed,dressed,3468,-0.231928,0.933753,0.577324,1.929816
+120,4,AIFS ENS,ensemble,3290,-0.056765,1.572025,0.825501,0.885604
+120,4,bilinear,point,3290,-0.040965,1.564208,1.165603,
+120,4,bilinear dressed,dressed,3290,-0.040965,1.564208,0.821929,0.890030
+120,4,surface (40 km ring),point,3290,-0.010841,1.574813,1.180311,
+120,4,surface (40 km ring) dressed,dressed,3290,-0.010841,1.574813,0.835112,0.884036
+120,4,lookup own cell (not held out),point,3290,-0.095934,1.578982,1.200431,
+120,4,lookup own cell (not held out) dressed,dressed,3290,-0.095934,1.578982,0.845174,0.881702
+120,4,CERRA (ceiling),point,3290,-0.361879,0.770366,0.571639,
+120,4,CERRA (ceiling) dressed,dressed,3290,-0.361879,0.770366,0.467057,1.807182
+120,5,AIFS ENS,ensemble,3337,-0.658564,2.136620,1.092791,0.959018
+120,5,bilinear,point,3337,-0.625343,2.107750,1.525379,
+120,5,bilinear dressed,dressed,3337,-0.625343,2.107750,1.076257,0.972154
+120,5,surface (40 km ring),point,3337,-0.625192,2.111765,1.540877,
+120,5,surface (40 km ring) dressed,dressed,3337,-0.625192,2.111765,1.087023,0.970305
+120,5,lookup own cell (not held out),point,3337,-0.726864,2.132325,1.559222,
+120,5,lookup own cell (not held out) dressed,dressed,3337,-0.726864,2.132325,1.098019,0.960950
+120,5,CERRA (ceiling),point,3337,-0.321647,0.801530,0.544815,
+120,5,CERRA (ceiling) dressed,dressed,3337,-0.321647,0.801530,0.552359,2.556431
+120,6,AIFS ENS,ensemble,3469,-0.470303,2.608479,1.325161,0.860239
+120,6,bilinear,point,3469,-0.450285,2.593554,1.874498,
+120,6,bilinear dressed,dressed,3469,-0.450285,2.593554,1.318090,0.865189
+120,6,surface (40 km ring),point,3469,-0.438281,2.605073,1.900526,
+120,6,surface (40 km ring) dressed,dressed,3469,-0.438281,2.605073,1.336038,0.861364
+120,6,lookup own cell (not held out),point,3469,-0.531244,2.633995,1.934682,
+120,6,lookup own cell (not held out) dressed,dressed,3469,-0.531244,2.633995,1.359686,0.851906
+120,6,CERRA (ceiling),point,3469,-0.322729,0.599796,0.463475,
+120,6,CERRA (ceiling) dressed,dressed,3469,-0.322729,0.599796,0.535390,3.741133
+120,7,AIFS ENS,ensemble,3482,-1.027835,3.443543,1.914921,0.941679
+120,7,bilinear,point,3482,-0.985717,3.415398,2.687555,
+120,7,bilinear dressed,dressed,3482,-0.985717,3.415398,1.897347,0.949439
+120,7,surface (40 km ring),point,3482,-1.032997,3.465355,2.738350,
+120,7,surface (40 km ring) dressed,dressed,3482,-1.032997,3.465355,1.933269,0.935752
+120,7,lookup own cell (not held out),point,3482,-1.118978,3.496855,2.774678,
+120,7,lookup own cell (not held out) dressed,dressed,3482,-1.118978,3.496855,1.959648,0.927323
+120,7,CERRA (ceiling),point,3482,-0.250918,0.978985,0.686115,
+120,7,CERRA (ceiling) dressed,dressed,3482,-0.250918,0.978985,0.824579,3.312321
+120,8,AIFS ENS,ensemble,3098,0.608689,4.016283,2.153791,0.816904
+120,8,bilinear,point,3098,0.628547,4.007300,3.071106,
+120,8,bilinear dressed,dressed,3098,0.628547,4.007300,2.145425,0.818736
+120,8,surface (40 km ring),point,3098,0.699177,4.021337,3.072134,
+120,8,surface (40 km ring) dressed,dressed,3098,0.699177,4.021337,2.148698,0.815878
+120,8,lookup own cell (not held out),point,3098,0.603428,4.017409,3.076118,
+120,8,lookup own cell (not held out) dressed,dressed,3098,0.603428,4.017409,2.149883,0.816675
+120,8,CERRA (ceiling),point,3098,-0.375186,1.407635,0.995268,
+120,8,CERRA (ceiling) dressed,dressed,3098,-0.375186,1.407635,0.947812,2.330803
+120,9,AIFS ENS,ensemble,3447,-0.551673,2.875249,1.467991,1.010668
+120,9,bilinear,point,3447,-0.556780,2.866500,2.065366,
+120,9,bilinear dressed,dressed,3447,-0.556780,2.866500,1.461372,1.013753
+120,9,surface (40 km ring),point,3447,-0.571218,2.884888,2.085246,
+120,9,surface (40 km ring) dressed,dressed,3447,-0.571218,2.884888,1.473500,1.007291
+120,9,lookup own cell (not held out),point,3447,-0.642500,2.906030,2.107383,
+120,9,lookup own cell (not held out) dressed,dressed,3447,-0.642500,2.906030,1.488971,0.999963
+120,9,CERRA (ceiling),point,3447,-0.362597,1.162228,0.757758,
+120,9,CERRA (ceiling) dressed,dressed,3447,-0.362597,1.162228,0.785889,2.500305
+120,10,AIFS ENS,ensemble,3428,-0.159997,2.324104,1.320612,0.823580
+120,10,bilinear,point,3428,-0.185401,2.293500,1.813228,
+120,10,bilinear dressed,dressed,3428,-0.185401,2.293500,1.297992,0.834569
+120,10,surface (40 km ring),point,3428,-0.168173,2.290058,1.813451,
+120,10,surface (40 km ring) dressed,dressed,3428,-0.168173,2.290058,1.299430,0.835824
+120,10,lookup own cell (not held out),point,3428,-0.235049,2.284832,1.811835,
+120,10,lookup own cell (not held out) dressed,dressed,3428,-0.235049,2.284832,1.297356,0.837735
+120,10,CERRA (ceiling),point,3428,-0.413572,1.067674,0.769119,
+120,10,CERRA (ceiling) dressed,dressed,3428,-0.413572,1.067674,0.650401,1.792762
+120,11,AIFS ENS,ensemble,3420,-0.071606,2.434979,1.368794,0.897564
+120,11,bilinear,point,3420,-0.090573,2.399044,1.886323,
+120,11,bilinear dressed,dressed,3420,-0.090573,2.399044,1.346664,0.911008
+120,11,surface (40 km ring),point,3420,-0.063993,2.403618,1.887947,
+120,11,surface (40 km ring) dressed,dressed,3420,-0.063993,2.403618,1.349681,0.909275
+120,11,lookup own cell (not held out),point,3420,-0.142545,2.374648,1.870720,
+120,11,lookup own cell (not held out) dressed,dressed,3420,-0.142545,2.374648,1.334371,0.920368
+120,11,CERRA (ceiling),point,3420,-0.275545,1.240194,0.869455,
+120,11,CERRA (ceiling) dressed,dressed,3420,-0.275545,1.240194,0.746084,1.762264
+120,12,AIFS ENS,ensemble,3435,-0.172315,2.951380,1.621983,0.823950
+120,12,bilinear,point,3435,-0.190076,2.909299,2.240233,
+120,12,bilinear dressed,dressed,3435,-0.190076,2.909299,1.597398,0.835868
+120,12,surface (40 km ring),point,3435,-0.173119,2.905023,2.234158,
+120,12,surface (40 km ring) dressed,dressed,3435,-0.173119,2.905023,1.592899,0.837098
+120,12,lookup own cell (not held out),point,3435,-0.254713,2.879958,2.222604,
+120,12,lookup own cell (not held out) dressed,dressed,3435,-0.254713,2.879958,1.579508,0.844384
+120,12,CERRA (ceiling),point,3435,-0.240580,1.154384,0.849212,
+120,12,CERRA (ceiling) dressed,dressed,3435,-0.240580,1.154384,0.751656,2.106569
+168,3,AIFS ENS,ensemble,3468,0.176776,2.853534,1.582929,0.763451
+168,3,bilinear,point,3468,0.194095,2.829304,2.159687,
+168,3,bilinear dressed,dressed,3468,0.194095,2.829304,1.565441,0.769990
+168,3,surface (40 km ring),point,3468,0.413788,2.844933,2.159720,
+168,3,surface (40 km ring) dressed,dressed,3468,0.413788,2.844933,1.574187,0.765759
+168,3,lookup own cell (not held out),point,3468,0.332984,2.805031,2.133689,
+168,3,lookup own cell (not held out) dressed,dressed,3468,0.332984,2.805031,1.551305,0.776653
+168,3,CERRA (ceiling),point,3468,-0.231928,0.933753,0.666509,
+168,3,CERRA (ceiling) dressed,dressed,3468,-0.231928,0.933753,0.633189,2.333096
+168,4,AIFS ENS,ensemble,3290,-0.191227,2.072925,1.094984,0.940366
+168,4,bilinear,point,3290,-0.174505,2.064809,1.524776,
+168,4,bilinear dressed,dressed,3290,-0.174505,2.064809,1.091221,0.944062
+168,4,surface (40 km ring),point,3290,0.020674,2.046352,1.499432,
+168,4,surface (40 km ring) dressed,dressed,3290,0.020674,2.046352,1.078546,0.952577
+168,4,lookup own cell (not held out),point,3290,-0.068916,2.045730,1.510868,
+168,4,lookup own cell (not held out) dressed,dressed,3290,-0.068916,2.045730,1.084850,0.952867
+168,4,CERRA (ceiling),point,3290,-0.361879,0.770366,0.571639,
+168,4,CERRA (ceiling) dressed,dressed,3290,-0.361879,0.770366,0.546633,2.530368
+168,5,AIFS ENS,ensemble,3337,-1.088908,2.778865,1.503076,1.017952
+168,5,bilinear,point,3337,-1.056962,2.749458,2.091637,
+168,5,bilinear dressed,dressed,3337,-1.056962,2.749458,1.487842,1.028840
+168,5,surface (40 km ring),point,3337,-0.921211,2.696594,2.060222,
+168,5,surface (40 km ring) dressed,dressed,3337,-0.921211,2.696594,1.462007,1.049009
+168,5,lookup own cell (not held out),point,3337,-1.018466,2.714072,2.079158,
+168,5,lookup own cell (not held out) dressed,dressed,3337,-1.018466,2.714072,1.473804,1.042254
+168,5,CERRA (ceiling),point,3337,-0.321647,0.801530,0.544815,
+168,5,CERRA (ceiling) dressed,dressed,3337,-0.321647,0.801530,0.706455,3.529187
+168,6,AIFS ENS,ensemble,3469,-0.483319,4.342456,2.233210,0.794951
+168,6,bilinear,point,3469,-0.463566,4.332998,3.219022,
+168,6,bilinear dressed,dressed,3469,-0.463566,4.332998,2.229437,0.796686
+168,6,surface (40 km ring),point,3469,-0.292441,4.327653,3.213846,
+168,6,surface (40 km ring) dressed,dressed,3469,-0.292441,4.327653,2.232314,0.797670
+168,6,lookup own cell (not held out),point,3469,-0.373158,4.348790,3.243405,
+168,6,lookup own cell (not held out) dressed,dressed,3469,-0.373158,4.348790,2.253160,0.793793
+168,6,CERRA (ceiling),point,3469,-0.322729,0.599796,0.463475,
+168,6,CERRA (ceiling) dressed,dressed,3469,-0.322729,0.599796,0.751464,5.755359
+168,7,AIFS ENS,ensemble,3482,-1.760748,4.705182,2.674415,0.896534
+168,7,bilinear,point,3482,-1.715796,4.672870,3.790557,
+168,7,bilinear dressed,dressed,3482,-1.715796,4.672870,2.654497,0.902734
+168,7,surface (40 km ring),point,3482,-1.655324,4.678485,3.792800,
+168,7,surface (40 km ring) dressed,dressed,3482,-1.655324,4.678485,2.657364,0.901650
+168,7,lookup own cell (not held out),point,3482,-1.740345,4.706909,3.824973,
+168,7,lookup own cell (not held out) dressed,dressed,3482,-1.740345,4.706909,2.678234,0.896205
+168,7,CERRA (ceiling),point,3482,-0.250918,0.978985,0.686115,
+168,7,CERRA (ceiling) dressed,dressed,3482,-0.250918,0.978985,1.032835,4.308908
+168,8,AIFS ENS,ensemble,3098,0.982379,4.793383,2.563161,0.852151
+168,8,bilinear,point,3098,0.998402,4.787560,3.612539,
+168,8,bilinear dressed,dressed,3098,0.998402,4.787560,2.556089,0.853188
+168,8,surface (40 km ring),point,3098,1.268545,4.858233,3.653063,
+168,8,surface (40 km ring) dressed,dressed,3098,1.268545,4.858233,2.588415,0.840776
+168,8,lookup own cell (not held out),point,3098,1.173339,4.846944,3.638343,
+168,8,lookup own cell (not held out) dressed,dressed,3098,1.173339,4.846944,2.580502,0.842735
+168,8,CERRA (ceiling),point,3098,-0.375186,1.407635,0.995268,
+168,8,CERRA (ceiling) dressed,dressed,3098,-0.375186,1.407635,1.086250,2.901810
+168,9,AIFS ENS,ensemble,3447,-1.527778,4.108599,2.202717,0.962429
+168,9,bilinear,point,3447,-1.530445,4.103670,3.110450,
+168,9,bilinear dressed,dressed,3447,-1.530445,4.103670,2.199854,0.963585
+168,9,surface (40 km ring),point,3447,-1.459248,4.086568,3.089393,
+168,9,surface (40 km ring) dressed,dressed,3447,-1.459248,4.086568,2.187277,0.967617
+168,9,lookup own cell (not held out),point,3447,-1.527595,4.123900,3.129685,
+168,9,lookup own cell (not held out) dressed,dressed,3447,-1.527595,4.123900,2.216232,0.958858
+168,9,CERRA (ceiling),point,3447,-0.362597,1.162228,0.757758,
+168,9,CERRA (ceiling) dressed,dressed,3447,-0.362597,1.162228,0.994491,3.402289
+168,10,AIFS ENS,ensemble,3428,-0.042892,2.670047,1.507447,0.949218
+168,10,bilinear,point,3428,-0.068234,2.636422,2.075343,
+168,10,bilinear dressed,dressed,3428,-0.068234,2.636422,1.481891,0.961324
+168,10,surface (40 km ring),point,3428,0.124860,2.631922,2.079523,
+168,10,surface (40 km ring) dressed,dressed,3428,0.124860,2.631922,1.483896,0.962968
+168,10,lookup own cell (not held out),point,3428,0.063585,2.612701,2.063800,
+168,10,lookup own cell (not held out) dressed,dressed,3428,0.063585,2.612701,1.471672,0.970052
+168,10,CERRA (ceiling),point,3428,-0.413572,1.067674,0.769119,
+168,10,CERRA (ceiling) dressed,dressed,3428,-0.413572,1.067674,0.745053,2.373811
+168,11,AIFS ENS,ensemble,3420,0.083697,3.028331,1.713156,0.913486
+168,11,bilinear,point,3420,0.062302,3.003177,2.421236,
+168,11,bilinear dressed,dressed,3420,0.062302,3.003177,1.697902,0.921137
+168,11,surface (40 km ring),point,3420,0.278194,3.026718,2.429816,
+168,11,surface (40 km ring) dressed,dressed,3420,0.278194,3.026718,1.710140,0.913973
+168,11,lookup own cell (not held out),point,3420,0.195441,2.997399,2.418906,
+168,11,lookup own cell (not held out) dressed,dressed,3420,0.195441,2.997399,1.696460,0.922913
+168,11,CERRA (ceiling),point,3420,-0.275545,1.240194,0.869455,
+168,11,CERRA (ceiling) dressed,dressed,3420,-0.275545,1.240194,0.830492,2.230569
+168,12,AIFS ENS,ensemble,3435,0.179072,3.354426,1.871246,0.861633
+168,12,bilinear,point,3435,0.161801,3.310986,2.579714,
+168,12,bilinear dressed,dressed,3435,0.161801,3.310986,1.844546,0.872937
+168,12,surface (40 km ring),point,3435,0.371411,3.339007,2.598672,
+168,12,surface (40 km ring) dressed,dressed,3435,0.371411,3.339007,1.861487,0.865611
+168,12,lookup own cell (not held out),point,3435,0.299106,3.298014,2.569883,
+168,12,lookup own cell (not held out) dressed,dressed,3435,0.299106,3.298014,1.838246,0.876371
+168,12,CERRA (ceiling),point,3435,-0.240580,1.154384,0.849212,
+168,12,CERRA (ceiling) dressed,dressed,3435,-0.240580,1.154384,0.830424,2.503744
