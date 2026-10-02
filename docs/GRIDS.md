@@ -50,7 +50,7 @@ projection string.** It is the only cheap test that catches a silent misalignmen
 
 ## 4. What actually makes this non-trivial
 
-![ERA5 grid drawn in CERRA's Lambert space, and the resampling comparison]({{artifact:art_e2b03a78-f771-4263-b091-252cd150174e}})
+![ERA5 grid drawn in CERRA's Lambert space, and the resampling comparison](../figures/grid_alignment.png)
 
 **The lat-lon grid is curved and rotated in Lambert space.** Panel (a) draws it.
 
@@ -81,7 +81,7 @@ The abstract version above is hard to picture, so here is the same operation car
 at one real place, for one real forecast — Pulkovo airport (59.8000 °N, 30.2630 °E),
 valid 2026-01-01 00 Z at +24 h lead.
 
-![The alignment carried out step by step at St Petersburg]({{artifact:art_62c653c4-2c86-4fac-96ff-4580f97d7388}})
+![The alignment carried out step by step at St Petersburg](../figures/grid_spb_example.png)
 
 **Panel (a) — the problem, concretely.** The thin blue mesh is CERRA: square, 5.5 km,
 axis-aligned because this *is* its native projection. The heavy red boxes are four ERA5
@@ -208,7 +208,7 @@ to preserve — you are inventing detail — so bilinear (§6) stays the choice,
 
 **It is the right tool for two other jobs**, both fine → coarse.
 
-![Conservative coarsening of CERRA to the ERA5 grid]({{artifact:art_9ebc2650-95ba-47c9-a55e-bf90d188f4aa}})
+![Conservative coarsening of CERRA to the ERA5 grid](../figures/esmf_conservative.png)
 
 ### Setup, and the two things that break it
 

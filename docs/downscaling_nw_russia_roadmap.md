@@ -54,7 +54,7 @@ I measured ERA5's own error against the 144 stations (25,822 matched pairs, 3-ho
 
 **Baseline:** bias +0.08 K, MAE 0.90 K, **RMSE 1.31 K**.
 
-![Error structure and correction skill]({{artifact:art_675e0ad3-b84f-4a30-b93f-638fcf49c776}})
+![Error structure and correction skill](../figures/diag_era5_headroom.png)
 
 Held-out skill of each correction, relative to raw ERA5:
 

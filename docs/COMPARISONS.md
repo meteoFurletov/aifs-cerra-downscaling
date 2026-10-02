@@ -9,7 +9,7 @@ This document is the registry. Companion documents: `DATA.md` (what the datasets
 where they came from, and the traps in them) and `domain_spec_leningrad.json`
 (machine-readable, every value below).
 
-![The three comparisons, and how the errors decompose]({{artifact:art_fa0b37ef-961f-4a0d-a64b-d6ddcb195872}})
+![The three comparisons, and how the errors decompose](../figures/comparison_structure.png)
 
 ---
 

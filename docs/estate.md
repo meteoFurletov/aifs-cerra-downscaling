@@ -70,13 +70,13 @@ drafting. A correction that lands in chat twice lands here once.
 - AIFS ENS v1 ran operationally until 2026-05-12, v2 since. `aifs.npz` holds 39 v2 inits
   (2026-05-12 to 05-31), most of temporal fold 12 (valid 2026-05-10 to 05-30); report that
   fold apart when the version could matter.
-- Local only: the 13 GB of raw CERRA GRIB (`data/raw/`), the Copernicus key
-  (`~/.cdsapirc`), and the `pipeline/` scripts that rebuild sources or fetch new data.
+- Local only: the 13 GB of raw CERRA GRIB (`data/raw/`) and the Copernicus key
+  (`~/.cdsapirc`), so the `pipeline/` scripts that rebuild sources or fetch new data
+  run locally only.
 - `pipeline/` scripts come from Claude Science's flat folder and read and write the
-  current directory; run them from `data/` or `data/scratch/`. `dataset.py` and the
-  docs still carry leftovers from it (`host` arguments, `{{artifact:...}}` links).
-- Since 2026-10-02 work is local: cloud sessions are not used, and their wiring below
-  (the SessionStart hook, the setup script, the Infisical step) stays, dormant.
+  current directory; run them from `data/` or `data/scratch/`. `dataset.py` (optional
+  `host` argument) and `fetch_aifs_overlap.py` (`kernel` import) still carry leftovers
+  from it.
 - Cloud sessions have no GPU. Their SessionStart hook runs `uv sync` and fetches the
   sources. Balka reaches them through the environment's setup script
   (`scripts/cloud_env_setup.sh`), because cloud sessions don't install plugins from
